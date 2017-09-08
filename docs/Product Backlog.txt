@@ -20,7 +20,7 @@ Engineering notebooks are legal documents used primarily by engineers and are cr
 
 
 Domain
-This product would be used in the engineering domain. All types of engineers (except software engineers) are expected to keep notebooks documenting their work.
+This product would be used in the engineering domain. Almost all engineers are expected to keep notebooks documenting their work.
 
 
 Targeted Users        
@@ -28,7 +28,9 @@ The target user of this product is an engineer or a manager for an engineering c
 
 
 Similar Platforms and their Limitations
-Currently, engineering notebooks made by using physical notebooks and pens in addition to following a strict set of rules. This makes the document reasonably secure against tampering and ensures it can be used as a legal document. Unfortunately, this option is also inordinately cumbersome to use and maintain. In less formal settings, websites and other digital mediums are used for convenience. However, programs such as OneNote and Evernote do not enforce the regulations required to ensure the documents are legally invalid. Our application would require signatures and co-signatures which are necessary to prove a notebook’s validity. It would also prevent past entries from being deleted or modified, ensuring that the history of the project is intact for engineers and verifiable in court. These features will make our product easier to use for customers, as less research and work on their part would be necessary. In addition, many of them are proprietary and only accessible through expensive computer-aided design (CAD) software, like PTC Mathcad or Autodesk Inventor. Our software will be a standalone service that is dedicated to creating better engineering notebooks, not simply an extra feature that is tacked onto an engineering design program. This is important because many disciplines that utilize engineering notebooks do not use CAD, and the options offered in CAD software suites are severely underdeveloped.
+Currently, engineering notebooks are made by using physical notebooks with a strict set of rules. The intent is to keep the notebook secure against tampering and ensures it as a legal document. The physicality places the burden on the engineer to format and follow the strict guidelines. 
+In less formal settings, websites and other digital mediums are used for convenience. Programs like OneNote/Evernote are software solutions to the engineering notebook. However, formatting, non editable page submissions, and user authenticated signatures are missing features that invalidate the documents legality. Other alternatives are built-in options for computer-aided design (CAD) software, such as PTC Mathcad or Autodesk Inventor, which are expensive and proprietary. Having a program with a single purpose allows us to keep the costs reasonable.
+VENote aims to solve these problems and bring the engineering notebook virtual. It is dedicated to creating better engineering notebooks, faster. VENote intends to be collaborative and administer friendly allowing for small and large companies to manage and maintain as many engineering notebooks unlike any other current software solutions.
 
 
 ________________
