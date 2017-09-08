@@ -20,7 +20,7 @@ Engineering notebooks are legal documents used primarily by engineers and are cr
 
 
 Domain
-This product would be used in the engineering domain. Almost all engineers are expected to keep notebooks documenting their work.
+This product would be used primarily in the engineering domain. It is useful for documentation tool. Almost all engineers are expected to keep notebooks documenting their work.
 
 
 Targeted Users        
@@ -28,8 +28,9 @@ The target user of this product is an engineer or a manager for an engineering c
 
 
 Similar Platforms and their Limitations
-Currently, engineering notebooks are made by using physical notebooks with a strict set of rules. The intent is to keep the notebook secure against tampering and ensures it as a legal document. The physicality places the burden on the engineer to format and follow the strict guidelines. 
-In less formal settings, websites and other digital mediums are used for convenience. Programs like OneNote/Evernote are software solutions to the engineering notebook. However, formatting, non editable page submissions, and user authenticated signatures are missing features that invalidate the documents legality. Other alternatives are built-in options for computer-aided design (CAD) software, such as PTC Mathcad or Autodesk Inventor, which are expensive and proprietary. Having a program with a single purpose allows us to keep the costs reasonable.
+Currently, engineering notebooks are made by using physical notebooks with a strict set of rules. The intent is to keep the notebook secure against tampering and ensures it as a legal document. The physicality places the burden on the engineer to format and follow the strict guidelines.
+In less formal settings, websites and other digital mediums are used for convenience. Programs like OneNote/Evernote are software solutions to the engineering notebook. However, formatting, non editable page submissions, and user authenticated signatures are missing features that invalidate the documents legality. These editing options can be enforced by our server and eSignatures can validate the documents.
+Other alternatives are built-in options for computer-aided design (CAD) software, such as PTC Mathcad or Autodesk Inventor, which are expensive and proprietary. For VENote, having a program with a single purpose allows us to keep the costs reasonable.
 VENote aims to solve these problems and bring the engineering notebook virtual. It is dedicated to creating better engineering notebooks, faster. VENote intends to be collaborative and administer friendly allowing for small and large companies to manage and maintain as many engineering notebooks unlike any other current software solutions.
 
 
@@ -89,10 +90,13 @@ As a manager, I would like to
 
 Non-Functional
 * Intuitive UI - it should be easier for customers to use our tool that it is for them to use existing tools
-* Fast site loading times
+* Fast site loading times (under 1 second)
 * Handle large usage load 
 * Handle large number of users
-* Developers use MySQL
-* Developers maintain a secure database
-* Developers create a maintainable database
+* Secure communication line using https
+* Secure communication line using a direct connection
+* Developers maintain server backend using Node.js
+* Developers maintain a secure database using MySQL
+* Developers maintain a querying mechanic to interact with MySQL database
+* Developers maintain config file for easy minor tweaks
 * Developers alter the server through a centralized location
