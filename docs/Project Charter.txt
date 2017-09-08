@@ -1,0 +1,49 @@
+﻿Project Charter
+
+
+August 29th, 2017
+CS 307 3:00 - 4:15 PHY112
+Professor Turkstra
+
+
+Team 14
+Killian Le Clainche, Jarett Lee, Aaron Neustedter, Chad Stucky, Ryan Sullivan, Mehul Patel
+
+
+Problem Statement
+Engineering notebooks are legal documents engineers use to settle patent disputes, on-board engineers, and identify errors in the creation process. These documents are currently not digitized; therefore, they are difficult to share, format, search, and backup. Our software will allow the easy creation of digital documents that can also be used as a legal document by adding signature-like capabilities.
+
+
+Project Objectives
+* Allow engineers to increase time focused on their primary work by minimizing thought about formatting the engineering document or physically sharing the notebook.
+* Make searching the notebook for past work or ideas easier.
+* Ensure the client’s data is secure against cyber attacks and against data loss with end to end encryption.
+   * Follows standards for patent process therefore validating the notebook.
+
+
+Stakeholders
+* Project Coordinators: Shreya Inamdar
+* Software Developers: Killian Le Clainche, Jarett Lee, Aaron Neustedter, Chad Stucky, Ryan Sullivan, Mehul Patel
+* Businesses
+   * Businesses that employ many engineers
+* Engineers
+   * Engineers that use engineering notebooks
+
+
+Deliverables
+* Web Client
+   * Allows the user to upload media and text to the web api and display the resulting document.
+   * Allow the user to search the dates and titles of past documents.
+   * Aids users in creating and formatting documents which adhere to the rules of engineering notebooks.
+   * Users will not be able to edit pages after the end of a workday.
+   * Review mode if time permits
+
+   * Web API
+   * REST/SOAP/other endpoints consume and create user owned documents (web, mobile, etc)
+   * Backend will render and store the legal copy of page. This will not be editable.
+   * Database
+   * Contains pages and metadata that associates pages with notebooks
+   * User management system
+   * Data will be encrypted and protected as valuable Intellectual Property
+   * Pages will have the ability to be digitally signed
+   * Sign & co-sign, electronic signature
