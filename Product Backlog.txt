@@ -1,0 +1,96 @@
+﻿Product Backlog
+
+
+VENote, Team 14
+Killian Le Clainche, Jarett Lee, Aaron Neustedter, Mehul Patel, Chad Stucky, Ryan Sullivan
+
+
+Problem Statement
+Engineering notebooks are legal documents engineers use to settle patent disputes, onboard new engineers, and identify errors in the creation process. These documents are not digital and are therefore difficult to share, format, search, and backup. Our software will allow engineers to easily create digital engineering notebooks that can also be used as legal documents in court.
+
+
+________________
+
+
+Background Information
+
+
+Problem details
+Engineering notebooks are legal documents used primarily by engineers and are critical to settle patent disputes, inform engineers new to the project about the project, and identify error in the creation process.
+
+
+Domain
+This product would be used in the engineering domain. All types of engineers (except software engineers) are expected to keep notebooks documenting their work.
+
+
+Targeted Users        
+The target user of this product is an engineer or a manager for an engineering company. Engineers will use it to keep track of their work and managers will use it to measure progress. It can also be turned over to lawyers in the case of a legal dispute to prove inventorship of a product.
+
+
+Similar Platforms and their Limitations
+Currently, engineering notebooks made by using physical notebooks and pens in addition to following a strict set of rules. This makes the document reasonably secure against tampering and ensures it can be used as a legal document. Unfortunately, this option is also inordinately cumbersome to use and maintain. In less formal settings, websites and other digital mediums are used for convenience. However, programs such as OneNote and Evernote do not enforce the regulations required to ensure the documents are legally invalid. Our application would require signatures and co-signatures which are necessary to prove a notebook’s validity. It would also prevent past entries from being deleted or modified, ensuring that the history of the project is intact for engineers and verifiable in court. These features will make our product easier to use for customers, as less research and work on their part would be necessary. In addition, many of them are proprietary and only accessible through expensive computer-aided design (CAD) software, like PTC Mathcad or Autodesk Inventor. Our software will be a standalone service that is dedicated to creating better engineering notebooks, not simply an extra feature that is tacked onto an engineering design program. This is important because many disciplines that utilize engineering notebooks do not use CAD, and the options offered in CAD software suites are severely underdeveloped.
+
+
+________________
+
+
+Requirements
+
+
+Functional
+As a user, I would like to
+1. Add text to the notebook
+2. Comment on pages
+3. As a user I would like an introductory tutorial
+4. Make corrections in the proper format
+5. Add images to the notebook
+6. Sign pages
+7. Caption pictures in the notebook
+8. Use a paintbrush tool to add custom drawings to the notebook
+9. Share a notebook through email.
+10. Share a notebook through a link.
+11. Share a notebook to another person without an account.
+12. Know the number of pages
+13. Know the timestamp of pages
+14. Query all notebooks for a specific notebook
+15. Query all notebooks for a specific timestamp - update on GH
+16. Query all notebooks for specific text
+17. Query a notebook for a specific page
+18. Query a notebook for specific text
+19. Query a page for specific text
+20. Create notebook groups
+21. Share a notebook
+22. Give feedback to developers
+23. Upload general files to the notebooks
+24. Upload STL to the notebooks if time allows
+25. Upload FBX to the notebooks if time allows
+26. Export notebooks as PDFs containing 3D-viewers
+27. Tag notebook pages
+28. Export notebooks as PDF
+29. Sign notebook pages
+30. Back up a notebook to a secondary storage location - update on GH
+31. Know why I can’t edit previous pages
+32. Access the notebook from the internet
+33. Access the notebook offline if time allows
+34. Choose what formatting and rules are applied to my page
+35. Location to be logged and have the option to keep track of where I edit my pages from.
+
+As a manager, I would like to
+1. Prevent notebook tampering
+2. View a group of user’s notebooks
+3. Co-sign notebook pages
+4. Assign user permissions to other users
+5. Submit a notebook for legal approval
+6. Assign specific users access to certain notebooks
+7. Handle a large number of users
+
+
+Non-Functional
+* Intuitive UI - it should be easier for customers to use our tool that it is for them to use existing tools
+* Fast site loading times
+* Handle large usage load 
+* Handle large number of users
+* Developers use MySQL
+* Developers maintain a secure database
+* Developers create a maintainable database
+* Developers alter the server through a centralized location
