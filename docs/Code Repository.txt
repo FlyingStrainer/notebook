@@ -1,0 +1,6 @@
+﻿How to access our source code repository
+1. Go to https://github.com/FlyingStrainer/notebook
+2. The source code is open source and can be explored on github or downloaded
+
+
+The documentation is included in the repository under ~/docs
