@@ -1,0 +1,327 @@
+﻿Design Document
+
+
+VENote, Team 14
+Killian Le Clainche, Jarett Lee, Aaron Neustedter, Mehul Patel, Chad Stucky, Ryan Sullivan
+
+
+________________
+
+
+Purpose
+We will design a system that enables engineers (our users) to store their ideas in a manner that will be useful in later turning those ideas into legally bound patents. This system will consist of a front end web interface written using a modified MEAN stack (MEAN + Javascript, JQuery, CSS/Preprocessing, Facebook React and Redux libraries) and a back end server that will handle requests via a mixture of Node.js and Firebase. In order to achieve the most functionality between the two layers of our design, we will use an API to communicate over https between the two.
+
+
+Functional requirements
+
+
+1. Users can manage users
+        As a manager, I would like to
+   1. Assign user permissions to other users
+   2. Handle a large number of users
+
+
+1. Users can create a notebook
+As a user, I would like to
+   1. Add images to the notebook
+   2. Add text to the notebook
+   3. Caption pictures in the notebook
+   4. See an introductory tutorial
+
+
+   1. Users can manage notebooks
+        As a user, I would like to
+   1. Query all notebooks for a specific notebook
+   2. Query all notebooks for a specific timestamp
+   3. Query all notebooks for specific text
+   4. Create notebook groups
+   5. Share a notebook
+   6. Export notebooks as PDFs containing 3D-viewers
+   7. Back up a notebook to a secondary storage location
+   8. Access the notebook from the internet
+   9. Access the notebook offline if time allows
+
+
+        As a manager, I would like to
+   1. View a group of user’s notebooks
+   2. Submit a notebook for legal approval
+   3. Assign specific users access to certain notebooks
+
+
+   1. Users can manage notebook pages
+As a user, I would like to
+   1. Sign pages
+   2. Know the number of pages
+   3. Know the timestamp of pages
+   4. Query a notebook for a specific page
+   5. Query a notebook for specific text
+   6. Query a page for specific text
+   7. Choose what formatting and rules are applied to my page
+   8. Location to be logged and have the option to keep track of where I edit my pages from.
+
+
+        As a manager, I would like to
+   1. Sign pages
+
+
+   1. Users can markup a page
+As a user, I would like to
+      1. Make corrections in the proper format
+      2. Comment on pages
+      3. Know why I can’t edit previous pages
+      4. Tag notebook pages
+      5. Use a paintbrush tool to add custom drawings to the notebook
+      6. Upload general files to the notebooks
+      7. Upload STL to the notebooks if time allows
+      8. Upload FBX to the notebooks if time allows
+
+
+      1. Users can collaborate with others
+As a user, I would like to
+         1. Share a notebook through email.
+         2. Share a notebook through a link.
+         3. Share a notebook to another person without an account.
+         4. Control read/write access those who I share the notebook with have
+
+
+         1. Companies can interact with developers
+        As a user, I would like to
+         1. Give feedback to developers
+
+
+
+
+Non-Functional
+         * Intuitive UI - it should be easier for customers to use our tool that it is for them to use existing tools
+         * Fast site loading times (under 1 second)
+         * Handle large usage load 
+         * Handle large number of users
+         * Secure communication line using https
+         * Secure communication line using a direct connection
+         * Developers maintain server backend using Node.js
+         * Developers maintain a secure database using MySQL
+         * Developers maintain a querying mechanic to interact with MySQL database
+         * Developers maintain config file for easy minor tweaks
+         * Developers alter the server through a centralized location
+
+
+________________
+
+
+Design Outline
+
+
+Design decisions and components
+         * The project will be created following the client-server model (diagram below): 
+  
+
+
+
+         * Client
+         * Responsive web application written using a modified MEAN stack. Javascript, JQuery, CSS (we will consider preprocessing), Facebook React and Redux libraries
+         * Will display users their pages, allow users to perform all transforms to pages and engineering notebooks (text edits, image insertions, signatures, legal formatting, sharing, etc), perform client side encryption, and communicate with the back end to coordinate the synchronization of pages to be saved and fetched from the database. 
+         * Architecture of the client will be decoupled as much as possible.  
+         * Will strive to follow MVC (model view controller) pattern. In this pattern, ‘events’ triggered from views will be propagated to the controllers, where business logic will occur and/or update the model.  
+         * Server 
+         * Thin client
+         * Carries out any necessary logic (user auth, determining pages and notebooks specific users have access to, fetch and/or store to the database and/or return data to the POST for specified request from client.
+         * Uses HTTP over SSL
+         * Code written in Node.js, and Ruby
+         * Server API will be built in a restful way so that AJAX calls can be as powerful as possible.
+         * AJAX calls from the client will allow it to update data via POST and GET to the server without users having to reload their pages
+         *          * Database
+         * Stores all models (users, pages, notebooks, corporations, etc)
+         * Uses Firebase
+         * Miscellaneous Details
+         * We will aim to make interaction with the server seamless and non apparent to the user, as the main purpose of the two components is to enable users to log in to our tool from any web browser.
+         * The Login page will interact with the server by using server side authentication.
+         * The page editing page will …
+         * post and fetch pages, notebooks, users, organizations. 
+         * allow users to visually edit pages by adding text, images, links
+         * allow users to specify formatting.
+         * allow users to share page with specified others. 
+
+
+________________
+
+
+Design Issues
+
+
+Functional issues
+
+
+         1. What kind of client will we make?
+         1. Web client
+         2. iOS app
+         3. Android app
+The group decided to make a web client because entering text is the most important feature for our application and the primary text interface for our target user is through a laptop computer rather than through phones or tablets. Web clients fit best for this usage. While the mobility of an app is also a nice feature, it is not as important. However, we would like to create an iOS client if time allows because the ability to add pictures directly to the notebook is a very important feature and is best done with devices that can easily take pictures. While developing our web client, we will also aim to make the UI mobile optimized in order to facilitate the possible creation of an iOS app later on.
+
+
+         1. How will the users create the documents?
+         1. Form-like input
+         2. Text editor-like input
+Our tool is intended to reduce the effort required to format the notebook. In order to accomplish this, having a narrow input field fits with our concept better. It also allows us to store the data in a more simple manner, allowing us to focus on the formatting rather than the UI of the input.
+
+
+         1. How should the pages in the notebook be organized?
+         1. Chronological
+         2. Categories
+         3. Tags
+The pages in the notebook should be primarily organized by time since a key feature of engineering notebooks is seeing the progress of the project. However, the ability to filter pages by certain criteria is also very important for summaries. Therefore, we decided to primarily organize by chronological order, but allow filtering with tags.
+
+
+         1. How should the notebooks be organized in the document?
+         1. List
+         2. Categories
+         3. Tags
+We considered having a filesystem or tagging system for our notebooks. This allows for a more complex system for organizing the notebooks. However, we opted for a more simplistic version that sorts by recently used and recently changed among other things, but controlled by the programmers rather than the users. This is primarily to keep a clean ui and reduce the complexity of the project. For example, notebook applications like OneNote only list notebooks rather than allowing more complicated organization.
+
+
+Email notifications
+
+
+         1. Allow multiple editors to edit the same page?
+         1. Yes, concurrent editing
+         2. No, only one person can have the app open
+         3. No, single editor with a locking system
+We knew allowing concurrent editing to the notebook was relatively important if we wanted to enable people to switch between devices while writing, however, this is a difficult feature to implement, and one that large programs such as Google Drive are just beginning to master. Since this feature is important, but difficult, we looked for a way to make a simpler version. We decided to use a locking mechanism that only allows one editor, but allows the user to switch between devices quickly.
+
+
+Non-functional issues
+
+
+         1. How should we authenticate API requests?
+         1. ​Use JSON Web Tokens
+         2. Use OAuth
+         3. Use Purdue CAS
+         4. Firebase Authentication SDK
+We decided not to authenticate with Purdue CAS because we envision our system being used by other educational institutions and separate companies. A drawback of using a social network OAuth provider is that many people do not want their personal lives to be mixed with their professional lives, so connecting the two could cause friction with our users. Hoverever, employees could use their work google accounts to login instead. Firebase Authentication SDK is already built into firebase and does not require us to implement it ourselves, while still being secure and easy for the user to use, making it an obvious choice. Firebase additionally allows pure email-password for those who do not have work accounts
+
+
+         1. How many pages should the web client have?
+         1. Single-page ui
+         2. Multi-page ui
+  
+
+Single-page websites load HTML once then update the page using AJAX requests. This removes the need to refresh the page every time the user has to update the page, separates the HTML markup and code, and lends itself to having a server API rather than requiring specific pages for every request. 
+Source: https://msdn.microsoft.com/en-us/magazine/dn463786.aspx
+
+
+         1. What language/framework should we use to write our server application?
+         1. Node.js
+         2. Java + Spring
+         3. Ruby on Rails
+The team considered Java + Spring because of our experience with Java and the security of Spring, but overall we didn’t like using it on past applications. We considered Node.js and Ruby on Rails because both are popular, easy to write, and have a large library. We wanted to learn Ruby on Rails, but considering the benefits of having a JavaScript software stack (server-side and client-side run JavaScript) we chose Node.js.
+
+
+         1. Where should we host our server?
+         1. Personal server
+         2. Amazon Web Services (AWS)
+         3. Purdue server
+The team has had experience with AWS before, and it a very stable and scalable platform with many prebuilt web and database systems. However, in order to scale our AWS server we would have to pay. Several of our team members have personal servers that we could host our project on. Scalability would be very expensive and time consuming and if there are other projects running on these servers that could get in the way. In addition, since our personal machines are VPS’s, they provide little flexibility in (backend) OS choice. No one has used the a Purdue VPS before, however Prof. Turkstra has offered to set one up for us. In order to get experience using purdue’s equipment as well as having a potentially more powerful vps and a clean slate to work off of, we choose to go with the Purdue Server
+
+Decision
+
+
+         1. What language/framework should we use to write our web client application?
+         1. Pure javascript
+         2. React
+         3. jQuery
+The group is most comfortable with pure javascript in terms of experience, but it takes time to develop using it. Both React and jQuery increase development speed, but we chose React over jQuery because React because the team felt like it would be very valuable to learn. Additionally, React is apparently easier to port to phones, which is a major positive for our plans to create a phone app in the future. In each of these implementations, the languages used would be HTML, CSS, and Javascript.
+
+
+         1. Which database should we use?
+         1. MySQL
+         2. PostgreSQL
+         3. Firebase
+         4. MongoDB
+We looked at MySQL and PostgreSQL because SQL has a large community with stable tools and standardized format. However, it also requires learning SQL. On the other hand, Firebase and MongoDB are NoSQL and thus is less stable, but they use javascript data structures and thus are easier for our team to understand. Firebase requires basically no setup. Setting up the other databases aren’t particularly difficult, but it’s more work. Also, as a NoSQL database, we don’t have to learn SQL to use the database. While learning SQL was an option, we chose development speed over learning SQL. This decision was also influenced by Firebase’s built-in authentication system.
+
+
+
+
+________________
+
+
+
+
+________________
+
+
+Design Details
+
+
+Class-level design
+
+
+  
+
+
+
+
+
+Company - A company object represents an account for a collection of collaborative users. It contains a unique identifier, a company name, a list of notebooks, and a list of members. A company is able to search its users and notebooks for specific images or text.
+
+
+User - An account for an individual using the service. It contains a unique identifier, a signature for signing notebook pages, and permission list.
+
+
+Notebook - The data object representing an engineering notebook. It contains a unique identifier, the company that created it, the notebook’s name, a list of Users that contributed to it, a list of pages added to it. A notebook is searchable by tags, text, or images. Pages can be added to a Notebook.
+
+
+Page - A page object represents an entry in the engineering notebook. It is created by submitting a new entry through a form. It contains a unique identifier, an author (User), a cosigner (User), a list of Data Entries, and a timestamp. 
+
+
+Query - An object that is used to perform searches on notebooks.
+
+
+Data Entry - A data object representing a contiguous part of the page. It is created by the client and contains a timestamp and flag to determine if it is crossed out or not.
+
+
+Text Entry - A data object containing text data and formatting data.
+
+
+Image Entry - A data object containing image data, a caption, and the crop parameters.
+
+
+Formatting - A data object that will be sent with the text entry that will contain the formatting options for the text, including strikeout, underline, and bolding.
+________________
+
+
+Sequence diagrams
+
+
+Overview
+ Event Sequence Diagram.png 
+
+
+
+
+
+________________
+
+
+Start or continue work on a page
+
+
+  
+________________
+
+Update page
+
+
+  
+________________
+
+Publish page to notebook
+
+
+  
+
+
+
+________________
+
+
+Activity diagrams
