@@ -6,7 +6,7 @@ Killian Le Clainche, Jarett Lee, Aaron Neustedter, Chad Stucky, Ryan Sullivan, M
 
 
 Sprint Overview
-During this sprint our team will get the most basic features of the project running. The selected user stories which will lay a solid foundation for both the frontend and backend, implementing the core features of our application. These core frontend features include page/notebook creation and viewing, signing of page/notebooks, data creation UI, TODO FINISH LEFT OFF ON TASK 4 for frontend, login and text submission. The backend team will get the server up and running, connect it to firebase,  
+During this sprint our team will get the most basic features of the project running. The selected user stories which will lay a solid foundation for both the frontend and backend, implementing the core features of our application. These core features include notebook creation and viewing, page signing, entry submission ui, login and text submission. The core developer features that have to be completed include production and development server environment setup and database setup.
 
 
 Scrum Master: Aaron Neustedter
@@ -71,6 +71,11 @@ Acceptance Criteria
 * From the ‘page selection’ view, clicking ‘new page’ will bring the user the ‘page editing’ view. Going back to the ‘page selection’ view should show a new page in the list of pages.
 * From the ‘page selection’ view, clicking an existing page will bring the user the ‘page’ view.
 * From the ‘page selection’ view, clicking ‘new page’ will send a message to the server to update the database to contain a new notebook, verified by checking the database.
+
+
+________________
+
+
 
 
 User Story #2
@@ -208,6 +213,11 @@ Acceptance Criteria
 * From the ‘edit entry’ view, clicking ‘add text’ will add another text input component and update the local entry data.
 
 
+________________
+
+
+
+
 User Story #6
 As a user, I would like to add an image to a data entry
 
@@ -317,6 +327,11 @@ Acceptance Criteria
 * Given I can see the GUI for publishing. When I click submit, I should expect the server will process the page into a final state and return the page to the client.
 
 
+________________
+
+
+
+
 User Story #9
 As a manager, I would like to co-sign pages
 
@@ -382,6 +397,11 @@ As a developer, I would like to have a working database
 	Mehul
 	
 
+________________
+
+
+
+
 Acceptance Criteria
 * When a developer accesses firebase, he can view and edit all appropriate settings
 * When a developer accesses the test database, he can manipulate values and change them as needed
@@ -417,6 +437,11 @@ As a developer, I would like separate development and production spaces
 Acceptance Criteria
 * When the development is released, the production version performs the same as the development without altering the database
 * Both development and production branches are clearly marked
+
+
+________________
+
+
 
 
 User Story #12
@@ -478,6 +503,11 @@ Acceptance Criteria
 * When I visit the web address, loading takes less than 2 seconds
 
 
+________________
+
+
+
+
 User Story #14
 As a manager, I would like to prevent notebook tampering
 
@@ -487,9 +517,9 @@ As a manager, I would like to prevent notebook tampering
 	Estimated Time
 	Owner
 	1
-	Determine when to prevent further manipulation based on the User’s work day
+	Determine when to prevent further manipulation based on the User’s work day - backend
 	3hr
-	Ryan
+	Mehul
 	2
 	Create UI to allow engineers to cross out previous entries
 	2hr
@@ -540,6 +570,11 @@ As a user, I would like to know the timestamp of entries
 	Mehul
 	
 
+________________
+
+
+
+
 Acceptance Criteria
 * On the entry creation view, the user should see an accurate entry creation time
 * On the page view, the user should see an accurate entry creation time
@@ -556,11 +591,11 @@ As a user, I would like to query notebooks by timestamp
 	1
 	Create client UI for querying notebook metadata
 	4hr
-	Ryan
+	Killian
 	2
 	Create user data parsing method
 	4hr
-	Ryan
+	Killian
 	3
 	Create metadata search for notebooks
 	2hr
@@ -573,7 +608,7 @@ Acceptance Criteria
 
 
 User Story #17
-As a user, I would like to prevent notebook tampering
+As a user, I would like to export the notebooks as PDFs
 
 
 #
@@ -581,20 +616,50 @@ As a user, I would like to prevent notebook tampering
 	Estimated Time
 	Owner
 	1
-	Prevent further notebook edit requests from the server
+	Collection of rendered pages on backend
 	4hr
 	Mehul
 	2
-	Modify database rules to disallow changing the database after a date
-	4hr
+	Compilation into one PDF and dispatches via encrypted line
+	5hr
 	Mehul
 	
 
 Acceptance Criteria
-* Given it is the day after the notebook was edited, an edit request from the client to the server will not succeed
-* Given it is the day after the notebook was edited, an edit request from the server to the database will not succeed
+* Given the notebook is finished, when I click compile notebook to PDF I should expect a PDF transferred via a secure line to me.
+* Given the compile notebook button is clicked, I should expect the server to process all pages into one large PDF with all collected data contained inside.
 
 
+________________
+
+
+
+
+User Story #18
+As a user, I would like to tag notebooks
+
+
+#
+	Task Description
+	Estimated Time
+	Owner
+	1
+	Widget into submission of page with unique tag additions
+	2hr
+	Killian
+	2
+	Widget into edit notebook with unique tag additions
+	1hr
+	Killian
+	3
+	Updating page into database with proper tags
+	2hr
+	Mehul
+	
+
+Acceptance Criteria
+* Given the publish GUI is open, when I add unique tags into the proper field, I should expect the page to now have these tags in the database.
+* Given the edit notebook GUI is open, when I add unique tags in the proper field, I should expect the notebook to now have these tags in the database.
 
 
 Remaining Backlog
