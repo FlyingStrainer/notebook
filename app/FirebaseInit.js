@@ -23,15 +23,18 @@ var database = firebase.database();
 //Notebook object currently consists of:
 //	TITLE
 //	UID
-//
+//	USERS ->this will be an array of user objects
 //
 //
 //
 
-function createNotebook(title, uid) {
+
+
+function createNotebook(title, uid, users) {
 	var notebook = {
-		title: title
-		uid: uid
+		title: title;
+		uid: uid;
+		users: users
 	};
 	
 	var newKey = firebase.database().ref().child('posts').push().key;
@@ -48,7 +51,7 @@ function convertToJsObj(json) {
 	return JSON.parse(json);
 }
 
-function postNotebookObject(notebook) {
+function postNotebookObject(notebook, users) {
 	var now = new Date();
-	createNotebook(notebook.title, now.getTime());
+	createNotebook(notebook.title, now.getTime(), users);
 }
