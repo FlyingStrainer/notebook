@@ -19,4 +19,36 @@ firebase.initializeApp(config);
   
 var database = firebase.database();
 
+
+//Notebook object currently consists of:
+//	TITLE
+//	UID
+//
+//
+//
+//
+
 function createNotebook(title, uid) {
+	var notebook = {
+		title: title
+		uid: uid
+	};
+	
+	var newKey = firebase.database().ref().child('posts').push().key;
+	
+	var updates = {};
+	updates['/posts/' + newPostKey] = postData;
+	updates['/user-posts/' + uid + '/' + newPostKey] = postData;
+	
+	return firebase.database().ref().update(updates);
+	
+}
+
+function convertToJsObj(json) {
+	return JSON.parse(json);
+}
+
+function postNotebookObject(notebook) {
+	var now = new Date();
+	createNotebook(notebook.title, now.getTime());
+}
