@@ -16,7 +16,7 @@ var config = {
     messagingSenderId: "789865238756"
   };
 firebase.initializeApp(config);
-  
+
 var database = firebase.database();
 
 
@@ -29,6 +29,11 @@ var database = firebase.database();
 //
 
 
+function createUser(username, dateAdded, usrID) {
+  var user = {username: username, initDate: dateAdded}, userID: usrID;
+  return user;
+}
+
 
 function createNotebook(title, uid, users) {
 	var notebook = {
@@ -36,15 +41,15 @@ function createNotebook(title, uid, users) {
 		uid: uid;
 		users: users
 	};
-	
+
 	var newKey = firebase.database().ref().child('posts').push().key;
-	
+
 	var updates = {};
 	updates['/posts/' + newPostKey] = postData;
 	updates['/user-posts/' + uid + '/' + newPostKey] = postData;
-	
+
 	return firebase.database().ref().update(updates);
-	
+
 }
 
 function convertToJsObj(json) {
