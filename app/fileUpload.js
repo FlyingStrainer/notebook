@@ -22,6 +22,8 @@ var file = testimage.jpg
 // Create the file metadata
 var metadata = {
   contentType: 'image/jpeg'
+  caption: 'Placeholder caption'
+  position: 'x,y'
 };
 
 // Upload file and metadata to the object 'images/mountains.jpg'
