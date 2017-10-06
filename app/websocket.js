@@ -1,53 +1,32 @@
 
 var WebSocketServer = require("ws").Server;
-var http = require("http");
-var express = require("express");
-// var bodyParser = require('body-parser');
-var port = process.env.PORT || 5000;
 
+module.exports = function addWSS(server) {
+  var wss = new WebSocketServer({server: server});
+  wss.on("connection", function (ws) {
+    // const location = url.parse(req.url, true);
+    var userId;
 
-var app = express();
-// app.use(bodyParser.json());
-// app.use(express.static(__dirname + "/public"));
-// app.get('/someGetRequest', function(req, res, next) {
-//    console.log('receiving get request');
-// });
-// app.post('/somePostRequest', function(req, res, next) {
-//    console.log('receiving post request');
-//    res.setHeader('Content-Type', 'text/plain');
-//    res.end(JSON.stringify(req.body, null, 2));
-// });
-var server = app.listen(80); //port 80 need to run as root
+    console.info("websocket connection open");
 
-console.log("app listening on %d ", 80);
+    var timestamp = new Date().getTime();
+    userId = timestamp;
 
-//var server = http.createServer(app);
-//server.listen(port);
+    ws.send(JSON.stringify({msgType:"onOpenConnection", msg:{connectionId:timestamp}}));
 
-console.log("http server listening on %d", port);
+    ws.on("message", function incoming(data, flags) {
+      var clientMsg = data;
+      console.log('received: %s', clientMsg);
 
-var userId;
-var wss = new WebSocketServer({server: server});
-wss.on("connection", function (ws) {
-   // const location = url.parse(req.url, true);
+      ws.send(JSON.stringify({msg:{connectionId:userId}}));
+    });
 
-   console.info("websocket connection open");
-
-   var timestamp = new Date().getTime();
-   userId = timestamp;
-
-   ws.send(JSON.stringify({msgType:"onOpenConnection", msg:{connectionId:timestamp}}));
-
-   ws.on("message", function incoming(data, flags) {
-       var clientMsg = data;
-       console.log('received: %s', clientMsg);
-
-       ws.send(JSON.stringify({msg:{connectionId:userId}}));
-   });
-
-   ws.on("close", function () {
+    ws.on("close", function () {
       console.log("websocket connection close");
-   });
-});
+    });
+  });
 
-console.log("websocket server created");
+  console.log("websocket server created");
+
+  return wss;
+}
