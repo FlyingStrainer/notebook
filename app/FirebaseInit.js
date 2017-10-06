@@ -25,7 +25,7 @@ var serviceAccount = require("./serviceAccountKey.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://<DATABASE_NAME>.firebaseio.com"
+  databaseURL: "https://vent-91586.firebaseio.com"
 });
 
 //Notebook object currently consists of:
@@ -56,8 +56,17 @@ function createNotebook(title, uid, users) {
 	updates['/posts/' + newPostKey] = postData;
 	updates['/user-posts/' + uid + '/' + newPostKey] = postData;
 
-	return firebase.database().ref().update(updates);
+	return admin.database().ref().update(updates);
 
+}
+
+function addNotebookEntry(user_hash, notebook_uuid, entry{uuid, text, image, caption, date_created, author_id}/*Is this the proper way to add an array?*/){
+	//to add
+}
+
+function getNotebooks(user_hash){
+	//toadd
+	cb(/*stuff to return*/);
 }
 
 function convertToJsObj(json) {
