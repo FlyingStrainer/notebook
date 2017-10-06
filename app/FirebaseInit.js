@@ -5,19 +5,16 @@
 //Author: Mehul Patel
 //Date Created: 10/1/2017
 //------------------------------------
-var firebase = require('firebase-admin')
+var admin = require("firebase-admin");
 
-var config = {
-    apiKey: "AIzaSyBuBYxnmn16RZYxJs-X_xOBbbft2VIkBPg",
-    authDomain: "vent-91586.firebaseapp.com",
-    databaseURL: "https://vent-91586.firebaseio.com",
-    projectId: "vent-91586",
-    storageBucket: "vent-91586.appspot.com",
-    messagingSenderId: "789865238756"
-  };
-firebase.initializeApp(config);
+var serviceAccount = require("privkey.json");
 
-var database = firebase.database();
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://vent-91586.firebaseio.com"
+});
+
+var database = admin.database();
 
 
 //Notebook object currently consists of:
@@ -27,28 +24,34 @@ var database = firebase.database();
 //
 //
 //
+console.log("{1}");
 
+createNotebook("test", "1234", ["john", "Jane"]);
+console.log("{6}");
 
 function createUser(username, dateAdded, usrID) {
-  var user = {username: username, initDate: dateAdded}, userID: usrID;
+  var user = {username: username, initDate: dateAdded, userID: usrID};
   return user;
 }
 
 
-function createNotebook(title, uid, users) {
+function createNotebook(title, users) {
 	var notebook = {
-		title: title;
-		uid: uid;
+		title: title,
+		uid: "",
 		users: users
 	};
-
-	var newKey = firebase.database().ref().child('posts').push().key;
-
+	console.log("{2}");
+	var newKey = admin.database().ref().child('posts').push().key;
+	console.log("{3}");
 	var updates = {};
-	updates['/posts/' + newPostKey] = postData;
-	updates['/user-posts/' + uid + '/' + newPostKey] = postData;
+	console.log("{4}");
+	notebook.uid = newKey;
+	updates['/Notebooks/' + newKey] = notebook;
+	console.log("{5}");
+	//updates['/user-posts/' + uid + '/' + newKey] = notebook;
 
-	return firebase.database().ref().update(updates);
+	return admin.database().ref().update(updates);
 
 }
 

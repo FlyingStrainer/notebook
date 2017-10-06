@@ -17,7 +17,7 @@ doc.pipe(fs.createWriteStream('output.pdf'));
 doc.fontSize(12)
    .text('Text Text Text', 100, 500);
 
-doc.image('test.jpg',100, 100, {width: 300});
+doc.image('testimage.jpg',100, 100, {width: 300});
 
 
 
