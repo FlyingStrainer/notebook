@@ -6,7 +6,7 @@
     "firebase": "^4.4.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
-    "react-scripts": "1.0.13"
+    "react-scripts": "1.0.13",
     "fs": "0.0.1-security",
     "pdfkit": "^0.8.3"
   },
