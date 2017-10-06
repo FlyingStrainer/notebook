@@ -25,3 +25,7 @@ yarn-error.log*
 
 #keys
 serviceAccountKey.json
+
+#package locks
+package-lock.json
+
