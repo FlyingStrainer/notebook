@@ -16,7 +16,7 @@
     "ws": "^3.2.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "sudo $(which node) websocket.js",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
