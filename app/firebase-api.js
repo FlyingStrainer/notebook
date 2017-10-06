@@ -19,7 +19,7 @@ router.use(bodyParser.json());
 //writing
 router.post('/savenotebook', (req, res) => {
   const {user_hash, name} = req.body;
-  FirebaseInit.creatNotebook(name, generatedUUID, user_hash), error => {
+  FirebaseInit.createNotebook(name, generatedUUID, user_hash), error => {
     if (error) {
       res.sendStatus(500);
       // Log error to external service, e.g. Sentry
