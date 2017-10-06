@@ -30,7 +30,7 @@ router.post('/savenotebook', (req, res) => {
 });
 
 router.post('/addEntry', (req, res) => {
-  ({user_hash, notebook_uuid, nodebooks /*{ entry { uuid, text, image, caption, date_created, author_id}}*/} = req.body);
+  ({user_hash, notebook_uuid, entry} = req.body);
   FirebaseInit.addNotebookEntry(entry, notebook_uuid, user_hash), error => {
     if (error) {
       res.sendStatus(500);
@@ -50,8 +50,8 @@ router.post('/test', (req, res) => {
 //reading
 router.get('/getnotebooks', async (req, res) => {
   const {user_hash} = req.query;
-  const wordsSnapshot = FirebaseInit.getNotebooks(user_hash)//old: await db.ref(`words/${userId}`).once('value');
-  const response = Object.assign({}, wordsSnapshot.val());
+  const notebookSnapshot = FirebaseInit.getNotebooks(user_hash)//old: await db.ref(`words/${userId}`).once('value');
+  const response = Object.assign({}, notebookSnapshot.val()); //This is done so that if the user does not exist, a empty obj is returned
   res.send(response);
 });
 

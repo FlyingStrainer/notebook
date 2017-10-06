@@ -67,6 +67,7 @@ module.exports = {
 
 	getNotebooks: function (user_hash){
 		//toadd
+//		What the response should look like (Return in the callback)
 //		response: {
 //			"user_hash": "",
 //			"notebooks": [ {
