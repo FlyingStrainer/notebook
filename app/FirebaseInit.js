@@ -5,23 +5,16 @@
 //Author: Mehul Patel
 //Date Created: 10/1/2017
 //------------------------------------
-
-//Old firebase stuff, replacing with firebase admin sdk
-//var firebase = require('firebase-admin')
-//
-//var config = {
-//    apiKey: "",
-//    authDomain: "",
-//    databaseURL: "",
-//    projectId: "",
-//    storageBucket: "",
-//    messagingSenderId: ""
-//  };
-//firebase.initializeApp(config);
-//
-//var database = firebase.database();
 var admin = require("firebase-admin");
 var serviceAccount = require("./serviceAccountKey.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://vent-91586.firebaseio.com"
+});
+
+var database = admin.database();
+
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -35,6 +28,8 @@ admin.initializeApp({
 //
 //
 //
+console.log("{1}");
+
 
 module.exports = {
 	createUser: function (username, dateAdded, usrID) {
@@ -54,38 +49,32 @@ module.exports = {
 		var updates = {};
 		updates['/posts/' + newPostKey] = postData;
 		updates['/user-posts/' + uid + '/' + newPostKey] = postData;
-
+    
 		return admin.database().ref().update(updates);
-		//can we do returns instead of cb() in an async envirments
+		//can we do returns instead of cb() in an async enviroments?
+ }
+ createNotebook: function(title, users) {
+	var notebook = {
+		title: title,
+		uid: "",
+		users: users
+	};
+  	console.log("{2}");
+	  var newKey = admin.database().ref().child('posts').push().key;
+	  console.log("{3}");
+	  var updates = {};
+	  console.log("{4}");
+	  notebook.uid = newKey;
+	  updates['/Notebooks/' + newKey] = notebook;
+	  console.log("{5}");
+	  //updates['/user-posts/' + uid + '/' + newKey] = notebook;
 
+	  return admin.database().ref().update(updates);
 	},
 
 	addNotebookEntry: function (user_hash, notebook_uuid, entry){
 		//entry consists of "entry": { uuid, text, image, caption, date_created, author_id }
 		//to add
-	},
-
-	getNotebooks: function (user_hash){
-		//toadd
-//		What the response should look like (Return in the callback)
-//		response: {
-//			"user_hash": "",
-//			"notebooks": [ {
-//				"uuid": "",
-//				"name": "",
-//				"author": "",
-//				"data_entries": [ {
-///					"uuid": "",
-//					"text": "",
-///					"image": "",
-///					"caption": "",
-//					"date_created": "",
-///					"author_id": ""
-//				}, ]	
-//		}, ]	
-//		}
-
-		cb(/*stuff to return*/);
 	},
 
 	convertToJsObj: function (json) {
