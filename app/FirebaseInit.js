@@ -20,7 +20,6 @@
 //
 //var database = firebase.database();
 var admin = require("firebase-admin");
-
 var serviceAccount = require("./serviceAccountKey.json");
 
 admin.initializeApp({
@@ -36,44 +35,46 @@ admin.initializeApp({
 //
 //
 
+module.exports = {
+	createUser: function (username, dateAdded, usrID) {
+	  var user = {username: username, initDate: dateAdded}, userID: usrID;
+	  return user;
+	},
 
-function createUser(username, dateAdded, usrID) {
-  var user = {username: username, initDate: dateAdded}, userID: usrID;
-  return user;
-}
 
+	createNotebook: function (title, uid, users) {
+		var notebook = {
+			title: title;
+			uid: uid;
+			users: users
+		};
 
-function createNotebook(title, uid, users) {
-	var notebook = {
-		title: title;
-		uid: uid;
-		users: users
-	};
+		var newKey = firebase.database().ref().child('posts').push().key;
 
-	var newKey = firebase.database().ref().child('posts').push().key;
+		var updates = {};
+		updates['/posts/' + newPostKey] = postData;
+		updates['/user-posts/' + uid + '/' + newPostKey] = postData;
 
-	var updates = {};
-	updates['/posts/' + newPostKey] = postData;
-	updates['/user-posts/' + uid + '/' + newPostKey] = postData;
+		return admin.database().ref().update(updates);
 
-	return admin.database().ref().update(updates);
+	},
 
-}
+	addNotebookEntry: function (user_hash, notebook_uuid, entry{uuid, text, image, caption, date_created, author_id}/*Is this the proper way to add an array?*/){
+		//to add
+	},
 
-function addNotebookEntry(user_hash, notebook_uuid, entry{uuid, text, image, caption, date_created, author_id}/*Is this the proper way to add an array?*/){
-	//to add
-}
+	getNotebooks: function (user_hash){
+		//toadd
+		cb(/*stuff to return*/);
+	},
 
-function getNotebooks(user_hash){
-	//toadd
-	cb(/*stuff to return*/);
-}
+	convertToJsObj: function (json) {
+		return JSON.parse(json);
+	},
 
-function convertToJsObj(json) {
-	return JSON.parse(json);
-}
+	postNotebookObject: function (notebook, users) {
+		var now = new Date();
+		createNotebook(notebook.title, now.getTime(), users);
+	}
 
-function postNotebookObject(notebook, users) {
-	var now = new Date();
-	createNotebook(notebook.title, now.getTime(), users);
-}
+};
