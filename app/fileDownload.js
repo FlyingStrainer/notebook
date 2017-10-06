@@ -1,3 +1,5 @@
+var admin = require("firebase-admin");
+
 // Create a reference to the file we want to download
 var imageRef = storageRef.child('images/testimage.jpg');
 

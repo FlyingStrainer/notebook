@@ -1,4 +1,4 @@
-var firebase = require("firebase");
+var firebase = require("firebase-admin");
 
 //Set the configuration for your app
 var config = {
