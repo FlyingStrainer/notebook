@@ -1,7 +1,8 @@
 // Dependencies
 const admin = require('firebase-admin');
 const express = require('express');
-var FirebaseInit = require('./Firebaseinit.js');
+const bodyParser = require('body-parser');
+var FirebaseInit = require('./FirebaseInit.js');
 
 // Setup
 const db = admin.database();
@@ -26,7 +27,7 @@ router.post('/savenotebook', (req, res) => {
 });
 
 router.post('/addEntry', (req, res) => {
-  const {user_hash, notebook_uuid, entry{uuid, text, image, caption, date_created, author_id}} = req.body;
+  ({user_hash, notebook_uuid, nodebooks /*{ entry { uuid, text, image, caption, date_created, author_id}}*/} = req.body);
   FirebaseInit.addNotebookEntry(entry, notebook_uuid, user_hash), error => {
     if (error) {
       res.sendStatus(500);

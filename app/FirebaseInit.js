@@ -1,6 +1,7 @@
 //-----------FirebaseInit.js----------
 //This file creates the initial Notebook database structure
 //Can be used to add notebooks in the future
+
 //Author: Mehul Patel
 //Date Created: 10/1/2017
 //------------------------------------
@@ -37,15 +38,15 @@ admin.initializeApp({
 
 module.exports = {
 	createUser: function (username, dateAdded, usrID) {
-	  var user = {username: username, initDate: dateAdded}, userID: usrID;
+	  var user = {username: username, initDate: dateAdded, userID: usrID};
 	  return user;
 	},
 
 
 	createNotebook: function (title, uid, users) {
 		var notebook = {
-			title: title;
-			uid: uid;
+			title: title,
+			uid: uid,
 			users: users
 		};
 
@@ -59,7 +60,7 @@ module.exports = {
 
 	},
 
-	addNotebookEntry: function (user_hash, notebook_uuid, entry{uuid, text, image, caption, date_created, author_id}/*Is this the proper way to add an array?*/){
+	addNotebookEntry: function (user_hash, notebook_uuid, notebooks){
 		//to add
 	},
 
