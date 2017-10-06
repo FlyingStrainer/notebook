@@ -47,6 +47,19 @@ router.post('/test', (req, res) => {
   res.end(JSON.stringify(req.body, null, 2));
 });
 
+//delete entry
+router.post('/deleteEntry', (req, res) => {
+  const {user_hash, notebook_uuid, entry_uuid} = req.body;
+  FirebaseInit.deleteentry(user_hash, notebook_uuid, entry_uuid), error => {
+    if (error) {
+      res.sendStatus(500);
+      //log error to extern
+    } else {
+      res.sendStatus(201);
+    }
+  };
+});
+
 //reading
 router.get('/getnotebooks', async (req, res) => {
   const {user_hash} = req.query;
