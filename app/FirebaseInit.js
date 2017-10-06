@@ -6,7 +6,7 @@
 //Date Created: 10/1/2017
 //------------------------------------
 var admin = require("firebase-admin");
-var serviceAccount = require("./privKey.json");
+var serviceAccount = require("./serviceAccountKey.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
