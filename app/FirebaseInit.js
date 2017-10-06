@@ -6,7 +6,7 @@
 //Date Created: 10/1/2017
 //------------------------------------
 var admin = require("firebase-admin");
-var serviceAccount = require("./serviceAccountKey.json");
+var serviceAccount = require("./privKey.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -33,7 +33,6 @@ module.exports = {
 			data_entries: ""
 		};
 		var updates = {};
-		notebook.uid = newKey;
 		updates['/Notebooks/' + newKey] = notebook;
 		return admin.database().ref().update(updates);
 	},
@@ -58,10 +57,10 @@ module.exports = {
 			callback(fbdatasnap.val());
 		  });
 	},
-
-
-
-
-
-
+	
+	deleteentry: function (user_hash, notebookID, userID) {
+		admin.database().ref().child('Notebooks').child(nbid).child(data_entries).child(eid).remove();
+	}
 };
+
+
