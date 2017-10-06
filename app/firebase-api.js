@@ -14,33 +14,26 @@ router.set('port', 3000);
 // Middleware
 router.use(bodyParser.json());
 
-const websocket = require('websocket')(router);
+const websocket = require('./websocket.js')(router);
 
 // API
 
 //writing
 router.post('/savenotebook', (req, res) => {
+  console.log('post request /savenotebook');
   const {user_hash, name} = req.body;
-  FirebaseInit.createNotebook(name, generatedUUID, user_hash), error => {
-    if (error) {
-      res.sendStatus(500);
-      // Log error to external service, e.g. Sentry
-    } else {
-      res.sendStatus(201);
-    }
-  };
+  var generatedUUID = new Date().getTime();
+  // FirebaseInit.savenotebook(name, generatedUUID, user_hash), error => {
+  var v = FirebaseInit.savenotebook(name, user_hash);
+
+  // res.end(JSON.stringify(v, null, 2));
+  res.sendStatus(201);
 });
 
 router.post('/addEntry', (req, res) => {
   ({user_hash, notebook_uuid, entry} = req.body);
-  FirebaseInit.addNotebookEntry(entry, notebook_uuid, user_hash), error => {
-    if (error) {
-      res.sendStatus(500);
-      //log error to extern service
-    }else {
-      res.sendStatus(201);
-    }
-  };
+  var value = FirebaseInit.addentry(user_hash, notebook_uuid, entry);
+  res.sendStatus(201);
 });
 
 router.post('/test', (req, res) => {
@@ -50,16 +43,10 @@ router.post('/test', (req, res) => {
 });
 
 //delete entry
-router.post('/deleteEntry', (req, res) => {
+router.post('/deleteentry', (req, res) => {
   const {user_hash, notebook_uuid, entry_uuid} = req.body;
-  FirebaseInit.deleteentry(user_hash, notebook_uuid, entry_uuid), error => {
-    if (error) {
-      res.sendStatus(500);
-      //log error to extern
-    } else {
-      res.sendStatus(201);
-    }
-  };
+  FirebaseInit.deleteentry(user_hash, notebook_uuid, entry_uuid);
+  res.sendStatus(201);
 });
 
 //reading

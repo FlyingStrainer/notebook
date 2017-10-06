@@ -24,12 +24,12 @@ module.exports = {
 	},
 
 
-	savenotebook: function (pName) {
+	savenotebook: function (pName, user_hash) {
 		var newKey = admin.database().ref().child('posts').push().key;
 		var notebook = {
 			uuid: newKey,
 			name: pName,
-			author: "Current User",
+			author: user_hash,
 			data_entries: ""
 		};
 		var updates = {};
@@ -37,15 +37,12 @@ module.exports = {
 		return admin.database().ref().update(updates);
 	},
 
-	addentry: function (user_hash, notebook_uuid, pText, pImage, pCaption, pDateCreated, pAuthorID){
+	// addentry: function (user_hash, notebook_uuid, pText, pImage, pCaption, pDateCreated, pAuthorID){
+	addentry: function (user_hash, notebook_uuid, entry){
 		var newKey = admin.database().ref().child('posts').push().key;
 		var notebookEntry = {
-			uuid: key,
-			text: pText,
-			image: pImage,
-			caption: pCaption,
-			date_created: pDateCreated,
-			author_id:pAuthorID
+			uuid: newKey,
+			entry: entry,
 		};
 		var updates = {};
 		updates['/Notebooks/' + notebook_uuid + '/data_entries/' + newKey] = notebookEntry;
@@ -57,10 +54,8 @@ module.exports = {
 			callback(fbdatasnap.val());
 		  });
 	},
-	
-	deleteentry: function (user_hash, notebookID, userID) {
-		admin.database().ref().child('Notebooks').child(nbid).child(data_entries).child(eid).remove();
+
+	deleteentry: function (user_hash, notebookID, eid) {
+		admin.database().ref().child('Notebooks').child(notebookID).child('data_entries').child(eid).remove();
 	}
 };
-
-
