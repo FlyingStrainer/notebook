@@ -50,9 +50,11 @@ router.post('/test', (req, res) => {
 //reading
 router.get('/getnotebooks', async (req, res) => {
   const {user_hash} = req.query;
-  const notebookSnapshot = FirebaseInit.getNotebooks(user_hash)//old: await db.ref(`words/${userId}`).once('value');
-  const response = Object.assign({}, notebookSnapshot.val()); //This is done so that if the user does not exist, a empty obj is returned
-  res.send(response);
+  FirebaseInit.getNotebooks(user_hash, function (snapshot) {
+    const response = Object.assign({}, snapshot.val()); //This is done so that if the user does not exist, a empty obj is returned
+    res.send(response);
+  });//old: await db.ref(`words/${userId}`).once('value');
+
 });
 
 // Listen for requests
