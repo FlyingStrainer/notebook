@@ -6,7 +6,10 @@ var FirebaseInit = require('./FirebaseInit.js');
 
 // Setup
 const db = admin.database();
-const router = express.Router();
+const router = express();
+
+// Define the port to run on
+router.set('port', 3000);
 
 // Middleware
 router.use(bodyParser.json());
@@ -38,7 +41,11 @@ router.post('/addEntry', (req, res) => {
   };
 });
 
-
+router.post('/test', (req, res) => {
+  res.setHeader('Content-Type', 'text/plain');
+  res.write('you posted:\n');
+  res.end(JSON.stringify(req.body, null, 2));
+});
 
 //reading
 router.get('/getnotebooks', async (req, res) => {
@@ -46,4 +53,10 @@ router.get('/getnotebooks', async (req, res) => {
   const wordsSnapshot = FirebaseInit.getNotebooks(user_hash)//old: await db.ref(`words/${userId}`).once('value');
   const response = Object.assign({}, wordsSnapshot.val());
   res.send(response);
+});
+
+// Listen for requests
+var server = router.listen(router.get('port'), function() {
+  var port = server.address().port;
+  console.log('Magic happens on port ' + port);
 });
