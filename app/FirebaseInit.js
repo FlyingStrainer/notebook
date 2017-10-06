@@ -49,23 +49,41 @@ module.exports = {
 			uid: uid,
 			users: users
 		};
-
+		//need to generate new uid
 		var newKey = firebase.database().ref().child('posts').push().key;
-
 		var updates = {};
 		updates['/posts/' + newPostKey] = postData;
 		updates['/user-posts/' + uid + '/' + newPostKey] = postData;
 
 		return admin.database().ref().update(updates);
+		//can we do returns instead of cb() in an async envirments
 
 	},
 
-	addNotebookEntry: function (user_hash, notebook_uuid, notebooks){
+	addNotebookEntry: function (user_hash, notebook_uuid, entry){
+		//entry consists of "entry": { uuid, text, image, caption, date_created, author_id }
 		//to add
 	},
 
 	getNotebooks: function (user_hash){
 		//toadd
+//		response: {
+//			"user_hash": "",
+//			"notebooks": [ {
+//				"uuid": "",
+//				"name": "",
+//				"author": "",
+//				"data_entries": [ {
+///					"uuid": "",
+//					"text": "",
+///					"image": "",
+///					"caption": "",
+//					"date_created": "",
+///					"author_id": ""
+//				}, ]	
+//		}, ]	
+//		}
+
 		cb(/*stuff to return*/);
 	},
 
