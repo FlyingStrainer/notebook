@@ -17,12 +17,12 @@ var app = express();
 //    res.setHeader('Content-Type', 'text/plain');
 //    res.end(JSON.stringify(req.body, null, 2));
 // });
-app.listen(80); //port 80 need to run as root
+var server = app.listen(80); //port 80 need to run as root
 
 console.log("app listening on %d ", 80);
 
-var server = http.createServer(app);
-server.listen(port);
+//var server = http.createServer(app);
+//server.listen(port);
 
 console.log("http server listening on %d", port);
 
