@@ -1,4 +1,3 @@
-
 var WebSocketServer = require("ws").Server;
 
 module.exports = function addWSS(server) {
