@@ -18,12 +18,12 @@ module.exports = function addWSS(server) {
       console.log('received: %s', clientMsg);
 
       ws.send(JSON.stringify({msg:{connectionId:userId}}));
-    }); 
+    });
 
     ws.on("close", function () {
       console.log("websocket connection close");
-    }); 
-  }); 
+    });
+  });
 
   console.log("websocket server created");
 
