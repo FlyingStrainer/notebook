@@ -1,5 +1,8 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
+# firebase
+src/fire.js
+
 # dependencies
 /node_modules
 
@@ -19,3 +22,10 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+#keys
+serviceAccountKey.json
+
+#package locks
+package-lock.json
+
