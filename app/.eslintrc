@@ -6,7 +6,20 @@
     "jest": true
   },
   "rules": {
-    "react/jsx-filename-extension": 0,
-    "object-curly-spacing": 0
+    "react/jsx-filename-extension": "off",
+    "object-curly-spacing": "off",
+    "vars-on-top": "off",
+    "no-console": "off",
+    "prefer-arrow-callback": [
+      "error",
+      {
+        "allowNamedFunctions": true,
+        "allowUnboundThis": true
+      }
+    ],
+    "max-len": ["warn", 80],
+    "no-unused-vars": "warn",
+    "no-param-reassign": ["warn", { "props": true }],
+    "no-use-before-define": "warn"
   }
 }
