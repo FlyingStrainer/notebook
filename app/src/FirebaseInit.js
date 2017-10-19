@@ -1,66 +1,75 @@
-//-----------FirebaseInit.js----------
-//This file creates the initial Notebook database structure
-//Can be used to add notebooks in the future
+// -----------FirebaseInit.js----------
+// This file creates the initial Notebook database structure
+// Can be used to add notebooks in the future
 
-//Author: Mehul Patel
-//Date Created: 10/1/2017
+// Author: Mehul Patel
+// Date Created: 10/1/2017
 //------------------------------------
-var admin = require("firebase-admin");
-var serviceAccount = require("./serviceAccountKey.json");
+
+/*
+eslint import/no-unresolved: [2, {
+  ignore: ['\./serviceAccountKey.json$']
+}]
+*/
+
+const admin = require('firebase-admin');
+const serviceAccount = require('./serviceAccountKey.json');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://vent-91586.firebaseio.com"
+  databaseURL: 'https://vent-91586.firebaseio.com',
 });
 
-var database = admin.database();
-
-
+// const database = admin.database();
 
 module.exports = {
-	createUser: function (username, dateAdded, usrID) {
-	  var user = {username: username, initDate: dateAdded, userID: usrID};
-	  return user;
-	},
+  createUser(username, dateAdded, usrId) {
+    const user = {username, initDate: dateAdded, userId: usrId};
+    return user;
+  },
 
 
-	savenotebook: function (pName) {
-		var newKey = admin.database().ref().child('posts').push().key;
-		var notebook = {
-			uuid: newKey,
-			name: pName,
-			author: "Current User",
-			data_entries: ""
-		};
-		var updates = {};
-		updates['/Notebooks/' + newKey] = notebook;
-		return admin.database().ref().update(updates);
-	},
+  saveNotebook(pName) {
+    const newKey = admin.database().ref().child('posts').push().key;
+    const notebook = {
+      uuid: newKey,
+      name: pName,
+      author: 'Current User',
+      dataEntries: '',
+    };
+    const updates = {};
+    updates[`/Notebooks/${newKey}`] = notebook;
+    return admin.database().ref().update(updates);
+  },
 
-	addentry: function (user_hash, notebook_uuid, pText, pImage, pCaption, pDateCreated, pAuthorID){
-		var newKey = admin.database().ref().child('posts').push().key;
-		var notebookEntry = {
-			uuid: key,
-			text: pText,
-			image: pImage,
-			caption: pCaption,
-			date_created: pDateCreated,
-			author_id:pAuthorID
-		};
-		var updates = {};
-		updates['/Notebooks/' + notebook_uuid + '/data_entries/' + newKey] = notebookEntry;
-		return admin.database().ref().update(updates);
-	},
+  addEntry(userHash, notebookUuid, pText, pImage, pCaption, pDateCreated, pAuthorId) {
+    const key = 'temp'; // TODO fix
+    const newKey = admin.database().ref().child('posts').push().key;
+    const notebookEntry = {
+      uuid: key,
+      text: pText,
+      image: pImage,
+      caption: pCaption,
+      date_created: pDateCreated,
+      author_id: pAuthorId,
+    };
+    const updates = {};
+    updates[`/Notebooks/${notebookUuid}/data_entries/${newKey}`] = notebookEntry;
+    return admin.database().ref().update(updates);
+  },
 
-	getnotebooks: function (user_hash, callback) {
-		admin.database().ref('/Notebooks').once('value').then(function(fbdatasnap) {
-			callback(fbdatasnap.val());
-		  });
-	},
-	
-	deleteentry: function (user_hash, notebookID, userID) {
-		admin.database().ref().child('Notebooks').child(nbid).child(data_entries).child(eid).remove();
-	}
+  getNotebooks(userHash, callback) {
+    admin.database().ref('/Notebooks').once('value').then((fbdatasnap) => {
+      callback(fbdatasnap.val());
+    });
+  },
+
+  deleteEntry(userHash, notebookId, userId) {
+    const dataEntries = undefined; // TODO fix
+    const entryId = undefined; // TODO fix
+    admin.database().ref().child('Notebooks').child(notebookId)
+      .child(dataEntries)
+      .child(entryId)
+      .remove();
+  },
 };
-
-
