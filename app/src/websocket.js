@@ -1,31 +1,36 @@
-var WebSocketServer = require("ws").Server;
+
+const WebSocketServer = require('ws').Server;
 
 module.exports = function addWSS(server) {
-  var wss = new WebSocketServer({server: server});
-  wss.on("connection", function (ws) {
+  const wss = new WebSocketServer({server});
+  wss.on('connection', (ws) => {
     // const location = url.parse(req.url, true);
-    var userId;
 
-    console.info("websocket connection open");
+    console.info('websocket connection open');
 
-    var timestamp = new Date().getTime();
-    userId = timestamp;
+    const timestamp = new Date().getTime();
+    const userId = timestamp;
 
-    ws.send(JSON.stringify({msgType:"onOpenConnection", msg:{connectionId:timestamp}}));
+    ws.send(JSON.stringify({
+      msgType: 'onOpenConnection',
+      msg: {
+        connectionId: timestamp,
+      },
+    }));
 
-    ws.on("message", function incoming(data, flags) {
-      var clientMsg = data;
+    ws.on('message', function incoming(data) {
+      const clientMsg = data;
       console.log('received: %s', clientMsg);
 
-      ws.send(JSON.stringify({msg:{connectionId:userId}}));
-    }); 
+      ws.send(JSON.stringify({msg: {connectionId: userId}}));
+    });
 
-    ws.on("close", function () {
-      console.log("websocket connection close");
-    }); 
-  }); 
+    ws.on('close', () => {
+      console.log('websocket connection close');
+    });
+  });
 
-  console.log("websocket server created");
+  console.log('websocket server created');
 
   return wss;
-}
+};
