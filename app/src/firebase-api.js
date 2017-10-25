@@ -1,5 +1,8 @@
 // Dependencies
 // const admin = require('firebase-admin');
+
+//'use strict'; //For CORS access-control module?
+//var access = require('access-control');
 const express = require('express');
 const bodyParser = require('body-parser');
 const FirebaseInit = require('./FirebaseInit.js');
@@ -7,6 +10,10 @@ const FirebaseInit = require('./FirebaseInit.js');
 // Setup
 // const db = admin.database();
 const router = express();
+router.use(require('access-control')({
+  maxAge: '8 hours',
+  credentials: true,
+});
 
 // Define the port to run on
 router.set('port', 3000);
