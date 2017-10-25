@@ -1,8 +1,8 @@
 // Dependencies
 // const admin = require('firebase-admin');
 
-//'use strict'; //For CORS access-control module?
-//var access = require('access-control');
+// 'use strict'; //For CORS access-control module?
+// var access = require('access-control');
 const express = require('express');
 const bodyParser = require('body-parser');
 const FirebaseInit = require('./FirebaseInit.js');
@@ -13,7 +13,7 @@ const router = express();
 router.use(require('access-control')({
   maxAge: '8 hours',
   credentials: true,
-});
+}));
 
 // Define the port to run on
 router.set('port', 3000);
@@ -57,7 +57,9 @@ router.post('/deleteEntry', (req, res) => {
 router.get('/getnotebooks', async (req, res) => {
   const {user_hash} = req.query;
   FirebaseInit.getNotebooks(user_hash, (snapshot) => {
-    const response = Object.assign({}, snapshot.val()); // This is done so that if the user does not exist, a empty obj is returned
+    // This is done so that if the user does not exist, a empty obj is returned
+    const response = Object.assign({}, snapshot.val());
+
     res.send(response);
   });// old: await db.ref(`words/${userId}`).once('value');
 });
