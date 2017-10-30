@@ -64,7 +64,8 @@ module.exports = {
     });
   },
 
-  deleteEntry(userHash, notebookId, userId) {
+  // deleteEntry(userHash, notebookId, userId) {
+  deleteEntry(userHash, notebookId) {
     const dataEntries = undefined; // TODO fix
     const entryId = undefined; // TODO fix
     admin.database().ref().child('Notebooks').child(notebookId)

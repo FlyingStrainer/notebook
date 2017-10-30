@@ -33,7 +33,8 @@ router.post('/savenotebook', (req, res) => {
 });
 
 router.post('/addEntry', (req, res) => {
-  const {user_hash, notebook_uuid, entry} = req.body;
+  // const {user_hash, notebook_uuid, entry} = req.body;
+  const {user_hash, notebook_uuid} = req.body;
   FirebaseInit.addEntry(user_hash, notebook_uuid);
   res.sendStatus(500);
   // res.sendStatus(201);
