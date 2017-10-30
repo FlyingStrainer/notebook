@@ -24,9 +24,10 @@ test('#getNotebooks', (done) => {
   });
 });
 
-// test('#saveNotebook', (done) => {
-//   const pName = 'cool';
-//   firebase.saveNotebook(pName).then(() => {
-//     done();
-//   });
-// });
+// TODO clean up new notebook
+test.skip('#saveNotebook', (done) => {
+  const notebookName = 'name';
+  firebase.saveNotebook(pName).then(() => {
+    done();
+  });
+});
