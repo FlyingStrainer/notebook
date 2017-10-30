@@ -8,6 +8,10 @@
 // To learn more about the benefits of this model, read https://goo.gl/KwvDNy.
 // This link also includes instructions on opting out of this behavior.
 
+/*
+eslint no-param-reassign: 0, no-use-before-define: 0
+*/
+
 const isLocalhost = Boolean(window.location.hostname === 'localhost' ||
   // [::1] is the IPv6 localhost address.
   window.location.hostname === '[::1]' ||
