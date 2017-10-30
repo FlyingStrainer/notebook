@@ -2,16 +2,17 @@ const firebase = require('../FirebaseInit.js');
 
 const testUserData = {
   user_hash: 'testUserHash',
-  notebooks: [
-    {
-      uid: 'notebookHash1',
-      name: 'notebookName1',
-      author: 'Test User',
-      data_entries: [],
-      tags: expect.any(Array),
-    },
-  ],
+  notebooks: [],
 };
+
+const testUserNotebook = {
+  uid: 'notebookHash1',
+  name: 'notebookName1',
+  author: 'Test User',
+  data_entries: [],
+  tags: expect.any(Array),
+};
+testUserData.notebooks.push(testUserNotebook);
 
 const testDataEntry = {
   uuid: 'testUuid',
@@ -24,7 +25,7 @@ const testDataEntry = {
     tag_string: '',
   },
 };
-
+testUserNotebook.data_entries.push(testDataEntry);
 
 test('#getNotebooks', (done) => {
   expect.assertions(2);
@@ -39,14 +40,14 @@ test('#getNotebooks', (done) => {
 // TODO clean up new notebook
 test.skip('#saveNotebook', (done) => {
   const notebookName = 'name';
-  firebase.saveNotebook(notebookName).then(() => {
+  firebase.saveNotebook(testUserData.user_hash, notebookName).then(() => {
     done();
   });
 });
 
 // TODO clean up added entry
 test.skip('#addEntry', (done) => {
-  firebase.addEntry(testDataEntry).then(() => {
+  firebase.addEntry(testUserData.user_hash, testUserNotebook.uid, testDataEntry).then(() => {
     done();
   });
 });
