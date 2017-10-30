@@ -25,7 +25,7 @@ router.use(bodyParser.json());
 // TODO api is a mess
 
 // writing
-router.post('/savenotebook', (req, res) => {
+router.post('/saveNotebook', (req, res) => {
   const {name} = req.body;
   FirebaseInit.saveNotebook(name);
   res.sendStatus(500);
@@ -47,15 +47,25 @@ router.post('/test', (req, res) => {
 });
 
 // delete entry
-router.post('/deleteEntry', (req, res) => {
+/*router.post('/deleteEntry', (req, res) => {
   const {user_hash, notebook_uuid, entry_uuid} = req.body;
   FirebaseInit.deleteEntry(user_hash, notebook_uuid, entry_uuid);
   res.sendStatus(500);
   // res.sendStatus(201);
-});
+});*/
 
 // reading
-router.get('/getnotebooks', async (req, res) => {
+router.get('/getEntries', async (req, res) => {
+  const {user_hash} = req.query;
+  FirebaseInit.getEntries(user_hash, (snapshot) => {
+    // This is done so that if the user does not exist, a empty obj is returned
+    const response = Object.assign({}, snapshot.val());
+
+    res.send(response);
+  });// old: await db.ref(`words/${userId}`).once('value');
+});
+
+router.get('/getNotebooks', async (req, res) => {
   const {user_hash} = req.query;
   FirebaseInit.getNotebooks(user_hash, (snapshot) => {
     // This is done so that if the user does not exist, a empty obj is returned

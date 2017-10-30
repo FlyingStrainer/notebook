@@ -29,7 +29,7 @@ module.exports = {
   },
 
 
-  saveNotebook(pName) {
+  saveNotebook(user_hash, _name) {
     const newKey = admin.database().ref().child('posts').push().key;
     const notebook = {
       uuid: newKey,
@@ -42,35 +42,33 @@ module.exports = {
     return admin.database().ref().update(updates);
   },
 
-  addEntry(userHash, notebookUuid, pText, pImage, pCaption, pDateCreated, pAuthorId) {
-    const key = 'temp'; // TODO fix
-    const newKey = admin.database().ref().child('posts').push().key;
-    const notebookEntry = {
-      uuid: key,
-      text: pText,
-      image: pImage,
-      caption: pCaption,
-      date_created: pDateCreated,
-      author_id: pAuthorId,
-    };
-    const updates = {};
-    updates[`/Notebooks/${notebookUuid}/data_entries/${newKey}`] = notebookEntry;
-    return admin.database().ref().update(updates);
-  },
+  addEntry: function (user_hash, notebook_uuid, _text, _image,
+    _caption, _dateCreated, _authorID, _tagArr){
+		var newKey = admin.database().ref().child('posts').push().key;
+		var notebookEntry = {
+			uuid: newKey,
+			text: _text,
+			image: _image,
+			caption: _caption,
+			date_created: _dateCreated,
+			author_id: _authorID,
+      		tags: _tagArr
+		};
+		var updates = {};
+		updates['/Notebooks/' + notebook_uuid + '/data_entries/' + newKey] = notebookEntry;
+		return admin.database().ref().update(updates);
+	},
 
-  getNotebooks(userHash, callback) {
+	getEntries: function (user_hash, _uuid, callback) {
+		admin.database().ref('/Notebooks/' + _uuid + '/data_entries/').once('value').then(function(fbdatasnap) {
+			callback(fbdatasnap.val());
+		  });
+	},
+
+	//todo
+  getNotebooks: function (userHash, callback) {
     admin.database().ref('/Notebooks').once('value').then((fbdatasnap) => {
       callback(fbdatasnap.val());
     });
-  },
-
-  // deleteEntry(userHash, notebookId, userId) {
-  deleteEntry(userHash, notebookId) {
-    const dataEntries = undefined; // TODO fix
-    const entryId = undefined; // TODO fix
-    admin.database().ref().child('Notebooks').child(notebookId)
-      .child(dataEntries)
-      .child(entryId)
-      .remove();
-  },
+  }
 };
