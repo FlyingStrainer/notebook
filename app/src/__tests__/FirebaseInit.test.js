@@ -1,4 +1,4 @@
-const firebase = require('../FirebaseInit.js');
+const firebase = require('../firebase-util.js');
 
 const testUserData = {
   user_hash: 'testUserHash',

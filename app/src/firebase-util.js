@@ -1,4 +1,4 @@
-// -----------FirebaseInit.js----------
+// -----------firebase-util.js----------
 // This file creates the initial Notebook database structure
 // Can be used to add notebooks in the future
 
