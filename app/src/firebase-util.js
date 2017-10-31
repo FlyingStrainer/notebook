@@ -33,7 +33,7 @@ module.exports = {
     const newKey = admin.database().ref().child('posts').push().key;
     const notebook = {
       uuid: newKey,
-      name: pName,
+      name: _name,
       author: 'Current User',
       dataEntries: '',
     };
@@ -42,33 +42,35 @@ module.exports = {
     return admin.database().ref().update(updates);
   },
 
-  addEntry: function (user_hash, notebook_uuid, _text, _image,
-    _caption, _dateCreated, _authorID, _tagArr){
-		var newKey = admin.database().ref().child('posts').push().key;
-		var notebookEntry = {
-			uuid: newKey,
-			text: _text,
-			image: _image,
-			caption: _caption,
-			date_created: _dateCreated,
-			author_id: _authorID,
-      		tags: _tagArr
-		};
-		var updates = {};
-		updates['/Notebooks/' + notebook_uuid + '/data_entries/' + newKey] = notebookEntry;
-		return admin.database().ref().update(updates);
-	},
+  addEntry(
+    user_hash, notebook_uuid, _text, _image,
+    _caption, _dateCreated, _authorID, _tagArr,
+  ) {
+    const newKey = admin.database().ref().child('posts').push().key;
+    const notebookEntry = {
+      uuid: newKey,
+      text: _text,
+      image: _image,
+      caption: _caption,
+      date_created: _dateCreated,
+      author_id: _authorID,
+      tags: _tagArr,
+    };
+    const updates = {};
+    updates[`/Notebooks/${notebook_uuid}/data_entries/${newKey}`] = notebookEntry;
+    return admin.database().ref().update(updates);
+  },
 
-	getEntries: function (user_hash, _uuid, callback) {
-		admin.database().ref('/Notebooks/' + _uuid + '/data_entries/').once('value').then(function(fbdatasnap) {
-			callback(fbdatasnap.val());
-		  });
-	},
+  getEntries(user_hash, _uuid, callback) {
+    admin.database().ref(`/Notebooks/${_uuid}/data_entries/`).once('value').then((fbdatasnap) => {
+      callback(fbdatasnap.val());
+    });
+  },
 
-	//todo
-  getNotebooks: function (userHash, callback) {
+  // todo
+  getNotebooks(userHash, callback) {
     admin.database().ref('/Notebooks').once('value').then((fbdatasnap) => {
       callback(fbdatasnap.val());
     });
-  }
+  },
 };
