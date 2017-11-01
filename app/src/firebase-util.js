@@ -30,7 +30,7 @@ module.exports = {
 
 
   saveNotebook(user_hash, _name) {
-    const newKey = admin.database().ref().child('posts').push().key;
+    const newKey = admin.database().ref().child('Notebooks').push().key;
     const notebook = {
       uuid: newKey,
       name: _name,
