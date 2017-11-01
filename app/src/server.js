@@ -1,5 +1,5 @@
 
-const app = require('./api');
+const app = require('./http-api');
 
 // Listen for requests
 const server = app.listen(app.get('port'), () => {
