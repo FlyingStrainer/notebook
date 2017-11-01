@@ -14,6 +14,7 @@ eslint import/no-unresolved: [2, {
 
 const admin = require('firebase-admin');
 const serviceAccount = require('../serviceAccountKey.json');
+const Notebook = require('./objects/Notebook');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -30,15 +31,14 @@ module.exports = {
 
 
   saveNotebook(user_hash, _name) {
-    const newKey = admin.database().ref().child('Notebooks').push().key;
-    const notebook = {
-      uuid: newKey,
+    const newNotebookKey = admin.database().ref('Notebooks').push().key;
+    const notebook = new Notebook({
+      uuid: newNotebookKey,
       name: _name,
       author: 'Current User',
-      dataEntries: '',
-    };
+    });
     const updates = {};
-    updates[`/Notebooks/${newKey}`] = notebook;
+    updates[`/Notebooks/${newNotebookKey}`] = notebook;
     return admin.database().ref().update(updates);
   },
 
