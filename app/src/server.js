@@ -1,10 +1,8 @@
-const express = require('express');
 
-const app = express();
-const port = process.env.PORT || 3000;
+const app = require('./api');
 
-app.listen(port);
-
-console.log(`todo list RESTful API server started on: ${port}`);
-
-require('./firebase-util.js');
+// Listen for requests
+const server = app.listen(app.get('port'), () => {
+  const {port} = server.address();
+  console.log(`Server started on port ${port}`);
+});

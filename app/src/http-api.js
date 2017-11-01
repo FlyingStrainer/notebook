@@ -47,12 +47,14 @@ router.post('/test', (req, res) => {
 });
 
 // delete entry
-/*router.post('/deleteEntry', (req, res) => {
+/*
+router.post('/deleteEntry', (req, res) => {
   const {user_hash, notebook_uuid, entry_uuid} = req.body;
   firebase.deleteEntry(user_hash, notebook_uuid, entry_uuid);
   res.sendStatus(500);
   // res.sendStatus(201);
-});*/
+});
+*/
 
 // reading
 router.get('/getEntries', async (req, res) => {
@@ -75,8 +77,4 @@ router.get('/getNotebooks', async (req, res) => {
   });// old: await db.ref(`words/${userId}`).once('value');
 });
 
-// Listen for requests
-const server = router.listen(router.get('port'), () => {
-  const {port} = server.address();
-  console.log(`Magic happens on port ${port}`);
-});
+module.exports = router;
