@@ -23,6 +23,8 @@ admin.initializeApp({
 
 // const database = admin.database();
 
+var userExists = false;
+
 module.exports = {
   createUser(username, dateAdded, usrId) {
     const user = {username, initDate: dateAdded, userId: usrId};
@@ -48,11 +50,12 @@ module.exports = {
     return admin.database().ref().update(updates);
   },
 
-  addEntry(
-    user_hash, notebook_uuid, _text, _image,
-    _caption, _dateCreated, _authorID, _tagArr,
-  ) {
-    const newKey = admin.database().ref().child('posts').push().key;
+  addEntry( user_hash, notebook_uuid, _text, _image,
+    _caption, _dateCreated, _authorID, _tagArr) {
+    checkUserExists(user_hash);
+    if (userExists == false) return; 
+    const newKey = admin.database().ref().child('NotebookList').child(notebook_uuid).
+      child('Entries').push().key;
     const notebookEntry = {
       uuid: newKey,
       text: _text,
@@ -73,6 +76,18 @@ module.exports = {
     });
   },
 
+  userExistsCB(exists) {
+    if (exists) {
+      userExists = true;
+    }
+  },
+
+  checkUserExists(user_hash) {
+    admin.database().child('UserList').child('user_hash').once('value', function(fbdatasnap) {
+      var exists = (fbdatasnap.val() !== null);
+      userExistsCB(exists);
+    })
+  },
   // todo
   getNotebooks(userHash, callback) {
     admin.database().ref(`/UserList/${userHash}/`).once('value').then((fbdatasnap) => {
