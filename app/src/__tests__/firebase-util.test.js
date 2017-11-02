@@ -27,22 +27,24 @@ const testDataEntry = {
 };
 testUserNotebook.data_entries.push(testDataEntry);
 
-test('#getNotebooks', (done) => {
-  expect.assertions(2);
+describe.skip('#getNotebooks', () => {
+  test('#getNotebooks', (done) => {
+    expect.assertions(2);
 
-  firebase.getNotebooks(testUserData.user_hash).then((data) => {
-    expect(data).toBeDefined();
-    expect(data).toEqual(testUserData);
-    done();
+    firebase.getNotebooks(testUserData.user_hash).then((data) => {
+      expect(data).toBeDefined();
+      expect(data).toEqual(testUserData);
+      done();
+    });
   });
-});
 
-test('#getNotebooks no permision', () => {
-  expect.assertions(1);
+  test('#getNotebooks no permision', () => {
+    expect.assertions(1);
 
-  expect(async () => {
-    await firebase.getNotebooks('Invalid');
-  }).toThrow();
+    expect(async () => {
+      await firebase.getNotebooks('Invalid');
+    }).toThrow();
+  });
 });
 
 // TODO clean up new notebook

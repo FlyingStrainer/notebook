@@ -21,7 +21,7 @@ describe.skip('POST /saveNotebook', () => {
   it('should save a notebook', async () => {
     const data = {
       name: 'notebook1',
-      author: 'user1'
+      author: 'user1',
     };
 
     const response = await request(api)

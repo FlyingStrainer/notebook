@@ -27,10 +27,10 @@ router.use(bodyParser.json());
 // writing
 router.post('/saveNotebook', (req, res) => {
   const {user_hash, name} = req.body;
-  
+
   firebase.saveNotebook(user_hash, name).then(() => {
     res.sendStatus(201);
-  }).catch((err) => {
+  }).catch(() => {
     res.sendStatus(500);
   });
 });
