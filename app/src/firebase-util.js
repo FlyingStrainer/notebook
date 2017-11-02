@@ -63,19 +63,19 @@ module.exports = {
       tags: _tagArr,
     };
     const updates = {};
-    updates[`/Notebooks/${notebook_uuid}/data_entries/${newKey}`] = notebookEntry;
+    updates[`/NotebookList/${notebook_uuid}/data_entries/${newKey}`] = notebookEntry;
     return admin.database().ref().update(updates);
   },
 
   getEntries(user_hash, _uuid, callback) {
-    admin.database().ref(`/Notebooks/${_uuid}/data_entries/`).once('value').then((fbdatasnap) => {
+    admin.database().ref(`/NotebookList/${_uuid}/data_entries/`).once('value').then((fbdatasnap) => {
       callback(fbdatasnap.val());
     });
   },
 
   // todo
   getNotebooks(userHash, callback) {
-    admin.database().ref('/Notebooks').once('value').then((fbdatasnap) => {
+    admin.database().ref(`/UserList/${userHash}/`).once('value').then((fbdatasnap) => {
       callback(fbdatasnap.val());
     });
   },
