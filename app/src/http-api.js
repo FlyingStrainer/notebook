@@ -59,8 +59,8 @@ router.post('/deleteEntry', (req, res) => {
 */
 
 // reading
-router.get('/getEntries', async (req, res) => {
-  const {user_hash} = req.query;
+router.post('/getEntries', async (req, res) => {
+  const {user_hash} = req.body;
   firebase.getEntries(user_hash, (snapshot) => {
     // This is done so that if the user does not exist, a empty obj is returned
     const response = Object.assign({}, snapshot.val());
@@ -69,8 +69,8 @@ router.get('/getEntries', async (req, res) => {
   });// old: await db.ref(`words/${userId}`).once('value');
 });
 
-router.get('/getNotebooks', async (req, res) => {
-  const {user_hash} = req.query;
+router.post('/getNotebooks', async (req, res) => {
+  const {user_hash} = req.body;
   firebase.getNotebooks(user_hash, (snapshot) => {
     // This is done so that if the user does not exist, a empty obj is returned
     const response = Object.assign({}, snapshot.val());
