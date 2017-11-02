@@ -26,18 +26,23 @@ router.use(bodyParser.json());
 
 // writing
 router.post('/saveNotebook', (req, res) => {
-  const {name} = req.body;
-  firebase.saveNotebook(name);
-  res.sendStatus(500);
-  // res.sendStatus(201);
+  const {user_hash, name} = req.body;
+  
+  firebase.saveNotebook(user_hash, name).then(() => {
+    res.sendStatus(201);
+  }).catch((err) => {
+    res.sendStatus(500);
+  });
 });
 
 router.post('/addEntry', (req, res) => {
   // const {user_hash, notebook_uuid, entry} = req.body;
   const {user_hash, notebook_uuid} = req.body;
-  firebase.addEntry(user_hash, notebook_uuid);
-  res.sendStatus(500);
-  // res.sendStatus(201);
+  firebase.addEntry(user_hash, notebook_uuid).then(() => {
+    res.sendStatus(201);
+  }).catch(() => {
+    res.sendStatus(500);
+  });
 });
 
 router.post('/test', (req, res) => {
