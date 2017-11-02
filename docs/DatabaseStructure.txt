@@ -4,7 +4,7 @@ firebase.user documentation: https://firebase.google.com/docs/reference/js/fireb
 uuids are implied
 '+' indicates that more than one can exist in a given sub area(?)
 
-|- NotebooksList
+|- NotebookList
 |	|- NotebookUUID+
 |		|-Entries+
 |		|	|- Text
