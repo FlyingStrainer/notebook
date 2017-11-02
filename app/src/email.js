@@ -30,6 +30,3 @@ module.exports = {
   },
 
 };
-
-
-module.exports.sendEmail('mehulap8@icloud.com');
