@@ -1,5 +1,5 @@
 api/savenotebook POST //Creates new notebook
-body: 
+body:
 {
 	"user_hash": "",
 	"name": ""
@@ -13,13 +13,16 @@ body:
 response:
 {
 	"user_hash": "",
-	"notebooks": 
+	"notebooks":
 	[
 		{
 			"uuid": "",
 			"name": "",
-			"author": "",
-			"data_entries": 
+			"managers": [],
+			"dateModified": date,
+			"dateCreated": date,
+			"tags": [],
+			"data_entries":
 			[
 				{
 					"uuid": "",
@@ -29,16 +32,16 @@ response:
 					"date_created": "",
 					"author_id": ""
 				},
-			]	
+			]
 		},
-	]	
+	]
 }
 
 api/addEntry POST //Add entry to notebook
 {
 	"user_hash": "",
 	"notebook_uuid": "",
-	"entry": 
+	"entry":
 	{
 		"uuid": "",
 		"text": "",
