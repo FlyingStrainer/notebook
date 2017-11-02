@@ -31,14 +31,20 @@ module.exports = {
 
 
   saveNotebook(user_hash, _name) {
-    const newNotebookKey = admin.database().ref('Notebooks').push().key;
+    const updates = {};
+
+    // Add notebook updates
+    const newNotebookKey = admin.database().ref('NotebookList').push().key;
     const notebook = new Notebook({
       uuid: newNotebookKey,
       name: _name,
       author: 'Current User',
     });
-    const updates = {};
-    updates[`/Notebooks/${newNotebookKey}`] = notebook;
+    updates[`/NotebookList/${newNotebookKey}`] = notebook;
+
+    // Add user updates
+    updates[`/UserList/${user_hash}/NotebookList/${newNotebookKey}`] = true;
+
     return admin.database().ref().update(updates);
   },
 
