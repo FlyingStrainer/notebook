@@ -96,11 +96,11 @@ router.post('/addNotebook', (req, res) => {
 });
 
 router.post('/addEntry', (req, res) => {
-  const {user_hash, notebook_uuid, entry} = req.body;
+  const {user_hash, notebook_hash, entry} = req.body;
   const {type} = entry;
   const data = entry[type];
 
-  if (!(user_hash && notebook_uuid && entry && type && data)) {
+  if (!(user_hash && notebook_hash && entry && type && data)) {
     console.log('/addEntry bad', req.body);
     // bad request
     res.sendStatus(400)
@@ -113,9 +113,9 @@ router.post('/addEntry', (req, res) => {
 });
 
 router.post('/cosignEntry', (req, res) => {
-  const {user_hash, notebook_uuid, entry_uuid} = req.body;
+  const {user_hash, notebook_hash, entry_hash} = req.body;
 
-  if (!(user_hash && notebook_uuid && entry_uuid)) {
+  if (!(user_hash && notebook_hash && entry_hash)) {
     console.log('/cosignEntry bad', req.body);
     res.sendStatus(400)
     return;
@@ -134,8 +134,8 @@ router.post('/test', (req, res) => {
 // delete entry
 /*
 router.post('/deleteEntry', (req, res) => {
-  const {user_hash, notebook_uuid, entry_uuid} = req.body;
-  firebase.deleteEntry(user_hash, notebook_uuid, entry_uuid);
+  const {user_hash, notebook_hash, entry_hash} = req.body;
+  firebase.deleteEntry(user_hash, notebook_hash, entry_hash);
   res.sendStatus(500);
   // res.sendStatus(201);
 });
@@ -143,9 +143,9 @@ router.post('/deleteEntry', (req, res) => {
 
 // reading
 router.post('/getEntries', async (req, res) => {
-  const {user_hash, notebook_uuid} = req.body;
+  const {user_hash, notebook_hash} = req.body;
 
-  if (!(user_hash && notebook_uuid)) {
+  if (!(user_hash && notebook_hash)) {
     console.log('/getEntries bad', req.body);
     res.sendStatus(400)
     return;
@@ -162,9 +162,9 @@ router.post('/getEntries', async (req, res) => {
 });
 
 router.post('/getEntry', async (req, res) => {
-  const {user_hash, notebook_uuid, entry_uuid} = req.body;
+  const {user_hash, notebook_hash, entry_hash} = req.body;
 
-  if (!(user_hash && notebook_uuid && entry_uuid)) {
+  if (!(user_hash && notebook_hash && entry_hash)) {
     console.log('/getEntry bad', req.body);
     res.sendStatus(400)
     return;
@@ -173,7 +173,7 @@ router.post('/getEntry', async (req, res) => {
   console.log('/getEntry good');
   res.setHeader('Content-Type', 'application/json');
   const obj = {
-    key: '--data-entry-key-1',
+    entry_hash: '--data-entry-key-1',
     author: '--user-key-2',
     cosigned_by: false,
     date_modified: new Date('2017-01-02').toJSON(),
@@ -214,9 +214,9 @@ router.post('/getNotebooks', (req, res) => {
 });
 
 router.post('/getNotebook', (req, res) => {
-  const {user_hash, notebook_uuid} = req.body;
+  const {user_hash, notebook_hash} = req.body;
 
-  if (!(user_hash, notebook_uuid)) {
+  if (!(user_hash, notebook_hash)) {
     console.log('/getNotebook bad', req.body);
     res.sendStatus(400);
     return;
@@ -224,9 +224,9 @@ router.post('/getNotebook', (req, res) => {
 
   console.log('/getNotebook good');
   res.setHeader('Content-Type', 'application/json');
-  if (notebook_uuid == '--notebook-key-1') {
+  if (notebook_hash == '--notebook-key-1') {
     res.send(JSON.stringify({
-      uuid: '--notebook-key-1',
+      notebook_hash: '--notebook-key-1',
       name: 'Notebook 1',
       managers: [
         '--manager-key-1',
@@ -246,7 +246,7 @@ router.post('/getNotebook', (req, res) => {
   }
   else {
     res.send(JSON.stringify({
-      uuid: '--notebook-key-2',
+      notebook_hash: '--notebook-key-2',
       name: 'Notebook 2',
       managers: [
         '--manager-key-1',
