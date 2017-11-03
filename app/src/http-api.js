@@ -96,10 +96,9 @@ router.post('/user', (req, res) => {
   firebase.checkUser(user_hash, (snapshot) => {
     // This is done so that if the user does not exist, a empty obj is returned
     const data = Object.assign({}, snapshot.val());
-
     res.send(data);
     console.log('/user good: ', data);
-    res.send(JSON.stringify(data));
+    //res.send(JSON.stringify(data));
   });
   // TODO get data in example
 
