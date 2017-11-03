@@ -20,32 +20,46 @@ afterAll(async () => {
 
 // GET /user HTTP/1.1
 // Authorization: Basic dXNlcm5hbWU6cGFzcw==
-describe('POST /test', () => {
-  it('should return true', async () => {
-    const data = {
-      test: 'test',
-    };
-
-    const response = await request(api)
-      .post('/test')
-      .set('Content-Type', 'application/json')
-      .auth('username', 'password')
-      .send(JSON.stringify(data));
-
-    expect(response).toBeDefined();
-    expect(response.statusCode).toBe(200);
-  });
-});
 
 describe('POST /user', () => {
   it('should return json', async () => {
-    const response = await request(api)
-      .get('/user')
-      .auth('username', 'password');
 
+    // json in
+    const data = {
+      user_hash: '--user-key-1',
+    };
+
+    const response = await request(api)
+      .post('/user')
+      .send(data);
+
+    // keep expect response to be defined
     expect(response).toBeDefined();
+
+    // expect status codes according to:
+    // https://github.com/FlyingStrainer/notebook/blob/test-server/app/src/http-api.js
     expect(response.statusCode).toBe(200);
-    expect(response.header['content-type']).toMatch(/json/);
+
+    const rdata = response.data;
+
+    // match rdata to:
+    // https://github.com/FlyingStrainer/notebook/blob/dev/docs/API_requests.txt
+    // and the test server above
+    expect(rdata[user_hash]).toBeDefined();
+    // "user_hash": "",
+    expect(rdata[company_name]).toBeDefined();
+    // "company_name": "",
+    expect(rdata[notebooks]).toBeDefined();
+    // "notebooks": [
+    //   "notebook_hash",
+    //   "notebook_hash",
+    //   ...
+    // ],
+    expect(rdata[roles]).toBeDefined();
+    // "roles": [
+    //   <role>,
+    //   <role>
+    // ]
   });
 });
 
