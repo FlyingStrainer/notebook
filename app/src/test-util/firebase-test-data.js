@@ -19,7 +19,7 @@ module.exports = {
           '--data-entry-key-2': true,
         },
       },
-      dataEntryList: {
+      data_entries: {
         '--data-entry-key-1': {
           key: '--data-entry-key-1',
           author: '--user-key-2',
@@ -67,7 +67,7 @@ module.exports = {
           '--data-entry-key-2': true,
         },
       },
-      dataEntryList: {
+      data_entries: {
         '--data-entry-key-1': {
           key: '--data-entry-key-1',
           author: '--user-key-2',
