@@ -25,8 +25,8 @@ admin.initializeApp({
 
 
 module.exports = {
-  createUser(username, dateAdded, usrId) {
-    const user = {username, initDate: dateAdded, userId: usrId};
+  createUser(username, date_added, usr_id) {
+    const user = {username, initDate: date_added, userId: usr_id};
     return user;
   },
 
@@ -35,7 +35,7 @@ module.exports = {
     const updates = {};
 
     // Add notebook updates
-    const newNotebookKey = admin.database().ref('NotebookList').push().key;
+    const new_notebook_key = admin.database().ref('NotebookList').push().key;
     const notebook = new Notebook({
       uuid: newNotebookKey,
       name: _name,
@@ -44,12 +44,12 @@ module.exports = {
     updates[`/NotebookList/${newNotebookKey}`] = notebook;
 
     // Add user updates
-    updates[`/UserList/${user_hash}/NotebookList/${newNotebookKey}`] = true;
+    updates[`/UserList/${user_hash}/NotebookList/${new_notebook_key}`] = true;
 
     return admin.database().ref().update(updates);
   },
 
-   addEntry(user_hash, notebook_uuid, _text, _image, _caption, _dateCreated, _authorID, _tagArr) {
+   addEntry(user_hash, notebook_uuid, _text, _image, _caption, _date_created, _authorID, _tagArr) {
     admin.database().child('UserList').child('user_hash').once('value', function(fbdatasnap) {
       var exists = (fbdatasnap.val() !== null);
       addEntryCB(user_hash, notebook_uuid, _text, _image,
@@ -58,16 +58,16 @@ module.exports = {
   },
   
   addEntryCB(user_hash, notebook_uuid, _text, _image,
-    _caption, _dateCreated, _authorID, _tagArr, exists) {
+    _caption, _date_created, _authorID, _tag_arr, exists) {
     if (exists == false) return;
-    const newKey = admin.database().ref().child('NotebookList').child(notebook_uuid).
+    const new_key = admin.database().ref().child('NotebookList').child(notebook_uuid).
     child('Entries').push().key;
     const notebookEntry = {
-      uuid: newKey,
+      uuid: new_key,
       text: _text,
       image: _image,
       caption: _caption,
-      date_created: _dateCreated,
+      date_created: _date_created,
       author_id: _authorID,
       tags: _tagArr,
     };
@@ -77,8 +77,14 @@ module.exports = {
   },
 
   getEntries(user_hash, _uuid, callback) {
-    admin.database().ref(`/NotebookList/${_uuid}/dataEntryList/`).once('value').then((fbdatasnap) => {
+    admin.database().ref(`/NotebookList/${_uuid}/data_entries/`).once('value').then((fbdatasnap) => {
       callback(JSON.stringify(Object.keys(fbdatasnap.val())));
+    });
+  },
+
+  getEntry(user_hash, _uuid, entry_id, callback) {
+    admin.database().ref(`/NotebookList/${_uuid}/data_entries/${entry_id}`).once('value').then((fbdatasnap) => {
+      callback(fbdatasnap.val());
     });
   },
 
