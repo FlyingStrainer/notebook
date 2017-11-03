@@ -20,6 +20,10 @@ router.use(bodyParser.json());
 
 // API
 
+// TODO stretch: api
+
+// TODO add account api
+
 router.post('/login', (req, res) => {
   const {email, password} = req.body;
 
@@ -70,9 +74,7 @@ router.post('/user', (req, res) => {
       '--notebook-key-1',
       '--notebook-key-2',
     ],
-    roles: {
-      user: true,
-    },
+    roles: (user|manager),
   };
   */
 
