@@ -80,7 +80,7 @@ describe('POST /user', () => {
 });
 
 // Cleanup test notebook
-describe.only('POST /addNotebook', () => {
+describe('POST /addNotebook', () => {
   it('should save a notebook', async () => {
     const data = {
       user_hash: 'JestTester',
