@@ -29,23 +29,15 @@ router.post('/user', (req, res) => {
   console.log('req: /user');
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify({
-    user_hash: 'user_hash1',
+    user_hash: '--user-key-1',
     company_name: 'company1',
     notebooks: [
       '--notebook-key-1',
       '--notebook-key-2',
     ],
-    role: 'user',
-
-    key: '--user-key-1',
-    companyName: 'company1',
-    roleList: {
+    roles: {
       user: true,
     },
-    notebookList: [
-      '--notebook-key-1',
-      '--notebook-key-2',
-    ],
   }), null, 3);
 });
 
@@ -86,7 +78,7 @@ router.get('/getEntries', async (req, res) => {
   res.setHeader('Content-Type', 'application/json');
 
   res.send(JSON.stringify({
-    dataEntryList: [
+    data_entries: [
       '--data-entry-key-1',
       '--data-entry-key-2',
     ],
@@ -99,10 +91,10 @@ router.get('/getEntry', async (req, res) => {
   const obj = {
     key: '--data-entry-key-1',
     author: '--user-key-2',
-    cosignedBy: false,
-    dateModified: new Date('2017-01-02').toJSON(),
-    dateCreated: new Date('2017-01-02').toJSON(),
-    tagList: {
+    cosigned_by: false,
+    date_modified: new Date('2017-01-02').toJSON(),
+    date_created: new Date('2017-01-02').toJSON(),
+    tags: {
       'tag-1': true,
     },
     type: 'text',
