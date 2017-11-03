@@ -222,7 +222,7 @@ router.post('/getNotebook', (req, res) => {
 
   console.log('/getNotebook good');
   res.setHeader('Content-Type', 'application/json');
-  if (notebook_hash == '--notebook-key-1') {
+  if (notebook_uuid == '--notebook-key-1') {
     res.send(JSON.stringify({
       uuid: '--notebook-key-1',
       name: 'Notebook 1',
