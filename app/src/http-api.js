@@ -142,7 +142,7 @@ router.post('/deleteEntry', (req, res) => {
 */
 
 // reading
-router.get('/getEntries', async (req, res) => {
+router.post('/getEntries', async (req, res) => {
   const {user_hash, notebook_uuid} = req.body;
 
   if (!(user_hash && notebook_uuid)) {
@@ -161,7 +161,7 @@ router.get('/getEntries', async (req, res) => {
   }));
 });
 
-router.get('/getEntry', async (req, res) => {
+router.post('/getEntry', async (req, res) => {
   const {user_hash, notebook_uuid, entry_uuid} = req.body;
 
   if (!(user_hash && notebook_uuid && entry_uuid)) {
