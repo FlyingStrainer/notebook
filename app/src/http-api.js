@@ -25,8 +25,35 @@ router.use(bodyParser.json());
 // API
 // TODO api is a mess
 
+router.post('/login', (req, res) => {
+  const {email, password} = req.body;
+
+  if (!(email && password)) {
+    res.sendStatus(400);
+  }
+
+  res.setHeader('Content-Type', 'application/json');
+  res.send(JSON.stringify('--user-key-1'));
+});
+
+router.post('/register', (req, res) => {
+  const {email, password, company_name} = req.body;
+
+  if (!(email && password && company_name)) {
+    res.sendStatus(400);
+  }
+
+  // res.send(JSON.stringify('--user-key-1'));
+});
+
 router.post('/user', (req, res) => {
-  const {} = req.body;
+  const {user_hash} = req.body;
+
+  if (!(user_hash)) {
+    res.sendStatus(400);
+    return;
+  }
+
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify({
     user_hash: '--user-key-1',
