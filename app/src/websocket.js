@@ -27,6 +27,16 @@ function attachWs(app, server) {
   wss.on("connection", function (ws) {
     console.log("websocket connection open");
 
+    let login = false;
+    let failed = false;
+
+    timeout(() => {
+      if (!login) {
+        failed = true;
+        ws.send(JSON.stringify({type:'failed'}));
+      }
+    }, 10 * 1000);
+
     const timestamp = new Date().getTime();
     const userId = timestamp
 
@@ -36,10 +46,12 @@ function attachWs(app, server) {
 
       if (data.type === 'login') {
         const user_hash = data.user_hash;
-        if (!(user_hash)) {
+        if (!(user_hash) || failed) {
+          failed = true;
           ws.send(JSON.stringify({type:'failed'}));
         }
         else {
+          login = true;
           ws.send(JSON.stringify({type:'login',msg:user_hash}));
           users[user_hash].push([ws, user_hash]);
         }
