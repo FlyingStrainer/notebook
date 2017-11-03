@@ -14,7 +14,7 @@ function attachWs(app, server) {
         const ws = pair[0];
         const ws_user_hash = pair[1];
         if (target_user_hash == ws_user_hash) {
-          if (ws.readyState === WebSocket.OPEN) {
+          if (ws.readyState === 1) {
             ws.send(JSON.stringify({type:'push',msg:{notebook_hash, entry_hash}}));
           }
         }
@@ -34,6 +34,7 @@ function attachWs(app, server) {
       if (!login) {
         failed = true;
         ws.send(JSON.stringify({type:'failed'}));
+        ws.close();
       }
     }, 10 * 1000);
 
@@ -53,7 +54,7 @@ function attachWs(app, server) {
         else {
           login = true;
           ws.send(JSON.stringify({type:'login',msg:user_hash}));
-          users[user_hash].push([ws, user_hash]);
+          connections.push([ws, user_hash]);
         }
       }
       if (data.type === 'testpush') {
@@ -74,6 +75,7 @@ function attachWs(app, server) {
 
     ws.on('close', function () {
       console.log('websocket connection close');
+      ws.close();
 
       // for (var i = 0; i < connections.length; i++) {
       //   const pair = connections[i];
