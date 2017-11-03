@@ -1,6 +1,6 @@
 
 module.exports = {
-  notebookList: {
+  notebook_list: {
     '--notebook-key-1': {
       key: '--notebook-key-1',
       name: 'Notebook 1',
@@ -141,7 +141,7 @@ module.exports = {
       role_list: {
         user: true,
       },
-      notebookList: {
+      notebook_list: {
         '--notebook-key-2': true,
       },
     },
