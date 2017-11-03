@@ -26,7 +26,7 @@ router.use(bodyParser.json());
 // TODO api is a mess
 
 router.post('/user', (req, res) => {
-  console.log('req: /user');
+  const {} = req.body;
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify({
     user_hash: '--user-key-1',
@@ -42,19 +42,45 @@ router.post('/user', (req, res) => {
 });
 
 // writing
-router.post('/saveNotebook', (req, res) => {
-  const {name} = req.body;
-  firebase.saveNotebook(name);
-  res.sendStatus(500);
-  // res.sendStatus(201);
+router.post('/addNotebook', (req, res) => {
+  const {user_hash, name} = req.body;
+
+  if (!(user_hash && name)) {
+    // bad request
+    res.sendStatus(400);
+    return;
+  }
+
+  // success
+  res.sendStatus(201);
 });
 
 router.post('/addEntry', (req, res) => {
-  // const {user_hash, notebook_uuid, entry} = req.body;
-  const {user_hash, notebook_uuid} = req.body;
-  firebase.addEntry(user_hash, notebook_uuid);
-  res.sendStatus(500);
-  // res.sendStatus(201);
+  const {user_hash, notebook_uuid, entry} = req.body;
+  const {type} = entry;
+  const data = entry[type];
+
+  if (!(user_hash && notebook_uuid && entry && type && data)) {
+    // bad request
+    res.sendStatus(400)
+    return;
+  }
+
+  // success
+  res.sendStatus(201);
+});
+
+router.post('/cosignEntry', (req, res) => {
+  const {user_hash, notebook_uuid, entry_uuid} = req.body;
+
+  if (!(user_hash && notebook_uuid && entry_uuid)) {
+    // bad request
+    res.sendStatus(400)
+    return;
+  }
+
+  // success
+  res.sendStatus(201);
 });
 
 router.post('/test', (req, res) => {
