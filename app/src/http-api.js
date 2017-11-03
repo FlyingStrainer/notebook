@@ -137,15 +137,10 @@ router.post('/getNotebook', (req, res) => {
       ],
       date_modified: new Date('2017-01-03').toJSON(),
       date_created: new Date('2017-01-01').toJSON(),
-      tags: {
-        'tag-1': [
-          '--data-entry-key-1',
-          '--data-entry-key-2',
-        ],
-        'tag-2': [
-          '--data-entry-key-2',
-        ],
-      },
+      tags: [
+        'tag-1',
+        'tag-2',
+      ],
       permisions: {
         'read': true,
         'write': true,
@@ -162,15 +157,10 @@ router.post('/getNotebook', (req, res) => {
       ],
       date_modified: new Date('2017-02-04').toJSON(),
       date_created: new Date('2017-02-02').toJSON(),
-      tags: {
-        'tag-1': [
-          '--data-entry-key-1',
-          '--data-entry-key-2',
-        ],
-        'tag-2': [
-          '--data-entry-key-2',
-        ],
-      },
+      tags: [
+        'tag-1',
+        'tag-2',
+      ],
       permisions: {
         'read': true,
         'write': true,
