@@ -2,7 +2,7 @@
 const WebSocketServer = require('ws').Server;
 
 function attach(app, server) {
-  const wss = new WSServer({
+  const wss = new WebSocketServer({
     server,
   });
 
