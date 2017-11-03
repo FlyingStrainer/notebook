@@ -1,5 +1,18 @@
+
+const admin = require('firebase-admin');
+const FirebaseWiper = require('../test-util/FirebaseWiper');
+const wiper = new FirebaseWiper(admin);
+
 const request = require('supertest');
 const api = require('../http-api');
+
+beforeAll(async () => {
+  await wiper.nukeFirebase();
+});
+
+afterAll(async () => {
+  await wiper.nukeFirebase();
+});
 
 // GET /user HTTP/1.1
 // Authorization: Basic dXNlcm5hbWU6cGFzcw==
@@ -10,7 +23,7 @@ describe('POST /test', () => {
       .set('Content-Type', 'application/json')
       .auth('username', 'password')
       .send(data);
-    
+
     expect(response).toBeDefined();
     expect(response.statusCode).toBe(201);
     });
@@ -101,5 +114,3 @@ describe('POST /getNotebooks', () => {
     expect(response.body.notebook_hash).toBeDefined();
   });
 });
-
-
