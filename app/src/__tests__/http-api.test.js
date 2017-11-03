@@ -80,15 +80,15 @@ describe('POST /user', () => {
 });
 
 // Cleanup test notebook
-describe('POST /saveNotebook', () => {
+describe('POST /addNotebook', () => {
   it('should save a notebook', async () => {
     const data = {
+      user_hash: 'JestTester',
       name: 'JestersNotebook',
-      author: 'JestTester',
     };
 
     const response = await request(api)
-      .post('/saveNotebook')
+      .post('/addNotebook')
       .set('Content-Type', 'application/json')
       .auth('username', 'password')
       .send(data);
