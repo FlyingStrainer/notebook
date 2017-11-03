@@ -195,11 +195,11 @@ router.post('/getNotebook', (req, res) => {
       ],
       date_modified: new Date('2017-02-03').toJSON(),
       date_created: new Date('2017-02-01').toJSON(),
-      tags: [
+      tags: {
         'tag-2': [
           '--data-entry-key-2',
         ],
-      ],
+      },
       permisions: { 'user': true },
 
       key: '--notebook-key-2',
@@ -209,11 +209,11 @@ router.post('/getNotebook', (req, res) => {
       ],
       dateModified: new Date('2017-02-03').toJSON(),
       dateCreated: new Date('2017-02-01').toJSON(),
-      tagList: [
+      tagList: {
         'tag-2': [
           '--data-entry-key-2',
         ],
-      ],
+      },
       permisions: {
         'read': true,
         'write': true,
