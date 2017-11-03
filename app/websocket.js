@@ -2,13 +2,13 @@
 var WebSocketServer = require("ws").Server;
 var http = require("http");
 var express = require("express");
-// var bodyParser = require('body-parser');
+var bodyParser = require('body-parser');
 var port = process.env.PORT || 5000;
 
 
 var app = express();
-// app.use(bodyParser.json());
-// app.use(express.static(__dirname + "/public"));
+app.use(bodyParser.json());
+app.use(express.static(__dirname + "/public"));
 // app.get('/someGetRequest', function(req, res, next) {
 //    console.log('receiving get request');
 // });
@@ -17,21 +17,15 @@ var app = express();
 //    res.setHeader('Content-Type', 'text/plain');
 //    res.end(JSON.stringify(req.body, null, 2));
 // });
-var server = app.listen(80); //port 80 need to run as root
-
-console.log("app listening on %d ", 80);
-
-//var server = http.createServer(app);
-//server.listen(port);
-
-console.log("http server listening on %d", port);
+var server = app.listen(5000); //port 80 need to run as root
+console.log("app listening on %d", 5000);
 
 var userId;
 var wss = new WebSocketServer({server: server});
 wss.on("connection", function (ws) {
    // const location = url.parse(req.url, true);
 
-   console.info("websocket connection open");
+   console.log("websocket connection open");
 
    var timestamp = new Date().getTime();
    userId = timestamp;
@@ -49,5 +43,3 @@ wss.on("connection", function (ws) {
       console.log("websocket connection close");
    });
 });
-
-console.log("websocket server created");
