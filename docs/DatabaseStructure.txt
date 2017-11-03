@@ -4,8 +4,8 @@ firebase.user documentation: https://firebase.google.com/docs/reference/js/fireb
 uuids are implied
 '+' indicates that more than one can exist in a given sub area(?)
 
-|- NotebooksList
-|	|- Notebook+
+|- NotebookList
+|	|- NotebookUUID+
 |		|-Entries+
 |		|	|- Text
 |		|	|- Date modified
@@ -15,7 +15,7 @@ uuids are implied
 |		|	|	|- user uuid+
 |		|	|- tagsList
 |		|		|-tag string+
-|		|- Owner
+|		|- Managers+
 |		|- Date created
 |		|- Date modified
 |- UserList
