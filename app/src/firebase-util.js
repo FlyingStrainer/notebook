@@ -38,7 +38,7 @@ module.exports = {
    })
  },
 
-  saveNotebook(user_hash, _name) {
+  saveNotebookCB(user_hash, _name) {
     const updates = {};
     if (exists == false) return;
     // Add notebook updates
@@ -101,6 +101,23 @@ module.exports = {
       if (fbdatasnap!==null)
         callback(exists);
     })
+  },
+
+  loginUser(email, password) {
+    firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+    // ...
+    });
+
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+      callback(user);
+      } else {
+    // No user is signed in.
+      }
+    });
   },
 
   getNotebooks(userHash, callback) {
