@@ -23,7 +23,6 @@ admin.initializeApp({
 
 // const database = admin.database();
 
-var userExists = false;
 
 module.exports = {
   createUser(username, dateAdded, usrId) {
@@ -31,13 +30,8 @@ module.exports = {
     return user;
   },
 
+
   saveNotebook(user_hash, _name) {
-    admin.database().child('UserList').child('user_hash').once('value', function(fbdatasnap) {
-      var exists = (fbdatasnap.val() !== null);
-      saveNotebookCB(user_hash, _name);
-    })
-  },
-  saveNotebookCB(user_hash, _name) {
     const updates = {};
 
     // Add notebook updates
@@ -55,14 +49,14 @@ module.exports = {
     return admin.database().ref().update(updates);
   },
 
-  addEntry(user_hash, notebook_uuid, _text, _image, _caption, _dateCreated, _authorID, _tagArr) {
+   addEntry(user_hash, notebook_uuid, _text, _image, _caption, _dateCreated, _authorID, _tagArr) {
     admin.database().child('UserList').child('user_hash').once('value', function(fbdatasnap) {
       var exists = (fbdatasnap.val() !== null);
       addEntryCB(user_hash, notebook_uuid, _text, _image,
         _caption, _dateCreated, _authorID, _tagArr, exists);
     })
   },
-
+  
   addEntryCB(user_hash, notebook_uuid, _text, _image,
     _caption, _dateCreated, _authorID, _tagArr, exists) {
     if (exists == false) return;
@@ -82,13 +76,14 @@ module.exports = {
     return admin.database().ref().update(updates);
   },
 
-  
-
   getEntries(user_hash, _uuid, callback) {
-    admin.database().ref(`/NotebookList/${_uuid}/data_entries/`).once('value').then((fbdatasnap) => {
-      callback(fbdatasnap.val());
+    admin.database().ref(`/NotebookList/${_uuid}/dataEntryList/`).once('value').then((fbdatasnap) => {
+      callback(JSON.stringify(Object.keys(fbdatasnap.val())));
     });
-  
+  },
+
+
+  // todo
   getNotebooks(userHash, callback) {
     admin.database().ref(`/UserList/${userHash}/Notebooks/`).once('value').then((fbdatasnap) => {
       if (fbdatasnap.val() !== null)
