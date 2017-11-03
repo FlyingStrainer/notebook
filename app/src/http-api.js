@@ -194,7 +194,7 @@ router.post('/getNotebooks', (req, res) => {
   const {user_hash} = req.body;
 
   if (!(user_hash)) {
-    console.log('/getNotebooks bad', req.body);
+    console.log('/getNotebooks bad', req.body, req);
     res.sendStatus(400);
     return;
   }
@@ -213,7 +213,7 @@ router.post('/getNotebook', (req, res) => {
   const {user_hash, notebook_hash} = req.body;
 
   if (!(user_hash, notebook_hash)) {
-    console.log('/getNotebook bad', req.body);
+    console.log('/getNotebook bad', req.body, req);
     res.sendStatus(400);
     return;
   }
