@@ -1,7 +1,11 @@
 
 const app = require('./http-api');
+const websocket = require('websocket');
 
-console.log('trying to start server');
+var requestedport = process.env.PORT || 3000;
+app.set('port', requestedport);
+
+console.log(`Tyring to start server on ${requestedport}`);
 
 // Listen for requests
 const server = app.listen(app.get('port'), () => {
