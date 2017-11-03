@@ -11,10 +11,15 @@ const access = require('access-control');
 // Setup
 // const db = admin.database();
 const router = express();
-router.use(access({
-  maxAge: '8 hours',
-  credentials: true,
-}));
+if (!(process.env.DISABLE_ACCESS_CONTROL)) {
+  router.use(access({
+    maxAge: '8 hours',
+    credentials: true,
+  }));
+}
+else {
+  console.log('access control disabled');
+}
 
 // Middleware
 router.use(bodyParser.json());
