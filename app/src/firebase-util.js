@@ -103,6 +103,23 @@ module.exports = {
     })
   },
 
+  loginUser(email, password) {
+    firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+    // ...
+    });
+
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+      callback(user);
+      } else {
+    // No user is signed in.
+      }
+    });
+  },
+
   getNotebooks(userHash, callback) {
     admin.database().ref(`/UserList/${userHash}/Notebooks/`).once('value').then((fbdatasnap) => {
       if (fbdatasnap.val() !== null)
