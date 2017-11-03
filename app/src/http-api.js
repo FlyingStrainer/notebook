@@ -29,7 +29,7 @@ router.post('/login', (req, res) => {
   const {email, password} = req.body;
 
   if (!(email && password)) {
-    console.log('/login bad');
+    console.log('/login bad', req.body);
     res.sendStatus(400);
     return;
   }
@@ -45,7 +45,7 @@ router.post('/register', (req, res) => {
   const {email, password, company_name} = req.body;
 
   if (!(email && password && company_name)) {
-    console.log('/register bad');
+    console.log('/register bad', req.body);
     res.sendStatus(400);
     return;
   }
@@ -59,7 +59,7 @@ router.post('/user', (req, res) => {
   const {user_hash} = req.body;
 
   if (!(user_hash)) {
-    console.log('/user bad');
+    console.log('/user bad', req.body);
     res.sendStatus(400);
     return;
   }
@@ -84,7 +84,7 @@ router.post('/addNotebook', (req, res) => {
   const {user_hash, name} = req.body;
 
   if (!(user_hash && name)) {
-    console.log('/addNotebook bad');
+    console.log('/addNotebook bad', req.body);
     // bad request
     res.sendStatus(400);
     return;
@@ -101,7 +101,7 @@ router.post('/addEntry', (req, res) => {
   const data = entry[type];
 
   if (!(user_hash && notebook_uuid && entry && type && data)) {
-    console.log('/addEntry bad');
+    console.log('/addEntry bad', req.body);
     // bad request
     res.sendStatus(400)
     return;
@@ -116,7 +116,7 @@ router.post('/cosignEntry', (req, res) => {
   const {user_hash, notebook_uuid, entry_uuid} = req.body;
 
   if (!(user_hash && notebook_uuid && entry_uuid)) {
-    console.log('/cosignEntry bad');
+    console.log('/cosignEntry bad', req.body);
     res.sendStatus(400)
     return;
   }
@@ -146,7 +146,7 @@ router.post('/getEntries', async (req, res) => {
   const {user_hash, notebook_uuid} = req.body;
 
   if (!(user_hash && notebook_uuid)) {
-    console.log('/getEntries bad');
+    console.log('/getEntries bad', req.body);
     res.sendStatus(400)
     return;
   }
@@ -165,7 +165,7 @@ router.post('/getEntry', async (req, res) => {
   const {user_hash, notebook_uuid, entry_uuid} = req.body;
 
   if (!(user_hash && notebook_uuid && entry_uuid)) {
-    console.log('/getEntry bad');
+    console.log('/getEntry bad', req.body);
     res.sendStatus(400)
     return;
   }
