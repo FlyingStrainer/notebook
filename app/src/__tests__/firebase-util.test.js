@@ -1,10 +1,10 @@
 
 // admin is automatically mocked
 const admin = require('firebase-admin');
-const firebase = require('../firebase-util');
 const FirebaseWiper = require('../test-util/FirebaseWiper');
-
 const wiper = new FirebaseWiper(admin);
+
+const firebase = require('../firebase-util');
 
 beforeAll(async () => {
   await wiper.nukeFirebase();

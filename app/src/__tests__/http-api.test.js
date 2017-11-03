@@ -1,8 +1,18 @@
+
+const admin = require('firebase-admin');
+const FirebaseWiper = require('../test-util/FirebaseWiper');
+const wiper = new FirebaseWiper(admin);
+
 const request = require('supertest');
 const api = require('../http-api');
 
-// GET /user HTTP/1.1
-// Authorization: Basic dXNlcm5hbWU6cGFzcw==
+beforeAll(async () => {
+  await wiper.nukeFirebase();
+});
+
+afterAll(async () => {
+  await wiper.nukeFirebase();
+});
 
 describe.skip('GET /user', () => {
   it('should return json', async () => {
