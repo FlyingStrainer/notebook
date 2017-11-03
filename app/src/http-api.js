@@ -34,8 +34,10 @@ router.post('/saveNotebook', (req, res) => {
 
 router.post('/addEntry', (req, res) => {
   // const {user_hash, notebook_uuid, entry} = req.body;
-  const {user_hash, notebook_uuid} = req.body;
-  firebase.addEntry(user_hash, notebook_uuid).then(() => {
+  const {user_hash,notebook_uuid, _text, _image,
+    _caption, _date_created, _authorID, _tag_arr} = req.body;
+  firebase.addEntry(notebook_uuid, _text, _image,
+    _caption, _date_created, _authorID, _tag_arr).then(() => {
     res.sendStatus(201);
   }).catch(() => {
     res.sendStatus(500);
@@ -60,7 +62,7 @@ router.post('/deleteEntry', (req, res) => {
 
 // reading
 router.post('/getEntries', async (req, res) => {
-  const {user_hash} = req.body;
+  const {user_hash, _uuid} = req.body;
   firebase.getEntries(user_hash, (snapshot) => {
     // This is done so that if the user does not exist, a empty obj is returned
     const response = Object.assign({}, snapshot.val());
@@ -68,6 +70,17 @@ router.post('/getEntries', async (req, res) => {
     res.send(response);
   });// old: await db.ref(`words/${userId}`).once('value');
 });
+
+router.post('/getEntry', async (req, res) => {
+  const {user_hash, _uuid} = req.body;
+  firebase.getEntries(user_hash, _uuid, entry_id, (snapshot) => {
+    // This is done so that if the user does not exist, a empty obj is returned
+    const response = Object.assign({}, snapshot.val());
+
+    res.send(response);
+  });// old: await db.ref(`words/${userId}`).once('value');
+});
+
 
 router.post('/getNotebooks', async (req, res) => {
   const {user_hash} = req.body;
