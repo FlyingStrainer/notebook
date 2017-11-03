@@ -4,17 +4,31 @@ var WebSocketServer = require("ws").Server;
 // 5 sec timeout
 
 function attachWs(app, server) {
-  var userId;
   var wss = new WebSocketServer({server: server});
-  wss.on("connection", function (ws) {
-    // const location = url.parse(req.url, true);
 
+  var connections = [];
+
+  wss.pushToAll = function pushToAll(users, notebook_hash, entry_hash) {
+    users.forEach(function each(target_user_hash) {
+      connections.forEach(function each(pair) {
+        const ws = pair[0];
+        const ws_user_hash = pair[1];
+        if (target_user_hash == ws_user_hash) {
+          if (ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({type:'push',msg:{notebook_hash, entry_hash}}));
+          }
+        }
+      });
+    });
+  };
+
+  // putToAll using firebase
+
+  wss.on("connection", function (ws) {
     console.log("websocket connection open");
 
-    var timestamp = new Date().getTime();
-    userId = timestamp;
-
-    ws.send(JSON.stringify({msgType:"onOpenConnection", msg:{connectionId:timestamp}}));
+    const timestamp = new Date().getTime();
+    const userId = timestamp
 
     ws.on("message", function incoming(message, flags) {
       var data = JSON.parse(message);
@@ -27,23 +41,39 @@ function attachWs(app, server) {
         }
         else {
           ws.send(JSON.stringify({type:'login',msg:user_hash}));
+          users[user_hash].push([ws, user_hash]);
         }
       }
       if (data.type === 'testpush') {
-        const notebook_hash = '--notebook-key-1';
-        const entry_hash = '--data-entry-key-1';
-        ws.send(JSON.stringify({type:'push',msg:{notebook_hash, entry_hash}}));
+        let myhash = undefined;
+        for (var i = 0; i < connections.length; i++) {
+          const pair = connections[i];
+          if (ws == pair[0]) {
+            myhash = pair[1];
+            break;
+          }
+        }
+        wss.pushToAll([myhash, '--user-key-1', '--manager-key-1'],
+          '--notebook-key-1', '--data-entry-key-1');
       }
 
-
       // add connection test to value
-
     });
 
-    ws.on("close", function () {
-      console.log("websocket connection close");
+    ws.on('close', function () {
+      console.log('websocket connection close');
+
+      // for (var i = 0; i < connections.length; i++) {
+      //   const pair = connections[i];
+      //   if (ws == pair[0]) {
+      //     // remove from connections
+      //     break;
+      //   }
+      // }
     });
   });
+
+  return wss;
 }
 
 exports.attach = attachWs;
