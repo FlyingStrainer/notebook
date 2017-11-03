@@ -210,9 +210,9 @@ router.post('/getNotebooks', (req, res) => {
 });
 
 router.post('/getNotebook', (req, res) => {
-  const {user_hash, notebook_hash} = req.body;
+  const {user_hash, notebook_uuid} = req.body;
 
-  if (!(user_hash, notebook_hash)) {
+  if (!(user_hash, notebook_uuid)) {
     console.log('/getNotebook bad', req.body, req);
     res.sendStatus(400);
     return;
