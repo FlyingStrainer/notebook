@@ -36,7 +36,7 @@ router.post('/login', (req, res) => {
 
   console.log('/login good: ', data);
   res.send(JSON.stringify(data));
-}
+});
 
 router.post('/register', (req, res) => {
   const {email, password, company_name} = req.body;
