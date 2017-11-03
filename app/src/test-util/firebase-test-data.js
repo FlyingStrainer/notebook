@@ -21,7 +21,7 @@ module.exports = {
       },
       data_entries: {
         '--data-entry-key-1': {
-          key: '--data-entry-key-1',
+          entry_hash: '--data-entry-key-1',
           author: '--user-key-2',
           cosigned_by: false,
           date_modified: new Date('2017-01-02').toJSON(),
@@ -40,7 +40,7 @@ module.exports = {
             ' id est laborum.',
         },
         '--data-entry-key-2': {
-          key: '--data-entry-key-2',
+          entry_hash: '--data-entry-key-2',
           author: '--user-key-1',
           cosigned_by: '--manager-key-1',
           date_modified: new Date('2017-01-03').toJSON(),
@@ -55,7 +55,7 @@ module.exports = {
       },
     },
     '--notebook-key-2': {
-      key: '--notebook-key-2',
+      notebook_hash: '--notebook-key-2',
       name: 'Notebook 2',
       managers: {
         '--manager-key-2': true,
@@ -69,7 +69,7 @@ module.exports = {
       },
       data_entries: {
         '--data-entry-key-1': {
-          key: '--data-entry-key-1',
+          entry_hash: '--data-entry-key-1',
           author: '--user-key-2',
           cosigned_by: false,
           date_modified: new Date('2017-02-07').toJSON(),
@@ -87,7 +87,7 @@ module.exports = {
             ' id est laborum.',
         },
         '--data-entry-key-2': {
-          key: '--data-entry-key-2',
+          entry_hash: '--data-entry-key-2',
           author: '--user-key-2',
           cosigned_by: '--manager-key-2',
           date_modified: new Date('2017-02-09').toJSON(),
@@ -134,9 +134,9 @@ module.exports = {
       },
     },
   },
-  userList: {
+  UserList: {
     '--user-key-1': {
-      key: '--user-key-1',
+      user_hash: '--user-key-1',
       company_name: 'company1',
       role_list: {
         user: true,
@@ -146,7 +146,7 @@ module.exports = {
       },
     },
     '--user-key-2': {
-      key: '--user-key-2',
+      user_hash: '--user-key-2',
       company_name: 'company1',
       role_list: {
         user: true,
@@ -157,7 +157,7 @@ module.exports = {
       },
     },
     '--manager-key-1': {
-      key: '--manager-key-1',
+      user_hash: '--manager-key-1',
       company_name: 'company1',
       role_list: {
         manager: true,
@@ -167,7 +167,7 @@ module.exports = {
       },
     },
     '--manager-key-2': {
-      key: '--manager-key-2',
+      user_hash: '--manager-key-2',
       company_name: 'company1',
       role_list: {
         user: true,
