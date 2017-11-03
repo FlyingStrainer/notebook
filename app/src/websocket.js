@@ -11,7 +11,7 @@ function attach(app, server) {
   wss.on('connection', function connection(ws) {
 
     var userId = new Date().getTime();
-    ws.send(JSON.stringify({msgType:"onOpenConnection", msg:{connectionId:timestamp}}));
+    ws.send(JSON.stringify({msgType:"onOpenConnection", msg:{connectionId:userId}}));
     console.log(`ws ${userId} connected`);
 
     ws.on('message', function incoming(message) {
