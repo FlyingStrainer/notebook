@@ -95,6 +95,14 @@ module.exports = {
     });
   },
 
+  checkUser(user_hash, callback) {
+    admin.database().child('UserList').child('user_hash').once('value', function(fbdatasnap) {
+      var exists = (fbdatasnap.val());
+      if (fbdatasnap!==null)
+        callback(exists);
+    })
+  },
+
   getNotebooks(userHash, callback) {
     admin.database().ref(`/UserList/${userHash}/Notebooks/`).once('value').then((fbdatasnap) => {
       if (fbdatasnap.val() !== null)
