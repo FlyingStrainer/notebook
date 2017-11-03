@@ -29,8 +29,9 @@ router.post('/login', (req, res) => {
   const {email, password} = req.body;
 
   if (!(email && password)) {
-    console.log('/login bad');
+    console.log('/login bad', req.body);
     res.sendStatus(400);
+    return;
   }
 
   console.log('/login good');
@@ -44,8 +45,9 @@ router.post('/register', (req, res) => {
   const {email, password, company_name} = req.body;
 
   if (!(email && password && company_name)) {
-    console.log('/register bad');
+    console.log('/register bad', req.body);
     res.sendStatus(400);
+    return;
   }
 
   console.log('/register good');
@@ -57,7 +59,7 @@ router.post('/user', (req, res) => {
   const {user_hash} = req.body;
 
   if (!(user_hash)) {
-    console.log('/user bad');
+    console.log('/user bad', req.body);
     res.sendStatus(400);
     return;
   }
@@ -82,14 +84,12 @@ router.post('/addNotebook', (req, res) => {
   const {user_hash, name} = req.body;
 
   if (!(user_hash && name)) {
-    console.log('/addNotebook bad');
-    // bad request
+    console.log('/addNotebook bad', req.body);
     res.sendStatus(400);
     return;
   }
 
   console.log('/addNotebook good');
-  // success
   res.sendStatus(201);
 });
 
@@ -99,14 +99,12 @@ router.post('/addEntry', (req, res) => {
   const data = entry[type];
 
   if (!(user_hash && notebook_uuid && entry && type && data)) {
-    console.log('/addEntry bad');
-    // bad request
+    console.log('/addEntry bad', req.body);
     res.sendStatus(400)
     return;
   }
 
   console.log('/addEntry good');
-  // success
   res.sendStatus(201);
 });
 
@@ -114,7 +112,7 @@ router.post('/cosignEntry', (req, res) => {
   const {user_hash, notebook_uuid, entry_uuid} = req.body;
 
   if (!(user_hash && notebook_uuid && entry_uuid)) {
-    console.log('/cosignEntry bad');
+    console.log('/cosignEntry bad', req.body);
     res.sendStatus(400)
     return;
   }
@@ -144,7 +142,7 @@ router.get('/getEntries', async (req, res) => {
   const {user_hash, notebook_uuid} = req.body;
 
   if (!(user_hash && notebook_uuid)) {
-    console.log('/getEntries bad');
+    console.log('/getEntries bad', req.body);
     res.sendStatus(400)
     return;
   }
@@ -163,7 +161,7 @@ router.get('/getEntry', async (req, res) => {
   const {user_hash, notebook_uuid, entry_uuid} = req.body;
 
   if (!(user_hash && notebook_uuid && entry_uuid)) {
-    console.log('/getEntry bad');
+    console.log('/getEntry bad', req.body);
     res.sendStatus(400)
     return;
   }
@@ -196,7 +194,7 @@ router.post('/getNotebooks', (req, res) => {
   const {user_hash} = req.body;
 
   if (!(user_hash)) {
-    console.log('/getNotebooks bad');
+    console.log('/getNotebooks bad', req.body);
     res.sendStatus(400);
     return;
   }
@@ -215,7 +213,7 @@ router.post('/getNotebook', (req, res) => {
   const {user_hash, notebook_hash} = req.body;
 
   if (!(user_hash, notebook_hash)) {
-    console.log('/getNotebook bad');
+    console.log('/getNotebook bad', req.body);
     res.sendStatus(400);
     return;
   }
