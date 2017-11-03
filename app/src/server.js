@@ -1,6 +1,6 @@
 
 const app = require('./http-api');
-const websocket = require('./websocket');
+//const websocket = require('./websocket');
 
 var requestedport = process.env.PORT || 3000;
 app.set('port', requestedport);
@@ -13,4 +13,4 @@ const server = app.listen(app.get('port'), () => {
   console.log(`Server started on port ${port}`);
 });
 
-websocket.attach(app, server);
+//websocket.attach(app, server);
