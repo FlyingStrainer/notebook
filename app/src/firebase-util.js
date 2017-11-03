@@ -83,13 +83,11 @@ module.exports = {
   },
 
   getEntry(user_hash, _uuid, entry_id, callback) {
-    admin.database().ref(`/NotebookList/${_uuid}/data_entries/${entry_id}`).once('value').then((fbdatasnap) => {
+    admin.database().ref(`/NotebookList/${_uuid}/data_entries/${entry_id}/`).once('value').then((fbdatasnap) => {
       callback(fbdatasnap.val());
     });
   },
 
-
-  // todo
   getNotebooks(userHash, callback) {
     admin.database().ref(`/UserList/${userHash}/Notebooks/`).once('value').then((fbdatasnap) => {
       if (fbdatasnap.val() !== null)
