@@ -35,7 +35,9 @@ router.post('/login', (req, res) => {
 
   console.log('/login good');
   res.setHeader('Content-Type', 'application/json');
-  res.send(JSON.stringify('--user-key-1'));
+  res.send(JSON.stringify({
+    user_hash:'--user-key-1',
+  }));
 });
 
 router.post('/register', (req, res) => {
