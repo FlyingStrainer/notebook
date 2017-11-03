@@ -4,13 +4,13 @@ module.exports = {
     '--notebook-key-1': {
       key: '--notebook-key-1',
       name: 'Notebook 1',
-      managerList: {
+      manager_list: {
         '--manager-key-1': true,
         '--manager-key-2': true,
       },
-      dateModified: new Date('2017-01-03').toJSON(),
-      dateCreated: new Date('2017-01-01').toJSON(),
-      tagList: {
+      date_modified: new Date('2017-01-03').toJSON(),
+      date_created: new Date('2017-01-01').toJSON(),
+      tag_list: {
         'tag-1': {
           '--data-entry-key-1': true,
           '--data-entry-key-2': true,
@@ -23,10 +23,10 @@ module.exports = {
         '--data-entry-key-1': {
           key: '--data-entry-key-1',
           author: '--user-key-2',
-          cosignedBy: false,
-          dateModified: new Date('2017-01-02').toJSON(),
-          dateCreated: new Date('2017-01-02').toJSON(),
-          tagList: {
+          cosigned_by: false,
+          date_modified: new Date('2017-01-02').toJSON(),
+          date_created: new Date('2017-01-02').toJSON(),
+          tag_list: {
             'tag-1': true,
           },
           type: 'text',
@@ -42,10 +42,10 @@ module.exports = {
         '--data-entry-key-2': {
           key: '--data-entry-key-2',
           author: '--user-key-1',
-          cosignedBy: '--manager-key-1',
-          dateModified: new Date('2017-01-03').toJSON(),
-          dateCreated: new Date('2017-01-01').toJSON(),
-          tagList: {
+          cosigned_by: '--manager-key-1',
+          date_modified: new Date('2017-01-03').toJSON(),
+          date_created: new Date('2017-01-01').toJSON(),
+          tag_list: {
             'tag-1': true,
             'tag-2': true,
           },
@@ -57,12 +57,12 @@ module.exports = {
     '--notebook-key-2': {
       key: '--notebook-key-2',
       name: 'Notebook 2',
-      managerList: {
+      managers: {
         '--manager-key-2': true,
       },
-      dateModified: new Date('2017-02-09').toJSON(),
-      dateCreated: new Date('2017-02-05').toJSON(),
-      tagList: {
+      date_modified: new Date('2017-02-09').toJSON(),
+      date_created: new Date('2017-02-05').toJSON(),
+      tag_list: {
         'tag-2': {
           '--data-entry-key-2': true,
         },
@@ -71,10 +71,10 @@ module.exports = {
         '--data-entry-key-1': {
           key: '--data-entry-key-1',
           author: '--user-key-2',
-          cosignedBy: false,
-          dateModified: new Date('2017-02-07').toJSON(),
-          dateCreated: new Date('2017-02-06').toJSON(),
-          tagList: {
+          cosigned_by: false,
+          date_modified: new Date('2017-02-07').toJSON(),
+          date_created: new Date('2017-02-06').toJSON(),
+          tag_list: {
           },
           type: 'text',
           text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, ' +
@@ -89,10 +89,10 @@ module.exports = {
         '--data-entry-key-2': {
           key: '--data-entry-key-2',
           author: '--user-key-2',
-          cosignedBy: '--manager-key-2',
-          dateModified: new Date('2017-02-09').toJSON(),
-          dateCreated: new Date('2017-02-08').toJSON(),
-          tagList: {
+          cosigned_by: '--manager-key-2',
+          date_modified: new Date('2017-02-09').toJSON(),
+          date_created: new Date('2017-02-08').toJSON(),
+          tag_list: {
             'tag-2': true,
           },
           type: 'image',
@@ -137,8 +137,8 @@ module.exports = {
   userList: {
     '--user-key-1': {
       key: '--user-key-1',
-      companyName: 'company1',
-      roleList: {
+      company_name: 'company1',
+      role_list: {
         user: true,
       },
       notebookList: {
@@ -147,32 +147,32 @@ module.exports = {
     },
     '--user-key-2': {
       key: '--user-key-2',
-      companyName: 'company1',
-      roleList: {
+      company_name: 'company1',
+      role_list: {
         user: true,
       },
-      notebookList: {
+      notebook_list: {
         '--notebook-key-1': true,
         '--notebook-key-2': true,
       },
     },
     '--manager-key-1': {
       key: '--manager-key-1',
-      companyName: 'company1',
-      roleList: {
+      company_name: 'company1',
+      role_list: {
         manager: true,
       },
-      notebookList: {
+      notebook_list: {
         '--notebook-key-1': true,
       },
     },
     '--manager-key-2': {
       key: '--manager-key-2',
-      companyName: 'company1',
-      roleList: {
+      company_name: 'company1',
+      role_list: {
         user: true,
       },
-      notebookList: {
+      notebook_list: {
         '--notebook-key-1': true,
         '--notebook-key-2': true,
       },
