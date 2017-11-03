@@ -38,7 +38,7 @@ module.exports = {
    })
  },
 
-  saveNotebook(user_hash, _name) {
+  saveNotebookCB(user_hash, _name) {
     const updates = {};
     if (exists == false) return;
     // Add notebook updates
