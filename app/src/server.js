@@ -1,6 +1,6 @@
 
 const app = require('./http-api');
-const websocket = require('websocket');
+const websocket = require('./websocket');
 
 var requestedport = process.env.PORT || 3000;
 app.set('port', requestedport);
