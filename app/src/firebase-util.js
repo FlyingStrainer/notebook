@@ -30,10 +30,17 @@ module.exports = {
     return user;
   },
 
+  saveNotebook(user_hash, _name) {
+   admin.database().child('UserList').child('user_hash').once('value', function(fbdatasnap) {
+     var exists = (fbdatasnap.val() !== null);
+     saveNotebookCB(user_hash, notebook_uuid, _text, _image,
+       _caption, _dateCreated, _authorID, _tagArr, exists);
+   })
+ },
 
   saveNotebook(user_hash, _name) {
     const updates = {};
-
+    if (exists == false) return;
     // Add notebook updates
     const new_notebook_key = admin.database().ref('NotebookList').push().key;
     const notebook = new Notebook({
@@ -56,7 +63,7 @@ module.exports = {
         _caption, _dateCreated, _authorID, _tagArr, exists);
     })
   },
-  
+
   addEntryCB(user_hash, notebook_uuid, _text, _image,
     _caption, _date_created, _authorID, _tag_arr, exists) {
     if (exists == false) return;

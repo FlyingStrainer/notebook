@@ -42,7 +42,7 @@ response:
 role: "user", "manager"
 
 
-api/getnotebooks GET //Get notebooks for user
+api/getNotebooks GET //Get notebooks for user
 body:
 {
 	"user_hash": ""
@@ -59,7 +59,7 @@ response:
 }
 
 
-api/getnotebook
+api/getNotebook
 body:
 {
 	"user_hash": "",
@@ -103,7 +103,7 @@ body:
 	"notebook_hash": "",
 	"entry":
 	{
-		"uuid": "",
+		"entry_hash": "",
 		"type": "",
 		
 		"text": "",
@@ -121,6 +121,25 @@ body:
 }
 
 include either text or image depending on type of entry
+
+api/getEntry
+body:
+{
+	"user_hash": "",
+	"notebook_hash": "",
+	"entry_hash": ""
+}
+reponse:
+{
+	entry_hash
+	author: email
+	cosigned_by
+	date_modified
+	date_created
+	tags: []
+	type
+	text
+}
 
 
 api/cosignEntry POST //Cosign entry
