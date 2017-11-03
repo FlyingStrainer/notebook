@@ -1,6 +1,6 @@
 
 module.exports = {
-  notebook_list: {
+  NotebookList: {
     '--notebook-key-1': {
       key: '--notebook-key-1',
       name: 'Notebook 1',
