@@ -1,9 +1,46 @@
-api/savenotebook POST //Creates new notebook
+api/login
 body:
 {
-	"user_hash": "",
-	"name": ""
+	"email": "",
+	"password": ""
 }
+response:
+{
+	"user_hash": ""
+}
+
+
+api/register
+body:
+{
+	"email": "",
+	"password": "",
+	"company_name:: ""
+}
+
+
+api/user
+body:
+{
+	"user_hash": ""
+}
+response:
+{
+	"user_hash": "",
+	"company_name": "",
+	"notebooks": [
+		"notebook_hash",
+		"notebook_hash",
+		...
+	],
+	"roles": [
+		<role>,
+		<role>
+	]
+}
+
+role: "user", "manager"
+
 
 api/getnotebooks GET //Get notebooks for user
 body:
@@ -15,56 +52,82 @@ response:
 	"user_hash": "",
 	"notebooks":
 	[
-		{
-			"uuid": "",
-			"name": "",
-			"managers": [],
-			"dateModified": date,
-			"dateCreated": date,
-			"tags": [],
-			"data_entries":
-			[
-				{
-					"uuid": "",
-					"text": "",
-					"image": "",
-					"caption": "",
-					"date_created": "",
-					"author_id": "",
-					"cosignatures" :
-					[
-						{ user_hash },
-						...
-					]
-				},
-			]
-		},
+		"notebook_hash",
+		"notebook_hash",
+		...
 	]
 }
 
-api/addEntry POST //Add entry to notebook
+
+api/getnotebook
+body:
 {
 	"user_hash": "",
-	"notebook_uuid": "",
+	"notebook_hash": ""
+}
+response:
+{
+	"notebook_hash": "",
+	"name": "",
+	"managers" [
+		"user_hash",
+		"user_hash",
+		...
+	],
+	"date_modified": Date,
+	"date_created": Date,
+	tags: [
+		"tag",
+		"tag",
+		...
+	]
+	"permissions": {
+		"read": true,
+		"write": true
+	}
+}
+
+
+api/addNotebook POST //Creates new notebook
+body:
+{
+	"user_hash": "",
+	"name": ""
+}
+
+
+api/addEntry POST //Add entry to notebook
+body:
+{
+	"user_hash": "",
+	"notebook_hash": "",
 	"entry":
 	{
 		"uuid": "",
+		"type": "",
+		
 		"text": "",
+		
 		"image": "",
 		"caption": "",
-		"date_created": "",
-		"author_id": "",
+		
 		"cosignatures" :
 		[
-			{ user_hash },
+			"user_hash",
+			"user_hash",
 			...
 		]
 	}
 }
 
+include either text or image depending on type of entry
+
+
 api/cosignEntry POST //Cosign entry
+body:
 {
-	"entry_uuid": "",	// Unique id of entry being cosigned
-	"user_hash": ""		// User_hash of cosigner, also used to authenticate
+	"user_hash": "",	// User_hash of cosigner, also used to authenticate
+	"notebook_hash": "",
+	"entry_hash": ""	// Unique id of entry being cosigned
 }
 
