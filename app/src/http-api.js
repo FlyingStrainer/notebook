@@ -31,6 +31,7 @@ router.post('/login', (req, res) => {
   if (!(email && password)) {
     console.log('/login bad');
     res.sendStatus(400);
+    return;
   }
 
   console.log('/login good');
@@ -46,6 +47,7 @@ router.post('/register', (req, res) => {
   if (!(email && password && company_name)) {
     console.log('/register bad');
     res.sendStatus(400);
+    return;
   }
 
   console.log('/register good');
