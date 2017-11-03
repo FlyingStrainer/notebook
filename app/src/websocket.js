@@ -1,29 +1,30 @@
 
-const WebSocketServer = require('ws').Server;
+var WebSocketServer = require("ws").Server;
 
-function attach(app, server) {
-  const wss = new WebSocketServer({
-    server,
-  });
+function attachWs(app, server) {
+  var userId;
+  var wss = new WebSocketServer({server: server});
+  wss.on("connection", function (ws) {
+    // const location = url.parse(req.url, true);
 
-  server.on('request', app);
+    console.log("websocket connection open");
 
-  wss.on('connection', function connection(ws) {
+    var timestamp = new Date().getTime();
+    userId = timestamp;
 
-    var userId = new Date().getTime();
-    ws.send(JSON.stringify({msgType:"onOpenConnection", msg:{connectionId:userId}}));
-    console.log(`ws ${userId} connected`);
+    ws.send(JSON.stringify({msgType:"onOpenConnection", msg:{connectionId:timestamp}}));
 
-    ws.on('message', function incoming(message) {
-      console.log(`received: ${message}`);
+    ws.on("message", function incoming(data, flags) {
+      var clientMsg = data;
+      console.log('received: %s', clientMsg);
 
       ws.send(JSON.stringify({msg:{connectionId:userId}}));
     });
 
-    ws.on('close', function () {
-      console.log(`ws ${userId} closed`);
+    ws.on("close", function () {
+      console.log("websocket connection close");
     });
   });
 }
 
-exports.attach = attach;
+exports.attach = attachWs;

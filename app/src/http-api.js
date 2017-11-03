@@ -2,22 +2,19 @@
 // const admin = require('firebase-admin');
 
 // 'use strict'; //For CORS access-control module?
-// var access = require('access-control');
 const express = require('express');
 const bodyParser = require('body-parser');
 const firebase = require('./firebase-util.js');
 const Notebook = require('./objects/Notebook');
+const access = require('access-control');
 
 // Setup
 // const db = admin.database();
 const router = express();
-router.use(require('access-control')({
+router.use(access({
   maxAge: '8 hours',
   credentials: true,
 }));
-
-// Define the port to run on
-router.set('port', 80);
 
 // Middleware
 router.use(bodyParser.json());
@@ -173,13 +170,14 @@ router.post('/getEntry', async (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   const obj = {
     entry_hash: '--data-entry-key-1',
-    author: '--user-key-2',
+    author: 'user2@email.com',
+    author_user_hash: '--user-key-2',
     cosigned_by: false,
     date_modified: new Date('2017-01-02').toJSON(),
     date_created: new Date('2017-01-02').toJSON(),
-    tags: {
-      'tag-1': true,
-    },
+    tags: [
+      'tag-1'
+    ],
     type: 'text',
     text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, ' +
       'sed do eiusmod tempor incididunt ut labore et dolore magna ali' +
