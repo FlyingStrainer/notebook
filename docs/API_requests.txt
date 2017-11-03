@@ -30,7 +30,12 @@ response:
 					"image": "",
 					"caption": "",
 					"date_created": "",
-					"author_id": ""
+					"author_id": "",
+					"cosignatures" :
+					[
+						{ user_hash },
+						...
+					]
 				},
 			]
 		},
@@ -48,6 +53,18 @@ api/addEntry POST //Add entry to notebook
 		"image": "",
 		"caption": "",
 		"date_created": "",
-		"author_id": ""
+		"author_id": "",
+		"cosignatures" :
+		[
+			{ user_hash },
+			...
+		]
 	}
 }
+
+api/cosignEntry POST //Cosign entry
+{
+	"entry_uuid": "",	// Unique id of entry being cosigned
+	"user_hash": ""		// User_hash of cosigner, also used to authenticate
+}
+
