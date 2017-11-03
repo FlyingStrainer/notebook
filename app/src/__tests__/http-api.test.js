@@ -18,8 +18,24 @@ afterAll(async () => {
   // await wiper.nukeFirebase();
 });
 
-// GET /user HTTP/1.1
-// Authorization: Basic dXNlcm5hbWU6cGFzcw==
+/*
+describe('POST /user', () => {
+  it('should return json', async () => {
+    const data = {
+      user_hash: '--user-key-1',
+    };
+
+    const response = await request(api)
+      .post('/user')
+      .send(data);
+
+    expect(response).toBeDefined();
+    expect(response.statusCode).toBe(200);
+    const rdata = response.data;
+    expect(rdata.key).toBeDefined();
+  });
+});
+*/
 
 describe('POST /user', () => {
   it('should return json', async () => {
@@ -45,17 +61,17 @@ describe('POST /user', () => {
     // match rdata to:
     // https://github.com/FlyingStrainer/notebook/blob/dev/docs/API_requests.txt
     // and the test server above
-    expect(rdata[user_hash]).toBeDefined();
+    expect(rdata.user_hash).toBeDefined();
     // "user_hash": "",
-    expect(rdata[company_name]).toBeDefined();
+    expect(rdata.company_name).toBeDefined();
     // "company_name": "",
-    expect(rdata[notebooks]).toBeDefined();
+    expect(rdata.notebooks).toBeDefined();
     // "notebooks": [
     //   "notebook_hash",
     //   "notebook_hash",
     //   ...
     // ],
-    expect(rdata[roles]).toBeDefined();
+    expect(rdata.roles).toBeDefined();
     // "roles": [
     //   <role>,
     //   <role>
