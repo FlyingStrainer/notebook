@@ -29,9 +29,11 @@ router.post('/login', (req, res) => {
   const {email, password} = req.body;
 
   if (!(email && password)) {
+    console.log('/login bad');
     res.sendStatus(400);
   }
 
+  console.log('/login good');
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify('--user-key-1'));
 });
@@ -40,20 +42,25 @@ router.post('/register', (req, res) => {
   const {email, password, company_name} = req.body;
 
   if (!(email && password && company_name)) {
+    console.log('/register bad');
     res.sendStatus(400);
   }
 
+  console.log('/register good');
   // res.send(JSON.stringify('--user-key-1'));
+  res.sendStatus(201);
 });
 
 router.post('/user', (req, res) => {
   const {user_hash} = req.body;
 
   if (!(user_hash)) {
+    console.log('/user bad');
     res.sendStatus(400);
     return;
   }
 
+  console.log('/user good');
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify({
     user_hash: '--user-key-1',
@@ -73,11 +80,13 @@ router.post('/addNotebook', (req, res) => {
   const {user_hash, name} = req.body;
 
   if (!(user_hash && name)) {
+    console.log('/addNotebook bad');
     // bad request
     res.sendStatus(400);
     return;
   }
 
+  console.log('/addNotebook good');
   // success
   res.sendStatus(201);
 });
@@ -88,11 +97,13 @@ router.post('/addEntry', (req, res) => {
   const data = entry[type];
 
   if (!(user_hash && notebook_uuid && entry && type && data)) {
+    console.log('/addEntry bad');
     // bad request
     res.sendStatus(400)
     return;
   }
 
+  console.log('/addEntry good');
   // success
   res.sendStatus(201);
 });
@@ -101,12 +112,12 @@ router.post('/cosignEntry', (req, res) => {
   const {user_hash, notebook_uuid, entry_uuid} = req.body;
 
   if (!(user_hash && notebook_uuid && entry_uuid)) {
-    // bad request
+    console.log('/cosignEntry bad');
     res.sendStatus(400)
     return;
   }
 
-  // success
+  console.log('/cosignEntry good');
   res.sendStatus(201);
 });
 
@@ -128,8 +139,16 @@ router.post('/deleteEntry', (req, res) => {
 
 // reading
 router.get('/getEntries', async (req, res) => {
-  res.setHeader('Content-Type', 'application/json');
+  const {user_hash, notebook_uuid} = req.body;
 
+  if (!(user_hash && notebook_uuid)) {
+    console.log('/getEntries bad');
+    res.sendStatus(400)
+    return;
+  }
+
+  console.log('/getEntries good');
+  res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify({
     data_entries: [
       '--data-entry-key-1',
@@ -139,8 +158,16 @@ router.get('/getEntries', async (req, res) => {
 });
 
 router.get('/getEntry', async (req, res) => {
-  res.setHeader('Content-Type', 'application/json');
+  const {user_hash, notebook_uuid, entry_uuid} = req.body;
 
+  if (!(user_hash && notebook_uuid && entry_uuid)) {
+    console.log('/getEntry bad');
+    res.sendStatus(400)
+    return;
+  }
+
+  console.log('/getEntry good');
+  res.setHeader('Content-Type', 'application/json');
   const obj = {
     key: '--data-entry-key-1',
     author: '--user-key-2',
@@ -164,8 +191,15 @@ router.get('/getEntry', async (req, res) => {
 });
 
 router.post('/getNotebooks', (req, res) => {
-  console.log('req: /getNotebooks');
+  const {user_hash} = req.body;
 
+  if (!(user_hash)) {
+    console.log('/getNotebooks bad');
+    res.sendStatus(400);
+    return;
+  }
+
+  console.log('/getNotebooks good');
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify({
     notebooks: [
@@ -176,9 +210,15 @@ router.post('/getNotebooks', (req, res) => {
 });
 
 router.post('/getNotebook', (req, res) => {
-  console.log('req: /getNotebook');
-  const {notebook_hash} = req.body;
+  const {user_hash, notebook_hash} = req.body;
 
+  if (!(user_hash, notebook_hash)) {
+    console.log('/getNotebook bad');
+    res.sendStatus(400);
+    return;
+  }
+
+  console.log('/getNotebook good');
   res.setHeader('Content-Type', 'application/json');
   if (notebook_hash == '--notebook-key-1') {
     res.send(JSON.stringify({
