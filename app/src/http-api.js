@@ -26,16 +26,26 @@ router.use(bodyParser.json());
 // TODO api is a mess
 
 router.post('/user', (req, res) => {
-  console.log('req');
+  console.log('req: /user');
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify({
     user_hash: 'user_hash1',
     company_name: 'company1',
     notebooks: [
-      'notebookhash1',
-      'notebookhash2',
+      '--notebook-key-1',
+      '--notebook-key-2',
     ],
     role: 'user',
+
+    key: '--user-key-1',
+    companyName: 'company1',
+    roleList: {
+      user: true,
+    },
+    notebookList: [
+      '--notebook-key-1',
+      '--notebook-key-2',
+    ],
   }), null, 3);
 });
 
@@ -73,13 +83,39 @@ router.post('/deleteEntry', (req, res) => {
 
 // reading
 router.get('/getEntries', async (req, res) => {
-  const {user_hash} = req.query;
-  firebase.getEntries(user_hash, (snapshot) => {
-    // This is done so that if the user does not exist, a empty obj is returned
-    const response = Object.assign({}, snapshot.val());
+  res.setHeader('Content-Type', 'application/json');
 
-    res.send(response);
-  });// old: await db.ref(`words/${userId}`).once('value');
+  res.send(JSON.stringify({
+    dataEntryList: [
+      '--data-entry-key-1',
+      '--data-entry-key-2',
+    ],
+  }));
+});
+
+router.get('/getEntry', async (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+
+  const obj = {
+    key: '--data-entry-key-1',
+    author: '--user-key-2',
+    cosignedBy: false,
+    dateModified: new Date('2017-01-02').toJSON(),
+    dateCreated: new Date('2017-01-02').toJSON(),
+    tagList: {
+      'tag-1': true,
+    },
+    type: 'text',
+    text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, ' +
+      'sed do eiusmod tempor incididunt ut labore et dolore magna ali' +
+      'qua. Ut enim ad minim veniam, quis nostrud exercitation ullamc' +
+      'o laboris nisi ut aliquip ex ea commodo consequat. Duis aute i' +
+      'rure dolor in reprehenderit in voluptate velit esse cillum dol' +
+      'ore eu fugiat nulla pariatur. Excepteur sint occaecat cupidata' +
+      't non proident, sunt in culpa qui officia deserunt mollit anim' +
+      ' id est laborum.',
+  }
+  res.send(JSON.stringify(obj));
 });
 
 router.post('/getNotebooks', (req, res) => {
@@ -88,8 +124,8 @@ router.post('/getNotebooks', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify({
     notebooks: [
-      'notebookhash1',
-      'notebookhash2',
+      '--notebook-key-1',
+      '--notebook-key-2',
     ],
   }));
 });
@@ -99,15 +135,47 @@ router.post('/getNotebook', (req, res) => {
   const {notebook_hash} = req.body;
 
   res.setHeader('Content-Type', 'application/json');
-  if (notebook_hash == 'notebookhash1') {
+  if (notebook_hash == '--notebook-key-1') {
     res.send(JSON.stringify({
-      uuid: notebook_hash,
-      name: 'notebook name 1',
-      managers: [ 'manager1' ],
-      date_modified: new Date(),
-      date_created: new Date(),
-      tags: [ 'tag1' ],
+      uuid: '--notebook-key-1',
+      managers: [
+        '--manager-key-1',
+        '--manager-key-2',
+      ],
+      date_modified: new Date('2017-01-03').toJSON(),
+      date_created: new Date('2017-01-01').toJSON(),
+      tags: {
+        'tag-1': [
+          '--data-entry-key-1',
+          '--data-entry-key-2',
+        ],
+        'tag-2': [
+          '--data-entry-key-2',
+        ],
+      },
       permisions: { 'user': true },
+
+      key: '--notebook-key-1',
+      name: 'Notebook 1',
+      managerList: [
+        '--manager-key-1',
+        '--manager-key-2',
+      ],
+      dateModified: new Date('2017-01-03').toJSON(),
+      dateCreated: new Date('2017-01-01').toJSON(),
+      tagList: {
+        'tag-1': [
+          '--data-entry-key-1',
+          '--data-entry-key-2',
+        ],
+        'tag-2': [
+          '--data-entry-key-2',
+        ],
+      },
+      permisions: {
+        'read': true,
+        'write': true,
+      },
     }));
   }
   else {
@@ -119,6 +187,37 @@ router.post('/getNotebook', (req, res) => {
       date_created: new Date(),
       tags: [ 'tag1', 'tag2' ],
       permisions: { 'user': true },
+    }));
+    res.send(JSON.stringify({
+      uuid: '--notebook-key-2',
+      managers: [
+        '--manager-key-2',
+      ],
+      date_modified: new Date('2017-02-03').toJSON(),
+      date_created: new Date('2017-02-01').toJSON(),
+      tags: [
+        'tag-2': [
+          '--data-entry-key-2',
+        ],
+      ],
+      permisions: { 'user': true },
+
+      key: '--notebook-key-2',
+      name: 'Notebook 2',
+      managerList: [
+        '--manager-key-2',
+      ],
+      dateModified: new Date('2017-02-03').toJSON(),
+      dateCreated: new Date('2017-02-01').toJSON(),
+      tagList: [
+        'tag-2': [
+          '--data-entry-key-2',
+        ],
+      ],
+      permisions: {
+        'read': true,
+        'write': true,
+      },
     }));
   }
 });
