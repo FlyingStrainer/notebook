@@ -53,7 +53,12 @@ api/addEntry POST //Add entry to notebook
 		"image": "",
 		"caption": "",
 		"date_created": "",
-		"author_id": ""
+		"author_id": "",
+		"cosignatures" :
+		[
+			{ user_hash },
+			...
+		]
 	}
 }
 
