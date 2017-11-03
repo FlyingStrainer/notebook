@@ -18,15 +18,26 @@ function attachWs(app, server) {
 
     ws.on("message", function incoming(message, flags) {
       var data = JSON.parse(message);
-      console.log('received: %s', data);
+      console.log('received: ', data);
 
-      const user_hash = data.user_hash;
+      if (data.type === 'login') {
+        const user_hash = data.user_hash;
+        if (!(user_hash)) {
+          ws.send(JSON.stringify({type:'failed'}));
+        }
+        else {
+          ws.send(JSON.stringify({type:'login',msg:user_hash}));
+        }
+      }
+      if (data.type === 'testpush') {
+        const notebook_hash = '--notebook-key-1';
+        const entry_hash = '--data-entry-key-1';
+        ws.send(JSON.stringify({type:'push',msg:{notebook_hash, entry_hash}}));
+      }
 
-      // close if not manager
 
       // add connection test to value
 
-      ws.send(JSON.stringify({msg:{connectionId:user_hash}}));
     });
 
     ws.on("close", function () {
