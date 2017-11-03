@@ -38,6 +38,24 @@ router.post('/login', (req, res) => {
   res.send(JSON.stringify(data));
 });
 
+
+router.post('/getNotebooks', async (req, res) => {
+  const {user_hash} = req.body;
+
+  if (!(user_hash)) {
+    console.log('/getNotebooks bad', req.body);
+    res.sendStatus(400);
+    return;
+  }
+
+  firebase.getNotebooks(user_hash, (snapshot) => {
+    // This is done so that if the user does not exist, a empty obj is returned
+    const response = Object.assign({}, snapshot.val());
+
+    res.send(response);
+  });// old: await db.ref(`words/${userId}`).once('value');
+});
+
 router.post('/register', (req, res) => {
   const {email, password, company_name} = req.body;
 
@@ -60,9 +78,7 @@ router.post('/user', (req, res) => {
     res.sendStatus(400);
     return;
   }
-
   res.setHeader('Content-Type', 'application/json');
-
   /*
   const example = {
     company_name: 'company1',
@@ -75,12 +91,16 @@ router.post('/user', (req, res) => {
     },
   };
   */
+  firebase.checkUser(user_hash, (snapshot) => {
+    // This is done so that if the user does not exist, a empty obj is returned
+    const data = Object.assign({}, snapshot.val());
 
+    res.send(data);
+    console.log('/user good: ', data);
+    res.send(JSON.stringify(data));
+  });
   // TODO get data in example
-  const data = {};
 
-  console.log('/user good: ', data);
-  res.send(JSON.stringify(data));
 });
 
 // writing
