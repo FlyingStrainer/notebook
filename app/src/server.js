@@ -12,3 +12,5 @@ const server = app.listen(app.get('port'), () => {
   const {port} = server.address();
   console.log(`Server started on port ${port}`);
 });
+
+websocket.attach(app, server);
