@@ -130,6 +130,7 @@ router.post('/getNotebook', (req, res) => {
   if (notebook_hash == '--notebook-key-1') {
     res.send(JSON.stringify({
       uuid: '--notebook-key-1',
+      name: 'Notebook 1',
       managers: [
         '--manager-key-1',
         '--manager-key-2',
@@ -137,25 +138,6 @@ router.post('/getNotebook', (req, res) => {
       date_modified: new Date('2017-01-03').toJSON(),
       date_created: new Date('2017-01-01').toJSON(),
       tags: {
-        'tag-1': [
-          '--data-entry-key-1',
-          '--data-entry-key-2',
-        ],
-        'tag-2': [
-          '--data-entry-key-2',
-        ],
-      },
-      permisions: { 'user': true },
-
-      key: '--notebook-key-1',
-      name: 'Notebook 1',
-      managerList: [
-        '--manager-key-1',
-        '--manager-key-2',
-      ],
-      dateModified: new Date('2017-01-03').toJSON(),
-      dateCreated: new Date('2017-01-01').toJSON(),
-      tagList: {
         'tag-1': [
           '--data-entry-key-1',
           '--data-entry-key-2',
@@ -172,36 +154,19 @@ router.post('/getNotebook', (req, res) => {
   }
   else {
     res.send(JSON.stringify({
-      uuid: notebook_hash,
-      name: 'notebook name 2',
-      managers: [ 'manager2' ],
-      date_modified: new Date(),
-      date_created: new Date(),
-      tags: [ 'tag1', 'tag2' ],
-      permisions: { 'user': true },
-    }));
-    res.send(JSON.stringify({
       uuid: '--notebook-key-2',
+      name: 'Notebook 2',
       managers: [
+        '--manager-key-1',
         '--manager-key-2',
       ],
-      date_modified: new Date('2017-02-03').toJSON(),
-      date_created: new Date('2017-02-01').toJSON(),
+      date_modified: new Date('2017-02-04').toJSON(),
+      date_created: new Date('2017-02-02').toJSON(),
       tags: {
-        'tag-2': [
+        'tag-1': [
+          '--data-entry-key-1',
           '--data-entry-key-2',
         ],
-      },
-      permisions: { 'user': true },
-
-      key: '--notebook-key-2',
-      name: 'Notebook 2',
-      managerList: [
-        '--manager-key-2',
-      ],
-      dateModified: new Date('2017-02-03').toJSON(),
-      dateCreated: new Date('2017-02-01').toJSON(),
-      tagList: {
         'tag-2': [
           '--data-entry-key-2',
         ],
