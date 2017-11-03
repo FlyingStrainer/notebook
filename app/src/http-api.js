@@ -36,10 +36,14 @@ router.post('/login', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
 
   // TODO get user_hash for key
-  const data = {};
+  firebase.loginUser(user_hash, (snapshot) => {
+    // This is done so that if the user does not exist, a empty obj is returned
+    const data = Object.assign({}, snapshot.val());
+    res.send(data);
+    console.log('/login good: ', data);
+    //res.send(JSON.stringify(data));
+  });
 
-  console.log('/login good: ', data);
-  res.send(JSON.stringify(data));
 });
 
 
