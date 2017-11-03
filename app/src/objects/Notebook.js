@@ -2,17 +2,18 @@
 /**
  * uuid
  * name
- * author
- * dataEntries
+ * managerList
  * dateModified
  * dateCreated
+ * tagList
+ * dataEntryList
  */
 class Notebook {
   /**
    * settings
    *   uuid
    *   name
-   *   author
+   *   managerList
    */
   constructor(settings) {
     const dateCreated = new Date();
@@ -20,6 +21,7 @@ class Notebook {
     Object.assign(this, {
       dateModified: dateCreated,
       dateCreated,
+      tagList: [],
       dataEntries: [],
     });
     Object.assign(this, settings);

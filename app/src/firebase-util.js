@@ -40,7 +40,7 @@ module.exports = {
     const notebook = new Notebook({
       uuid: newNotebookKey,
       name: _name,
-      author: 'Current User',
+      managerList: [],
     });
     updates[`/NotebookList/${newNotebookKey}`] = notebook;
 
