@@ -37,7 +37,7 @@ router.post('/login', (req, res) => {
   console.log('/login good');
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify({
-    user_hash:'--user-key-1',
+    user_hash: '--user-key-1',
   }));
 });
 
@@ -67,7 +67,6 @@ router.post('/user', (req, res) => {
   console.log('/user good');
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify({
-    user_hash: '--user-key-1',
     company_name: 'company1',
     notebooks: [
       '--notebook-key-1',
