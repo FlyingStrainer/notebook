@@ -44,11 +44,11 @@ module.exports = {
     // Add notebook updates
     const new_notebook_key = admin.database().ref('NotebookList').push().key;
     const notebook = new Notebook({
-      uuid: newNotebookKey,
+      uuid: new_notebook_key,
       name: _name,
       managerList: [],
     });
-    updates[`/NotebookList/${newNotebookKey}`] = notebook;
+    updates[`/NotebookList/${new_notebook_key}`] = notebook;
 
     // Add user updates
     updates[`/UserList/${user_hash}/NotebookList/${new_notebook_key}`] = true;
