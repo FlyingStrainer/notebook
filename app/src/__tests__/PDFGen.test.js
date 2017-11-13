@@ -1,5 +1,5 @@
 
-const PDFGen = require('./PDFGen');
+const PDFGen = require('../PDFGen');
 const fs = require('fs');
 
 it('tests', () => {

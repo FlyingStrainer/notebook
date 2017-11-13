@@ -45,10 +45,7 @@ var entries = [{date:"11-2-2017", text:"text1",
  module.exports.genPDF(entries, pdfnamein);
 
  // Create a root reference
- var storageRef = admin.storage().bucket("t").ref();
+ //var storageRef = admin.storage().bucket("t").ref();
 
- // Create a reference to 'mountains.jpg'
- var pdfref = storageRef.child(`${pdfnamein}.pdf`);
-
- // Create a reference to 'images/mountains.jpg'
- var pdffolderref = storageRef.child(`pdfs/${pdfnamein}.pdf`);
+ //var pdfref = storageRef.child(`${pdfnamein}.pdf`);
+// var pdffolderref = storageRef.child(`pdfs/${pdfnamein}.pdf`);
