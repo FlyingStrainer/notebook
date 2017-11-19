@@ -6,20 +6,23 @@ uuids are implied
 
 |- NotebookList
 |	|- NotebookUUID+
-|		|-Entries+
-|		|	|- Text
-|		|	|- Date modified
-|		|	|- Date created
-|		|	|- author
-|		|	|- signatures
-|		|	|	|- user uuid+
-|		|	|- tagsList
-|		|		|-tag string+
-|		|- Managers+
+|		|-EntryList
+|		|	|-Entry
+|		|		|- Text
+|		|		|- Date modified
+|		|		|- Date created
+|		|		|- author
+|		|		|- signatures
+|		|			|- user uuid+
+|		|		|- tagsList
+|		|			|-tag string+
+|		|- ManagersList
+|		|	|- user uuid+
 |		|- Date created
 |		|- Date modified
+|		|- isPublic (1: Public, 0: Private)
 |- UserList
-	|- Users (type: firebase.user)+
+	|- User (type: firebase.user)+
 		|- notebook uuid that they have access too+
 		|- Role
 		|- other json properties inlcuded in firebase.user
