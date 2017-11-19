@@ -1,3 +1,8 @@
+//http API Test.
+//Tests to see if all API Calls work from a http GET/POST level
+
+//TODO: Make sure all API calls are included, verify that they all work
+
 
 const admin = require('firebase-admin');
 const FirebaseWiper = require('../test-util/FirebaseWiper');

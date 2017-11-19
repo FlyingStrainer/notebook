@@ -1,3 +1,7 @@
+//Firebase API Test
+//Tests all API hooks 
+
+//TODO: verify vaid functionality, update to include all API calls
 
 // admin is automatically mocked
 const admin = require('firebase-admin');
