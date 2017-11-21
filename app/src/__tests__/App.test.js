@@ -1,7 +1,7 @@
-//React/App smoke test
-//Compiles and tests for crashes
+// React/App smoke test
+// Compiles and tests for crashes
 
-//TODO: Check for any easily extenable tests to add beyond a smoke
+// TODO: Check for any easily extenable tests to add beyond a smoke
 
 import React from 'react';
 import ReactDOM from 'react-dom';

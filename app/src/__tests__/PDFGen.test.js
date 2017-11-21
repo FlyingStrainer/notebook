@@ -1,25 +1,32 @@
-//PDF Smoke Test
-//Test basic implentation and generagtion of a smoke test
+// PDF Smoke Test
+// Test basic implentation and generagtion of a smoke test
 
-//TODO: Test to see if actual PDF is renedered and placed in current directory, maybe somehow look to see if text requested is present in document created??
+// TODO: Test to see if actual PDF is renedered and placed in current directory, maybe somehow look to see if text requested is present in document created??
 
 const PDFGen = require('../PDFGen');
 const fs = require('fs');
 
 it('tests', () => {
-  var testImagePath = '../test-util/testImage.jpg';
+  const testImagePath = '../test-util/testImage.jpg';
   const fname = 'pdfgenout.test';
-  var entries = [{date:"11-5-2017", text:"text1",
-  imgpath: testImagePath, caption:"cap cap cap"}, {date:"11-3-2017", text:"text2",
-  imgpath: testImagePath, caption:"cap cap cap"}];
-  PDFGen.genPDF(entries, pdfnamein);
+  const entries = [{
+    date: '11-5-2017',
+    text: 'text1',
+    imgpath: testImagePath,
+    caption: 'cap cap cap',
+  }, {
+    date: '11-3-2017',
+    text: 'text2',
+    imgpath: testImagePath,
+    caption: 'cap cap cap',
+  }];
+  PDFGen.genPDF(entries, fname);
   expect(() => {
     fs.unlinkSync(`${fname}.pdf`);
   }).not.toThrow();
 });
 
- 
- 
+
 /* var testImage =  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAaQAAAGkCAIA' +
             'AADxLsZiAAAFvklEQVR4nOzXwW2kQBgG0V2LKMiRGBAxkCPnDsEHh+AZGk+9l0B' +
             '/ElLpZxlj/AP4dF+zBwDcQeyABLEDEsQOSBA7IEHsgASxAxLEDkgQOyBB7IAEsQ' +
@@ -52,4 +59,4 @@ it('tests', () => {
             '2AEJYgckiB2QIHZAgtgBCWIHJIgdkCB2QILYAQliBySIHZDwf4wxewPA27nsgAS' +
             'xAxLEDkgQOyBB7IAEsQMSxA5IEDsgQeyABLEDEsQOSBA7IEHsgASxAxLEDkgQOy' +
             'BB7IAEsQMSxA5IEDsgQeyABLEDEsQOSBA7IEHsgASxAxLEDkgQOyBB7IAEsQMSx' +
-            'A5IEDsgQeyAhO8AAAD//8XtFsSTFUE2AAAAAElFTkSuQmCC'*/
+            'A5IEDsgQeyAhO8AAAD//8XtFsSTFUE2AAAAAElFTkSuQmCC' */

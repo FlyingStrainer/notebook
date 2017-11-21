@@ -42,9 +42,8 @@ router.post('/login', (req, res) => {
     const data = Object.assign({}, snapshot.val());
     res.send(data);
     console.log('/login good: ', data);
-    //res.send(JSON.stringify(data));
+    // res.send(JSON.stringify(data));
   });
-
 });
 
 
@@ -103,10 +102,9 @@ router.post('/user', (req, res) => {
     const data = Object.assign({}, snapshot.val());
     res.send(data);
     console.log('/user good: ', data);
-    //res.send(JSON.stringify(data));
+    // res.send(JSON.stringify(data));
   });
   // TODO get data in example
-
 });
 
 // writing
@@ -138,7 +136,7 @@ router.post('/addEntry', (req, res) => {
   if (!(user_hash && notebook_hash && entry && type && data)) {
     console.log('/addEntry bad', req.body);
     // bad request
-    res.sendStatus(400)
+    res.sendStatus(400);
     return;
   }
 
@@ -162,7 +160,7 @@ router.post('/cosignEntry', (req, res) => {
 
   if (!(user_hash && notebook_hash && entry_hash)) {
     console.log('/cosignEntry bad', req.body);
-    res.sendStatus(400)
+    res.sendStatus(400);
     return;
   }
 
@@ -177,7 +175,7 @@ router.post('/getEntries', async (req, res) => {
 
   if (!(user_hash && notebook_hash)) {
     console.log('/getEntries bad', req.body);
-    res.sendStatus(400)
+    res.sendStatus(400);
     return;
   }
 
@@ -206,7 +204,7 @@ router.post('/getEntry', async (req, res) => {
 
   if (!(user_hash && notebook_hash && entry_hash)) {
     console.log('/getEntry bad', req.body);
-    res.sendStatus(400)
+    res.sendStatus(400);
     return;
   }
 
@@ -219,8 +217,6 @@ router.post('/getEntry', async (req, res) => {
     res.send(response);
   });// old: await db.ref(`words/${userId}`).once('value');
 });
-
-
 
 
 router.post('/getNotebooks', async (req, res) => {
@@ -241,14 +237,14 @@ router.post('/getNotebooks', async (req, res) => {
 });
 
 router.post('/makePDF', async (req, res) => {
-  const {pdfarry, filename, location} = req.body;
+  const {pdfarray, filename, location} = req.body;
 
-  //TODO determine error conditions for PDF generation
-  /*if (!(user_hash)) {
+  // TODO determine error conditions for PDF generation
+  /* if (!(user_hash)) {
     console.log('/getNotebooks bad', req.body);
     res.sendStatus(400);
     return;
-  }*/
+  } */
 
   pdfgen.genPDF(pdfarray, filename, location, (snapshot) => {
     // This is done so that if the user does not exist, a empty obj is returned

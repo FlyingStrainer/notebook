@@ -23,6 +23,16 @@
     "no-use-before-define": "warn",
     "camelcase": "off",
     "no-plusplus": "off",
-    "eqeqeq": "warn"
+    "eqeqeq": "warn",
+    "prefer-destructuring": [
+      "error",
+      {
+        "array": false,
+        "object": true
+      },
+      {
+        "enforceForRenamedProperties": false
+      }
+    ]
   }
 }

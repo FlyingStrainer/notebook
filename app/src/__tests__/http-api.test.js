@@ -1,11 +1,12 @@
-//http API Test.
-//Tests to see if all API Calls work from a http GET/POST level
+// http API Test.
+// Tests to see if all API Calls work from a http GET/POST level
 
-//TODO: Make sure all API calls are included, verify that they all work
+// TODO: Make sure all API calls are included, verify that they all work
 
 
 const admin = require('firebase-admin');
 const FirebaseWiper = require('../test-util/FirebaseWiper');
+
 const wiper = new FirebaseWiper(admin);
 const tdata = require('../test-util/firebase-test-data');
 
@@ -44,7 +45,6 @@ describe('POST /user', () => {
 
 describe('POST /user', () => {
   it('should return json', async () => {
-
     // json in
     const data = {
       user_hash: '--user-key-1',

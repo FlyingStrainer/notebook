@@ -31,16 +31,18 @@ module.exports = {
   },
 
   saveNotebook(user_hash, _name) {
-   admin.database().child('UserList').child('user_hash').once('value', function(fbdatasnap) {
-     var exists = (fbdatasnap.val() !== null);
-     saveNotebookCB(user_hash, notebook_uuid, _text, _image,
-       _caption, _dateCreated, _authorID, _tagArr, exists);
-   })
- },
+    admin.database().child('UserList').child('user_hash').once('value', (fbdatasnap) => {
+      const exists = (fbdatasnap.val() !== null);
+      saveNotebookCB(
+        user_hash, notebook_uuid, _text, _image,
+        _caption, _dateCreated, _authorID, _tagArr, exists,
+      );
+    });
+  },
 
   saveNotebookCB(user_hash, _name) {
     const updates = {};
-    if (exists == false) return;
+    if (exists === false) return;
     // Add notebook updates
     const new_notebook_key = admin.database().ref('NotebookList').push().key;
     const notebook = new Notebook({
@@ -56,19 +58,24 @@ module.exports = {
     return admin.database().ref().update(updates);
   },
 
-   addEntry(user_hash, notebook_uuid, _text, _image, _caption, _date_created, _authorID, _tagArr) {
-    admin.database().child('UserList').child('user_hash').once('value', function(fbdatasnap) {
-      var exists = (fbdatasnap.val() !== null);
-      addEntryCB(user_hash, notebook_uuid, _text, _image,
-        _caption, _dateCreated, _authorID, _tagArr, exists);
-    })
+  addEntry(user_hash, notebook_uuid, _text, _image, _caption, _date_created, _authorID, _tagArr) {
+    admin.database().child('UserList').child('user_hash').once('value', (fbdatasnap) => {
+      const exists = (fbdatasnap.val() !== null);
+      addEntryCB(
+        user_hash, notebook_uuid, _text, _image,
+        _caption, _dateCreated, _authorID, _tagArr, exists,
+      );
+    });
   },
 
-  addEntryCB(user_hash, notebook_uuid, _text, _image,
-    _caption, _date_created, _authorID, _tag_arr, exists) {
-    if (exists == false) return;
-    const new_key = admin.database().ref().child('NotebookList').child(notebook_uuid).
-    child('Entries').push().key;
+  addEntryCB(
+    user_hash, notebook_uuid, _text, _image,
+    _caption, _date_created, _authorID, _tag_arr, exists,
+  ) {
+    if (exists === false) return;
+    const new_key = admin.database().ref().child('NotebookList').child(notebook_uuid)
+      .child('Entries')
+      .push().key;
     const notebookEntry = {
       uuid: new_key,
       text: _text,
@@ -96,34 +103,32 @@ module.exports = {
   },
 
   checkUser(user_hash, callback) {
-    admin.database().child('UserList').child('user_hash').once('value', function(fbdatasnap) {
-      var exists = (fbdatasnap.val());
-      if (fbdatasnap!==null)
-        callback(exists);
-    })
+    admin.database().child('UserList').child('user_hash').once('value', (fbdatasnap) => {
+      const exists = (fbdatasnap.val());
+      if (fbdatasnap !== null) { callback(exists); }
+    });
   },
 
   loginUser(email, password) {
-    firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
+    firebase.auth().signInWithEmailAndPassword(email, password).catch((error) => {
+      // Handle Errors here.
+      const errorCode = error.code;
+      const errorMessage = error.message;
     // ...
     });
 
-    firebase.auth().onAuthStateChanged(function(user) {
+    firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-      callback(user);
+        callback(user);
       } else {
-    // No user is signed in.
+        // No user is signed in.
       }
     });
   },
 
   getNotebooks(userHash, callback) {
     admin.database().ref(`/UserList/${userHash}/Notebooks/`).once('value').then((fbdatasnap) => {
-      if (fbdatasnap.val() !== null)
-        callback(fbdatasnap.val());
+      if (fbdatasnap.val() !== null) { callback(fbdatasnap.val()); }
     });
   },
 };

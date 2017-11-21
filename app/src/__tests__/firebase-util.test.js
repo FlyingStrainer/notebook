@@ -1,11 +1,12 @@
-//Firebase API Test
-//Tests all API hooks 
+// Firebase API Test
+// Tests all API hooks
 
-//TODO: verify vaid functionality, update to include all API calls
+// TODO: verify vaid functionality, update to include all API calls
 
 // admin is automatically mocked
 const admin = require('firebase-admin');
 const FirebaseWiper = require('../test-util/FirebaseWiper');
+
 const wiper = new FirebaseWiper(admin);
 
 const firebase = require('../firebase-util');
