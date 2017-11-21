@@ -6,6 +6,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const firebase = require('./firebase-util.js');
+const pdfgen = require('./PDFGen.js');
 
 // Setup
 // const db = admin.database();
@@ -220,6 +221,8 @@ router.post('/getEntry', async (req, res) => {
 });
 
 
+
+
 router.post('/getNotebooks', async (req, res) => {
   const {user_hash} = req.body;
 
@@ -233,6 +236,23 @@ router.post('/getNotebooks', async (req, res) => {
     // This is done so that if the user does not exist, a empty obj is returned
     const response = Object.assign({}, snapshot.val());
 
+    res.send(response);
+  });// old: await db.ref(`words/${userId}`).once('value');
+});
+
+router.post('/makePDF', async (req, res) => {
+  const {pdfarry, filename, location} = req.body;
+
+  //TODO determine error conditions for PDF generation
+  /*if (!(user_hash)) {
+    console.log('/getNotebooks bad', req.body);
+    res.sendStatus(400);
+    return;
+  }*/
+
+  pdfgen.genPDF(pdfarray, filename, location, (snapshot) => {
+    // This is done so that if the user does not exist, a empty obj is returned
+    const response = Object.assign({}, snapshot.val());
     res.send(response);
   });// old: await db.ref(`words/${userId}`).once('value');
 });
