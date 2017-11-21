@@ -142,6 +142,7 @@ reponse:
 }
 
 
+
 api/cosignEntry POST //Cosign entry
 body:
 {
@@ -150,3 +151,42 @@ body:
 	"entry_hash": ""	// Unique id of entry being cosigned
 }
 
+
+
+api/searchByTimestamp POST // Search for entry using timestamp
+
+body:
+{
+	"user_hash": "",
+        "notebook_hash" : "", //Optional, limits scope of search to this notebook
+        "entry_hash" : "", // Optional, limits scope of search to this entry
+	"date": Date()
+}
+
+response: 
+{
+	"user_hash" : "",
+	"notebook_hash" : "",
+	"entry_hash" : "",
+}
+
+
+
+api/searchByText POST // Search for entry using text
+
+body:
+{
+
+	"user_hash" : "",
+        "notebook_hash" : "", //Optional, limits scope of search to this notebook
+        "entry_hash" : "", // Optional, limits scope of search to this entry
+	"text" : ""
+}
+
+response: 
+{
+	"user_hash" : "",
+	"notebook_hash" : "",
+	"entry_hash" : "",
+	//Text location in entry?
+}
