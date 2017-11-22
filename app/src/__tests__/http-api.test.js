@@ -24,24 +24,25 @@ afterAll(async () => {
   // await wiper.nukeFirebase();
 });
 
-/*
-describe('POST /user', () => {
-  it('should return json', async () => {
+describe('POST /login', () => {
+  it('should return a user hash', async () => {
     const data = {
-      user_hash: '--user-key-1',
+      email: 'testuser1@email.com',
+      password: 'testpassword1',
     };
 
     const response = await request(api)
-      .post('/user')
+      .post('/token')
       .send(data);
 
     expect(response).toBeDefined();
-    expect(response.statusCode).toBe(200);
+    expect(response.data).toBeDefined();
+
     const rdata = response.data;
-    expect(rdata.key).toBeDefined();
+    expect(rdata.user_hash).toBeDefined();
+    expect(rdata.user_hash).toEqual('--user-key-1');
   });
 });
-*/
 
 describe('POST /user', () => {
   it('should return json', async () => {
