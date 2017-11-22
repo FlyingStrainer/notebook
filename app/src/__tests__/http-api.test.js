@@ -13,6 +13,20 @@ const tdata = require('../test-util/firebase-test-data');
 const request = require('supertest');
 const api = require('../http-api');
 
+const apiTest = async (path, req, res) => {
+  const response = await request(api)
+    .post(path)
+    .send(req);
+
+  expect(response).toBeDefined();
+  expect(response.data).toBeDefined();
+  expect(response.data).toBeEqual(res);
+  expect(response.statusCode).toBeGreaterThanOrEqual(200);
+  expect(response.statusCode).toBeLessThan(300);
+
+  return response;
+};
+
 beforeAll(async () => {
   await wiper.nukeFirebase();
 
@@ -26,50 +40,33 @@ afterAll(async () => {
 
 describe('POST /login', () => {
   it('should return a user hash', async () => {
-    const data = {
+    const req = {
       email: 'testuser1@email.com',
       password: 'testpassword1',
     };
+    const res = {
+      user_hash: '--user-key-1',
+    };
 
-    const response = await request(api)
-      .post('/token')
-      .send(data);
-
-    expect(response).toBeDefined();
-    expect(response.data).toBeDefined();
-
-    const rdata = response.data;
-    expect(rdata.user_hash).toBeDefined();
-    expect(rdata.user_hash).toEqual('--user-key-1');
+    await apiTest('/login', req, res);
   });
 });
 
 describe('POST /user', () => {
   it('should return json', async () => {
-    // json in
-    const data = {
-      user_hash: '--user-key-1',
+    const req = {
+      email: 'testuser1@email.com',
+      password: 'testpassword1',
     };
+    const res = tdata.UserList['--user-key-1'];
+    res.notebooks = Object.keys(res.notebooks);
 
-    const response = await request(api)
-      .post('/user')
-      .send(data);
-
-    // keep expect response to be defined
-    expect(response).toBeDefined();
-
-    // expect status codes according to:
-    // https://github.com/FlyingStrainer/notebook/blob/test-server/app/src/http-api.js
-    expect(response.statusCode).toBe(200);
-
-    expect(response.data).toBeDefined();
-
-    const rdata = response.data;
-    expect(rdata).toEqual(tdata.UserList['--user-key-1'].toJSON());
+    await apiTest('/user', req, res);
   });
 });
 
 // Cleanup test notebook
+/*
 describe('POST /addNotebook', () => {
   it('should save a notebook', async () => {
     const data = {
@@ -85,9 +82,12 @@ describe('POST /addNotebook', () => {
 
     expect(response).toBeDefined();
     expect(response.statusCode).toBe(201);
+    // TODO check if number of notebooks went up
   });
 });
+*/
 
+/*
 describe('POST /addEntry', () => {
   it('should add an entry to the saved notebook', async () => {
     const data = {
@@ -103,8 +103,10 @@ describe('POST /addEntry', () => {
 
     expect(response).toBeDefined();
     expect(response.statusCode).toBe(201);
+    // check if number of entries went up
   });
 });
+*/
 
 /*
 describe('POST /getEntries', () => {
@@ -127,20 +129,30 @@ describe('POST /getEntries', () => {
 */
 
 describe('POST /getNotebooks', () => {
-  it('Get the notbooks that we added', async () => {
-    const data = {
-      name: 'JestersNotebook',
-      author: 'JestTester',
+  it('Get the notbooks the user can access', async () => {
+    const req = {
+      user_hash: '--user-key-1',
     };
+    const res = {
+      notebooks: tdata.UserList['--user-key-1'].notebooks,
+    };
+    res.notebooks = Object.keys(res.notebooks);
 
-    const response = await request(api)
-      .post('/getNotebooks')
-      .set('Content-Type', 'application/json')
-      .auth('username', 'password')
-      .send(data);
+    await apiTest('/getNotebooks', req, res);
+  });
+});
 
-    expect(response).toBeDefined();
-    expect(response.statusCode).toBe(201);
-    expect(response.body.notebook_hash).toBeDefined();
+describe('POST /getNotebook', () => {
+  it('Get the details of a notebook', async () => {
+    const req = {
+      user_hash: '--user-key-1',
+      notebook_hash: '--notebook-key-2',
+    };
+    const res = notebooks: tdata.NotebookList['--notebook-key-1'];
+    res.manager_list = Object.keys(res.manager_list);
+    res.tag_list = Object.keys(res.tag_list);
+    delete res.data_entries;
+
+    await apiTest('/getNotebook', req, res);
   });
 });
