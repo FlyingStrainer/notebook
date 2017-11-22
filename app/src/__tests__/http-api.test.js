@@ -62,26 +62,10 @@ describe('POST /user', () => {
     // https://github.com/FlyingStrainer/notebook/blob/test-server/app/src/http-api.js
     expect(response.statusCode).toBe(200);
 
-    const rdata = response.data;
+    expect(response.data).toBeDefined();
 
-    // match rdata to:
-    // https://github.com/FlyingStrainer/notebook/blob/dev/docs/API_requests.txt
-    // and the test server above
-    expect(rdata.user_hash).toBeDefined();
-    // "user_hash": "",
-    expect(rdata.company_name).toBeDefined();
-    // "company_name": "",
-    expect(rdata.notebooks).toBeDefined();
-    // "notebooks": [
-    //   "notebook_hash",
-    //   "notebook_hash",
-    //   ...
-    // ],
-    expect(rdata.roles).toBeDefined();
-    // "roles": [
-    //   <role>,
-    //   <role>
-    // ]
+    const rdata = response.data;
+    expect(rdata).toEqual(tdata.UserList['--user-key-1'].toJSON());
   });
 });
 
