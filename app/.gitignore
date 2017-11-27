@@ -1,5 +1,7 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
+.eslintignore
+
 # firebase
 src/fire.js
 
@@ -26,4 +28,3 @@ yarn-error.log*
 #keys
 serviceAccountKey.json
 testServiceAccountKey.json
-
