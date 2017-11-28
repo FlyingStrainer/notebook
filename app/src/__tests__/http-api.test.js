@@ -3,13 +3,7 @@
 
 // TODO: Make sure all API calls are included, verify that they all work
 
-
-const admin = require('firebase-admin');
 const FirebaseWiper = require('../test-util/FirebaseWiper');
-
-const wiper = new FirebaseWiper(admin);
-const tdata = require('../test-util/firebase-test-data');
-
 const request = require('supertest');
 const api = require('../http-api');
 
@@ -19,24 +13,9 @@ const apiTest = async (path, req, res) => {
     .send(req);
 
   expect(response).toBeDefined();
-  expect(response.data).toBeDefined();
-  expect(response.data).toBeEqual(res);
-  expect(response.statusCode).toBeGreaterThanOrEqual(200);
-  expect(response.statusCode).toBeLessThan(300);
 
   return response;
 };
-
-beforeAll(async () => {
-  await wiper.nukeFirebase();
-
-  const updates = tdata;
-  admin.database().ref().update(updates);
-});
-
-afterAll(async () => {
-  // await wiper.nukeFirebase();
-});
 
 describe('POST /login', () => {
   it('should return a user hash', async () => {
