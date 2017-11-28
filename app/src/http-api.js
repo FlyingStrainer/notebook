@@ -72,6 +72,22 @@ router.post('/getNotebooks', async (req, res) => {
   });// old: await db.ref(`words/${userId}`).once('value');
 });
 
+router.post('/getNotebook', async (req, res) => {
+  const {user_hash, notebook_hash} = req.body;
+
+  if (!(user_hash && notebook_hash)) {
+    console.log('/getNotebook bad', req.body);
+    res.sendStatus(400);
+    return;
+  }
+
+  if (firebase.isTest) {
+    res.status(501).send();
+  }
+
+  // TODO
+});
+
 router.post('/register', (req, res) => {
   const {email, password, company_name} = req.body;
 
@@ -255,29 +271,6 @@ router.post('/getEntry', async (req, res) => {
   // TODO verify this works
 
   firebase.getEntry(user_hash, notebook_hash, entry_hash, (snapshot) => {
-    // This is done so that if the user does not exist, a empty obj is returned
-    const response = Object.assign({}, snapshot.val());
-
-    res.send(response);
-  });// old: await db.ref(`words/${userId}`).once('value');
-});
-
-
-router.post('/getNotebooks', async (req, res) => {
-  const {user_hash} = req.body;
-
-  if (!(user_hash)) {
-    console.log('/getNotebooks bad', req.body);
-    res.sendStatus(400);
-    return;
-  }
-
-  if (firebase.isTest) {
-    res.status(204).send();
-    return;
-  }
-
-  firebase.getNotebooks(user_hash, (snapshot) => {
     // This is done so that if the user does not exist, a empty obj is returned
     const response = Object.assign({}, snapshot.val());
 
