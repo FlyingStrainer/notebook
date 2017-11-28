@@ -113,6 +113,8 @@ describe('POST /getNotebooks', () => {
     const req = {
       user_hash: '--user-key-1',
     };
+    
+    await testApi('/getNotebooks', req);
 
   });
 });
@@ -123,6 +125,8 @@ describe('POST /getNotebook', () => {
       user_hash: '--user-key-1',
       notebook_hash: '--notebook-key-2',
     };
+
+    await testApi('/getNotebook', req);
 
   });
 });
