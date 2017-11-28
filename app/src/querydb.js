@@ -13,6 +13,7 @@ firebaseAdmin.initializeApp({
 var database = firebaseAdmin.database();
 
 var algolia = algoliasearch(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_API_KEY);
+module.exports.indexEx = algolia.initIndex('entries');
 var index = algolia.initIndex('entries');
 
 var notebooksRef = database.ref("/Notebooks");
@@ -57,11 +58,9 @@ function searchForText(text) {
   
     // Perform an Algolia search:
     // https://www.algolia.com/doc/api-reference/api-methods/search/
-    index
-      .search({
+    index.search({
         query
-      })
-      .then(responses => {
+      }).then(responses => {
         // Response from Algolia:
         // https://www.algolia.com/doc/api-reference/api-methods/search/#response-format
         console.log(responses.hits);
