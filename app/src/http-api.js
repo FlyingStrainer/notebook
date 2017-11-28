@@ -7,7 +7,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const firebase = require('./firebase-util.js');
 const pdfgen = require('./PDFGen.js');
-// const querydb = require('./querydb.js')
+// const querydb = require('./querydb.js');
 // Setup
 // const db = admin.database();
 const router = express();
@@ -36,19 +36,17 @@ router.post('/login', (req, res) => {
 
   if (firebase.isTest) {
     res.status(204).send();
+    return;
   }
-  else {
 
-    // TODO get user_hash for key
-    firebase.loginUser(user_hash, (snapshot) => {
-      // This is done so that if the user does not exist, a empty obj is returned
-      const data = Object.assign({}, snapshot.val());
-      res.send(data);
-      console.log('/login good: ', data);
-      // res.send(JSON.stringify(data));
-    });
-
-  }
+  // TODO get user_hash for key
+  firebase.loginUser(user_hash, (snapshot) => {
+    // This is done so that if the user does not exist, a empty obj is returned
+    const data = Object.assign({}, snapshot.val());
+    res.send(data);
+    console.log('/login good: ', data);
+    // res.send(JSON.stringify(data));
+  });
 });
 
 
@@ -58,6 +56,11 @@ router.post('/getNotebooks', async (req, res) => {
   if (!(user_hash)) {
     console.log('/getNotebooks bad', req.body);
     res.sendStatus(400);
+    return;
+  }
+
+  if (firebase.isTest) {
+    res.status(204).send();
     return;
   }
 
@@ -78,6 +81,11 @@ router.post('/register', (req, res) => {
     return;
   }
 
+  if (firebase.isTest) {
+    res.status(204).send();
+    return;
+  }
+
   // TODO actually create user
   console.log('/register good');
   res.sendStatus(201);
@@ -91,6 +99,12 @@ router.post('/user', (req, res) => {
     res.sendStatus(400);
     return;
   }
+
+  if (firebase.isTest) {
+    res.status(204).send();
+    return;
+  }
+
   res.setHeader('Content-Type', 'application/json');
   /*
   const example = {
@@ -123,6 +137,11 @@ router.post('/addNotebook', (req, res) => {
     return;
   }
 
+  if (firebase.isTest) {
+    res.status(204).send();
+    return;
+  }
+
   // TODO verify saveNotebook works
   firebase.saveNotebook(user_hash, name).then(() => {
     console.log('/addNotebook good');
@@ -142,6 +161,11 @@ router.post('/addEntry', (req, res) => {
     console.log('/addEntry bad', req.body);
     // bad request
     res.sendStatus(400);
+    return;
+  }
+
+  if (firebase.isTest) {
+    res.status(204).send();
     return;
   }
 
@@ -169,6 +193,11 @@ router.post('/cosignEntry', (req, res) => {
     return;
   }
 
+  if (firebase.isTest) {
+    res.status(204).send();
+    return;
+  }
+
   // TODO actuall cosign entry
   console.log('/cosignEntry good');
   res.sendStatus(201);
@@ -181,6 +210,11 @@ router.post('/getEntries', async (req, res) => {
   if (!(user_hash && notebook_hash)) {
     console.log('/getEntries bad', req.body);
     res.sendStatus(400);
+    return;
+  }
+
+  if (firebase.isTest) {
+    res.status(204).send();
     return;
   }
 
@@ -213,6 +247,11 @@ router.post('/getEntry', async (req, res) => {
     return;
   }
 
+  if (firebase.isTest) {
+    res.status(204).send();
+    return;
+  }
+
   // TODO verify this works
 
   firebase.getEntry(user_hash, notebook_hash, entry_hash, (snapshot) => {
@@ -233,6 +272,11 @@ router.post('/getNotebooks', async (req, res) => {
     return;
   }
 
+  if (firebase.isTest) {
+    res.status(204).send();
+    return;
+  }
+
   firebase.getNotebooks(user_hash, (snapshot) => {
     // This is done so that if the user does not exist, a empty obj is returned
     const response = Object.assign({}, snapshot.val());
@@ -241,7 +285,7 @@ router.post('/getNotebooks', async (req, res) => {
   });// old: await db.ref(`words/${userId}`).once('value');
 });
 
-//might need to filter/parse the data returned from this
+// might need to filter/parse the data returned from this
 router.post('/searchText', async (req, res) => {
   const {user_hash, text} = req.body;
 
@@ -251,9 +295,14 @@ router.post('/searchText', async (req, res) => {
     return;
   }
 
+  if (firebase.isTest) {
+    res.status(204).send();
+    return;
+  }
+
   querydb.indexEx.search({
-    query
-  }).then(responses => {
+    query,
+  }).then((responses) => {
     // Response from Algolia:
     // https://www.algolia.com/doc/api-reference/api-methods/search/#response-format
     res.send(responses.hits);
@@ -269,6 +318,11 @@ router.post('/makePDF', async (req, res) => {
     res.sendStatus(400);
     return;
   } */
+
+  if (firebase.isTest) {
+    res.status(204).send();
+    return;
+  }
 
   pdfgen.genPDF(pdfarray, filename, location, (snapshot) => {
     // This is done so that if the user does not exist, a empty obj is returned
