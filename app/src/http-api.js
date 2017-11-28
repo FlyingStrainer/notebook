@@ -7,7 +7,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const firebase = require('./firebase-util.js');
 const pdfgen = require('./PDFGen.js');
-
+const querydb = require('./querydb.js')
 // Setup
 // const db = admin.database();
 const router = express();
@@ -234,6 +234,25 @@ router.post('/getNotebooks', async (req, res) => {
 
     res.send(response);
   });// old: await db.ref(`words/${userId}`).once('value');
+});
+
+//might need to filter/parse the data returned from this
+router.post('/searchText', async (req, res) => {
+  const {user_hash, text} = req.body;
+
+  if (!(user_hash)) {
+    console.log('/getNotebooks bad', req.body);
+    res.sendStatus(400);
+    return;
+  }
+
+  querydb.indexEx.search({
+    query
+  }).then(responses => {
+    // Response from Algolia:
+    // https://www.algolia.com/doc/api-reference/api-methods/search/#response-format
+    res.send(responses.hits);
+  }); 
 });
 
 router.post('/makePDF', async (req, res) => {
