@@ -3,19 +3,26 @@
 
 // TODO: Make sure all API calls are included, verify that they all work
 
-const FirebaseWiper = require('../test-util/FirebaseWiper');
 const request = require('supertest');
 const api = require('../http-api');
 
-const apiTest = async (path, req, res) => {
-  const response = await request(api)
-    .post(path)
-    .send(req);
+jest.mock('../firebase-util');
 
-  expect(response).toBeDefined();
+async function testApi(path, req) {
+  let response;
 
-  return response;
-};
+  try {
+    response = await request(api)
+      .post(path)
+      .send(req);
+
+  } catch (e) {
+    expect(e.message).toEqual('good');
+  }
+
+  expect(response.statusCode).toBeGreaterThanOrEqual(200);
+  expect(response.statusCode).toBeLessThan(300);
+}
 
 describe('POST /login', () => {
   it('should return a user hash', async () => {
@@ -23,24 +30,18 @@ describe('POST /login', () => {
       email: 'testuser1@email.com',
       password: 'testpassword1',
     };
-    const res = {
-      user_hash: '--user-key-1',
-    };
 
-    await apiTest('/login', req, res);
+    await testApi('/login', req);
   });
 });
 
 describe('POST /user', () => {
   it('should return json', async () => {
+    // TODO
     const req = {
-      email: 'testuser1@email.com',
-      password: 'testpassword1',
     };
-    const res = tdata.UserList['--user-key-1'];
-    res.notebooks = Object.keys(res.notebooks);
 
-    await apiTest('/user', req, res);
+    await testApi('/user', req);
   });
 });
 
@@ -112,12 +113,7 @@ describe('POST /getNotebooks', () => {
     const req = {
       user_hash: '--user-key-1',
     };
-    const res = {
-      notebooks: tdata.UserList['--user-key-1'].notebooks,
-    };
-    res.notebooks = Object.keys(res.notebooks);
 
-    await apiTest('/getNotebooks', req, res);
   });
 });
 
@@ -127,11 +123,6 @@ describe('POST /getNotebook', () => {
       user_hash: '--user-key-1',
       notebook_hash: '--notebook-key-2',
     };
-    const res = notebooks: tdata.NotebookList['--notebook-key-1'];
-    res.manager_list = Object.keys(res.manager_list);
-    res.tag_list = Object.keys(res.tag_list);
-    delete res.data_entries;
 
-    await apiTest('/getNotebook', req, res);
   });
 });

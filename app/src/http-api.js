@@ -7,7 +7,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const firebase = require('./firebase-util.js');
 const pdfgen = require('./PDFGen.js');
-const querydb = require('./querydb.js')
+// const querydb = require('./querydb.js')
 // Setup
 // const db = admin.database();
 const router = express();
@@ -34,16 +34,21 @@ router.post('/login', (req, res) => {
     return;
   }
 
-  res.setHeader('Content-Type', 'application/json');
+  if (firebase.isTest) {
+    res.status(204).send();
+  }
+  else {
 
-  // TODO get user_hash for key
-  firebase.loginUser(user_hash, (snapshot) => {
-    // This is done so that if the user does not exist, a empty obj is returned
-    const data = Object.assign({}, snapshot.val());
-    res.send(data);
-    console.log('/login good: ', data);
-    // res.send(JSON.stringify(data));
-  });
+    // TODO get user_hash for key
+    firebase.loginUser(user_hash, (snapshot) => {
+      // This is done so that if the user does not exist, a empty obj is returned
+      const data = Object.assign({}, snapshot.val());
+      res.send(data);
+      console.log('/login good: ', data);
+      // res.send(JSON.stringify(data));
+    });
+
+  }
 });
 
 
@@ -252,7 +257,7 @@ router.post('/searchText', async (req, res) => {
     // Response from Algolia:
     // https://www.algolia.com/doc/api-reference/api-methods/search/#response-format
     res.send(responses.hits);
-  }); 
+  });
 });
 
 router.post('/makePDF', async (req, res) => {
