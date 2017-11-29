@@ -21,9 +21,53 @@ router.use(bodyParser.json());
 
 // API
 
-// TODO stretch: api
+function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
+  router.post(path, (req, res) => {
+    const body = req.body;
+    const args = [];
 
-// TODO add account api
+    for (var i = 0; i < props.length; i++) {
+      const prop = props[i];
+      if (!(body[prop])) {
+        console.log(`${path} bad`, body);
+        res.sendStatus(400);
+        return;
+      }
+      args.push(body[prop]);
+    }
+
+    if (firebaseUtil.isTest) {
+      res.status(204).send();
+      return;
+    }
+
+    console.log(`${path} ${email} attempt`);
+
+    res.setHeader('Content-Type', 'application/json');
+
+    firebaseUtil[utilFunc].apply(null, args)
+      .then((data) => {
+        console.log(`${path} good`);
+
+        return data;
+      })
+      .catch((err) => {
+        if (allowedErrors.contains(err.message)) {
+          res.status(403).send(err.message);
+
+          console.log(`${path} bad ${err.message}`);
+        }
+        else {
+          res.sendStatus(500);
+
+          console.log(`${path} server failed ${err.message}`);
+        }
+
+        return Promise.reject(err);
+      })
+      .then(thenHandler);
+  });
+}
 
 router.post('/register', (req, res) => {
   const {email, password, company_name} = req.body;
