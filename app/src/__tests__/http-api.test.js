@@ -44,68 +44,39 @@ describe('POST /user', () => {
   });
 });
 
-// Cleanup test notebook
-/*
 describe('POST /addNotebook', () => {
   it('should save a notebook', async () => {
-    const data = {
-      user_hash: 'JestTester',
+    const req = {
+      user_hash: '--user-key-1',
       name: 'JestersNotebook',
     };
 
-    const response = await request(api)
-      .post('/addNotebook')
-      .set('Content-Type', 'application/json')
-      .auth('username', 'password')
-      .send(data);
-
-    expect(response).toBeDefined();
-    expect(response.statusCode).toBe(201);
-    // TODO check if number of notebooks went up
+    await testApi('/addNotebook', req);
   });
 });
-*/
 
-/*
 describe('POST /addEntry', () => {
   it('should add an entry to the saved notebook', async () => {
-    const data = {
-      name: 'JestersNotebook',
-      author: 'JestTester',
+    const req = {
+      user_hash: '--user-key-1',
+      notebook_hash: '--notebook-key-2',
+      entry: 'This is an example entry',
     };
 
-    const response = await request(api)
-      .post('/addEntry')
-      .set('Content-Type', 'application/json')
-      .auth('username', 'password')
-      .send(data);
-
-    expect(response).toBeDefined();
-    expect(response.statusCode).toBe(201);
-    // check if number of entries went up
+    await testApi('/addEntry', req);
   });
 });
-*/
 
-/*
 describe('POST /getEntries', () => {
-  it('get the entry we just added', async () => {
-    const data = {
-      name: 'JestersNotebook',
-      author: 'JestTester',
+  it('get the entries for a notebook', async () => {
+    const req = {
+      user_hash: '--user-key-1',
+      notebook_hash: '--notebook-key-2',
     };
 
-    const response = await request(api)
-      .post('/getEntries')
-      .set('Content-Type', 'application/json')
-      .auth('username', 'password')
-      .send(data);
-
-    expect(response).toBeDefined();
-    expect(response.statusCode).toBe(201);
+    await testApi('/getEntries', req);
   });
 });
-*/
 
 describe('POST /getNotebooks', () => {
   it('Get the notbooks the user can access', async () => {
@@ -125,5 +96,79 @@ describe('POST /getNotebook', () => {
     };
 
     await testApi('/getNotebook', req);
+  });
+});
+
+describe('POST /managerView', () => {
+  it('Switch to manager view', async () => {
+    const req = {
+      user_hash: '--user-key-1',
+    };
+
+    await testApi('/managerView', req);
+  });
+});
+
+describe('POST /getBackup', () => {
+  it('Get a notebook backup', async () => {
+    const req = {
+      user_hash: '--user-key-1',
+      notebook_hash: '--notebook-key-2',
+    };
+
+    await testApi('/getBackup', req);
+  });
+});
+
+describe('POST /feedback', () => {
+  it('Send feedback to the devs', async () => {
+    const req = {
+      message: 'This is sample feedback',
+    };
+
+    await testApi('/feedback', req);
+  });
+});
+
+describe('POST /setNotebookPermisions', () => {
+  it('Set the permissions of the notebook', async () => {
+    const req = {
+      user_hash: '--user-key-1',
+      notebook_hash: '--notebook-key-2',
+    };
+
+    await testApi('/setNotebookPermisions', req);
+  });
+});
+
+describe('POST /format', () => {
+  it('Set the format', async () => {
+    const req = {
+      user_hash: '--user-key-1',
+      notebook_hash: '--notebook-key-2',
+    };
+
+    await testApi('/format', req);
+  });
+});
+
+describe('POST /getLink', () => {
+  it('Get a link for sharing', async () => {
+    const req = {
+      user_hash: '--user-key-1',
+      notebook_hash: '--notebook-key-2',
+    };
+
+    await testApi('/getLink', req);
+  });
+});
+
+describe('GET /notebook/:notebook_hash', () => {
+  it('undetermined', async () => {
+    const req = {
+      notebook_hash: '--notebook-key-2',
+    };
+
+    await testApi('/notebook/:notebook_hash', req);
   });
 });
