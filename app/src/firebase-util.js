@@ -131,4 +131,62 @@ module.exports = {
       if (fbdatasnap.val() !== null) { callback(fbdatasnap.val()); }
     });
   },
+
+  managerView(user_hash) {
+    return admin.database().ref(`/UserList/${userHash}/Notebooks/`).once('value');
+  },
+
+  getNotebook(user_hash, notebook_hash) {
+    return admin.database().ref(`/NotebookList/${notebook_hash}/`).once('value')
+      .then((snap) => {
+        if (fbdatasnap.val() !== null) {
+          return fbdatasnap.val();
+        }
+        else {
+          throw 'can\'t find notebook';
+        }
+      });
+  },
+
+  feedback(message) {
+    const new_key = admin.database().ref('feedback').push().key;
+
+    const updates = {};
+    updates[`/feedback/${new_notebook_key}`] = message;
+
+    return admin.database().ref().update(updates);
+  },
+
+  setNotebookPermisions(user_hash, notebook_hash, change_list) {
+    const updates = {};
+    updates[`/NotebookList/${notebook_hash}/permisions`] = message;
+
+    for (var i = 0; i < change_list.length; i++) {
+      const type = user_list[i].type;
+      const user_hash = user_list[i].user_hash;
+
+      if (type === 'add') {
+        updates[`UserList/${user_hash}/notebook_list/${notebook_hash}`] = true;
+      }
+      else if (type === 'remove') {
+        updates[`UserList/${user_hash}/notebook_list/${notebook_hash}`] = null;
+      }
+    }
+
+    return admin.database().ref().update(updates);
+  },
+
+  getLink(user_hash, notebook_hash) {
+    return admin.database().ref(`/NotebookList/${notebook_hash}/`).once('value')
+      .then((snap) => {
+        if (fbdatasnap.val() !== null) {
+          return fbdatasnap.val();
+        }
+        else {
+          throw 'can\'t find notebook';
+        }
+      });
+  },
+
+  format() {},
 };

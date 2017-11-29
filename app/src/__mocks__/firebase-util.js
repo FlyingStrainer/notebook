@@ -29,4 +29,11 @@ module.exports = {
   getNotebooks() {
 
   },
+
+  managerView() {},
+  // getBackup() {},
+  feedback() {},
+  setNotebookPermisions() {},
+  getLink() {},
+  format() {},
 };

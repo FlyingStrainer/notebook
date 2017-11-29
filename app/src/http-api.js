@@ -36,17 +36,16 @@ router.post('/login', (req, res) => {
 
   if (firebaseUtil.isTest) {
     res.status(204).send();
-    return;
   }
 
   // TODO get user_hash for key
-  firebaseUtil.loginUser(user_hash, (snapshot) => {
-    // This is done so that if the user does not exist, a empty obj is returned
-    const data = Object.assign({}, snapshot.val());
-    res.send(data);
-    console.log('/login good: ', data);
-    // res.send(JSON.stringify(data));
-  });
+  // firebaseUtil.loginUser(user_hash, (snapshot) => {
+  //   // This is done so that if the user does not exist, a empty obj is returned
+  //   const data = Object.assign({}, snapshot.val());
+  //   res.send(data);
+  //   console.log('/login good: ', data);
+  //   // res.send(JSON.stringify(data));
+  // });
 });
 
 
@@ -290,16 +289,16 @@ router.post('/searchText', async (req, res) => {
 
   if (firebaseUtil.isTest) {
     res.status(204).send();
-    return;
   }
 
-  querydb.indexEx.search({
-    query,
-  }).then((responses) => {
-    // Response from Algolia:
-    // https://www.algolia.com/doc/api-reference/api-methods/search/#response-format
-    res.send(responses.hits);
-  });
+  // TODO add this back in before finishing
+  // querydb.indexEx.search({
+  //   query,
+  // }).then((responses) => {
+  //   // Response from Algolia:
+  //   // https://www.algolia.com/doc/api-reference/api-methods/search/#response-format
+  //   res.send(responses.hits);
+  // });
 });
 
 router.post('/makePDF', async (req, res) => {
@@ -325,10 +324,10 @@ router.post('/makePDF', async (req, res) => {
 });
 
 router.post('/managerView', async (req, res) => {
-  const {user_hash, notebook_hash} = req.body;
+  const {user_hash} = req.body;
 
   // TODO check for all options
-  if (!(user_hash && notebook_hash)) {
+  if (!(user_hash)) {
     console.log('/getLink bad', req.body);
     res.sendStatus(400);
     return;
@@ -340,6 +339,7 @@ router.post('/managerView', async (req, res) => {
   }
 
   // TODO
+  firebaseUtil.managerView(user_hash);
 });
 
 router.post('/getBackup', async (req, res) => {
@@ -358,6 +358,7 @@ router.post('/getBackup', async (req, res) => {
   }
 
   // TODO
+  firebaseUtil.getNotebook(user_hash);
 });
 
 router.post('/feedback', async (req, res) => {
@@ -377,6 +378,7 @@ router.post('/feedback', async (req, res) => {
 
   // TODO
   // Given that I submit the feedback, it will send a message from the user to our emails
+  firebaseUtil.feedback(message);
 });
 
 router.post('/setNotebookPermisions', async (req, res) => {
@@ -395,6 +397,7 @@ router.post('/setNotebookPermisions', async (req, res) => {
   }
 
   // TODO
+  firebaseUtil.setNotebookPermisions(user_hash, notebook_hash);
 });
 
 router.post('/getLink', async (req, res) => {
@@ -413,6 +416,7 @@ router.post('/getLink', async (req, res) => {
   }
 
   // TODO
+  firebaseUtil.getLink(user_hash, notebook_hash);
 });
 
 router.post('/format', async (req, res) => {
@@ -431,6 +435,16 @@ router.post('/format', async (req, res) => {
   }
 
   // TODO
+  firebaseUtil.format(user_hash, notebook_hash);
+});
+
+router.get('/notebook/:notebook_hash', async (req, res) => {
+  const {notebook_hash} = req.params;
+
+  firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).send(notebook);
+  });
 });
 
 module.exports = router;
