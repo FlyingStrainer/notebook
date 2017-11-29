@@ -14,10 +14,12 @@ module.exports = {
 
   init(myadmin) {
     firebaseAdmin = myadmin;
+    module.exports.resetAlgolia();
   },
 
   resetAlgolia() {
     var database = firebaseAdmin.database();
+
 
     var notebooksRef = database.ref("/Notebooks");
     //clear before import
@@ -25,7 +27,7 @@ module.exports = {
       console.log("Cleared");
     });
 
-    notebooksRef.once('value', initialImport);
+    notebooksRef.once('value', module.exports.initialImport);
   },
 
   initialImport(dataSnapshot) {
@@ -66,6 +68,7 @@ module.exports = {
           // Response from Algolia:
           // https://www.algolia.com/doc/api-reference/api-methods/search/#response-format
           console.log(responses.hits);
+          return responses.hits;
         });
   },
 
