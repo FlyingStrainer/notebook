@@ -103,6 +103,40 @@ router.post('/login', (req, res) => {
   });
 });
 
+router.post('/user', (req, res) => {
+  const {user_hash} = req.body;
+
+  if (!(user_hash)) {
+    console.log('/user bad', req.body);
+    res.sendStatus(400);
+    return;
+  }
+
+  if (firebaseUtil.isTest) {
+    res.status(204).send();
+    return;
+  }
+
+  res.setHeader('Content-Type', 'application/json');
+  /*
+  const example = {
+    company_name: 'company1',
+    notebooks: [
+      '--notebook-key-1',
+      '--notebook-key-2',
+    ],
+    roles: (user|manager),
+  };
+  */
+  firebaseUtil.checkUser(user_hash, (snapshot) => {
+    // This is done so that if the user does not exist, a empty obj is returned
+    const data = Object.assign({}, snapshot.val());
+    res.send(data);
+    console.log('/user good: ', data);
+    // res.send(JSON.stringify(data));
+  });
+  // TODO get data in example
+});
 
 router.post('/getNotebooks', async (req, res) => {
   const {user_hash} = req.body;
@@ -140,41 +174,6 @@ router.post('/getNotebook', async (req, res) => {
   }
 
   // TODO
-});
-
-router.post('/user', (req, res) => {
-  const {user_hash} = req.body;
-
-  if (!(user_hash)) {
-    console.log('/user bad', req.body);
-    res.sendStatus(400);
-    return;
-  }
-
-  if (firebaseUtil.isTest) {
-    res.status(204).send();
-    return;
-  }
-
-  res.setHeader('Content-Type', 'application/json');
-  /*
-  const example = {
-    company_name: 'company1',
-    notebooks: [
-      '--notebook-key-1',
-      '--notebook-key-2',
-    ],
-    roles: (user|manager),
-  };
-  */
-  firebaseUtil.checkUser(user_hash, (snapshot) => {
-    // This is done so that if the user does not exist, a empty obj is returned
-    const data = Object.assign({}, snapshot.val());
-    res.send(data);
-    console.log('/user good: ', data);
-    // res.send(JSON.stringify(data));
-  });
-  // TODO get data in example
 });
 
 // writing

@@ -78,6 +78,13 @@ module.exports = {
     });
   },
 
+  checkUser(user_hash, callback) {
+    admin.database().child('UserList').child('user_hash').once('value', (fbdatasnap) => {
+      const exists = (fbdatasnap.val());
+      if (fbdatasnap !== null) { callback(exists); }
+    });
+  },
+
   saveNotebook(user_hash, _name) {
     admin.database().child('UserList').child('user_hash').once('value', (fbdatasnap) => {
       const exists = (fbdatasnap.val() !== null);
@@ -147,13 +154,6 @@ module.exports = {
   getEntry(user_hash, _uuid, entry_id, callback) {
     admin.database().ref(`/NotebookList/${_uuid}/data_entries/${entry_id}/`).once('value').then((fbdatasnap) => {
       callback(fbdatasnap.val());
-    });
-  },
-
-  checkUser(user_hash, callback) {
-    admin.database().child('UserList').child('user_hash').once('value', (fbdatasnap) => {
-      const exists = (fbdatasnap.val());
-      if (fbdatasnap !== null) { callback(exists); }
     });
   },
 
