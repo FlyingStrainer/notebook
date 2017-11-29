@@ -57,7 +57,7 @@ module.exports = {
               role_list: {
                 user: true,
               },
-              notebook_list: {},
+              notebooks: {},
             };
 
             admin.database().ref().update(update)
@@ -101,8 +101,8 @@ module.exports = {
         const user = snap.val();
 
         if (user) {
-          user.notebook_list = user.notebook_list || {};
-          user.notebook_list = Object.keys(user.notebook_list);
+          user.notebooks = user.notebooks || {};
+          user.notebooks = Object.keys(user.notebooks);
 
           return user;
         }
@@ -112,11 +112,11 @@ module.exports = {
   },
 
   getNotebooks(user_hash) {
-    return module.exports.checkUser(user_hash).then(user => ({notebook_list: user.notebook_list}));
+    return module.exports.checkUser(user_hash).then(user => ({notebooks: user.notebooks}));
   },
 
   saveNotebook(user_hash, _name) {
-    admin.database().child('UserList').child('user_hash').once('value', (fbdatasnap) => {
+    return admin.database().ref(`UserList/${user_hash}`).child('UserList').child('user_hash').once('value', (fbdatasnap) => {
       const exists = (fbdatasnap.val() !== null);
       saveNotebookCB(
         user_hash, notebook_uuid, _text, _image,
@@ -220,9 +220,9 @@ module.exports = {
       const user_hash = user_list[i].user_hash;
 
       if (type === 'add') {
-        updates[`UserList/${user_hash}/notebook_list/${notebook_hash}`] = true;
+        updates[`UserList/${user_hash}/notebooks/${notebook_hash}`] = true;
       } else if (type === 'remove') {
-        updates[`UserList/${user_hash}/notebook_list/${notebook_hash}`] = null;
+        updates[`UserList/${user_hash}/notebooks/${notebook_hash}`] = null;
       }
     }
 
