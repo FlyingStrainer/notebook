@@ -111,9 +111,10 @@ module.exports = {
       });
   },
 
-  getNotebooks(user_hash) {
-    return module.exports.checkUser(user_hash).then(user => ({notebooks: user.notebooks}));
-  },
+  // NOTE not used in frontend
+  // getNotebooks(user_hash) {
+  //   return module.exports.checkUser(user_hash).then(user => ({notebooks: user.notebooks}));
+  // },
 
   saveNotebook(user_hash, _name) {
     return admin.database().ref(`UserList/${user_hash}`).child('UserList').child('user_hash').once('value', (fbdatasnap) => {

@@ -104,15 +104,16 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
-(() => {
-  const path = '/getNotebooks';
-  const props = ['user_hash'];
-  const utilFunc = 'getNotebooks';
-  const thenHandler = () => {};
-  const allowedErrors = ['user not found'];
-
-  addRoute(path, props, utilFunc, thenHandler, allowedErrors);
-})();
+// NOTE not used in frontend
+// (() => {
+//   const path = '/getNotebooks';
+//   const props = ['user_hash'];
+//   const utilFunc = 'getNotebooks';
+//   const thenHandler = () => {};
+//   const allowedErrors = ['user not found'];
+//
+//   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
+// })();
 
 router.post('/getNotebook', async (req, res) => {
   const {user_hash, notebook_hash} = req.body;
