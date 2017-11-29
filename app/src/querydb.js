@@ -5,18 +5,15 @@ let globalFirebaseAdmin;
 
 // load values from the .env file in this directory into process.env
 dotenv.load();
+
 module.exports = {
-  algolia: algoliasearch(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_API_KEY),
-  indexEx: algolia.initIndex('entries'),
   init(firebaseAdmin) {
     globalFirebaseAdmin = firebaseAdmin;
-  }
-}
+  },
+};
 
-//local index for testing functiions from this file
-var index = module.exports.algolia.initIndex('entries');
-
-searchForText("test");
+module.exports.algolia = algoliasearch(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_API_KEY);
+module.exports.indexEx = module.exports.algolia.initIndex('entries');
 
 function resetAlgolia() {
   var firebaseAdmin = globalFirebaseAdmin;
