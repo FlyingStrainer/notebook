@@ -25,7 +25,7 @@ admin.initializeApp({
 
 module.exports = {
   createUser(email, password, company_name) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(((resolve, reject) => {
       module.exports.loginUser(email, password)
         .then((user_data) => {
           reject(new Error('user already exists'));
@@ -51,38 +51,47 @@ module.exports = {
               notebook_list: {},
             };
 
-            admin.database().ref().update(update).then(() => {
-              delete user_data.password;
-              resolve(user_data);
-            }).catch(reject);
-          }
-          else {
+            admin.database().ref().update(update)
+              .then(() => {
+                delete user_data.password;
+                resolve(user_data);
+              })
+              .catch(reject);
+          } else {
             reject(err);
           }
         });
-    });
+    }));
   },
 
   loginUser(email, password) {
-    return new Promise(function(resolve, reject) {
-      admin.database().ref(`login_info/${email}:${password}`).once('value', (snap) => {
-        const user_data = snap.val();
-        if (user_data) {
-          delete user_data.password;
-          resolve(user_data);
-        }
-        else {
-          reject(new Error('user not found'));
-        }
-      }).catch(reject);
-    });
+    return new Promise(((resolve, reject) => {
+      admin.database().ref(`login_info/${email}:${password}`).once('value')
+        .then((snap) => {
+          const user_data = snap.val();
+          if (user_data) {
+            delete user_data.password;
+            resolve(user_data);
+          } else {
+            reject(new Error('user not found'));
+          }
+        })
+        .catch(reject);
+    }));
   },
 
-  checkUser(user_hash, callback) {
-    admin.database().child('UserList').child('user_hash').once('value', (fbdatasnap) => {
-      const exists = (fbdatasnap.val());
-      if (fbdatasnap !== null) { callback(exists); }
-    });
+  checkUser(user_hash) {
+    return admin.database().child('UserList').child(user_hash).once('value')
+      .then((snap) => {
+        const user = snap.val();
+
+        if (user) {
+          user.notebook_list = Object.keys(user.notebook_list);
+          return user;
+        }
+
+        return Promise.reject(new Error('user not found'));
+      });
   },
 
   saveNotebook(user_hash, _name) {
@@ -173,9 +182,8 @@ module.exports = {
         if (fbdatasnap.val() !== null) {
           return fbdatasnap.val();
         }
-        else {
-          throw new Error('can\'t find notebook');
-        }
+
+        throw new Error('can\'t find notebook');
       });
   },
 
@@ -192,14 +200,13 @@ module.exports = {
     const updates = {};
     updates[`/NotebookList/${notebook_hash}/permisions`] = message;
 
-    for (var i = 0; i < change_list.length; i++) {
+    for (let i = 0; i < change_list.length; i++) {
       const type = user_list[i].type;
       const user_hash = user_list[i].user_hash;
 
       if (type === 'add') {
         updates[`UserList/${user_hash}/notebook_list/${notebook_hash}`] = true;
-      }
-      else if (type === 'remove') {
+      } else if (type === 'remove') {
         updates[`UserList/${user_hash}/notebook_list/${notebook_hash}`] = null;
       }
     }
@@ -213,9 +220,8 @@ module.exports = {
         if (fbdatasnap.val() !== null) {
           return fbdatasnap.val();
         }
-        else {
-          throw 'can\'t find notebook';
-        }
+
+        throw 'can\'t find notebook';
       });
   },
 
@@ -224,5 +230,5 @@ module.exports = {
     updates[`/NotebookList/${notebook_hash}/format`] = format;
 
     return admin.database().ref().update(updates);
-  }
+  },
 };

@@ -117,25 +117,27 @@ router.post('/user', (req, res) => {
     return;
   }
 
+  console.log('/user attempt');
+
   res.setHeader('Content-Type', 'application/json');
-  /*
-  const example = {
-    company_name: 'company1',
-    notebooks: [
-      '--notebook-key-1',
-      '--notebook-key-2',
-    ],
-    roles: (user|manager),
-  };
-  */
-  firebaseUtil.checkUser(user_hash, (snapshot) => {
-    // This is done so that if the user does not exist, a empty obj is returned
-    const data = Object.assign({}, snapshot.val());
-    res.send(data);
-    console.log('/user good: ', data);
-    // res.send(JSON.stringify(data));
-  });
-  // TODO get data in example
+
+  firebaseUtil.checkUser(user_hash)
+    .then((user) => {
+      res.status(200).send(data);
+
+      console.log('/user good: ', data);
+    })
+    .catch((err) => {
+      if (err.message === 'user not found') {
+        res.status(403).send(err.message);
+
+        console.log('/user bad: ', err.message);
+      } else {
+        res.status(500).send(err.message);
+
+        console.log('/user server bad: ', err.message);
+      }
+    });
 });
 
 router.post('/getNotebooks', async (req, res) => {
