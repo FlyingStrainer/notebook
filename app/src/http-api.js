@@ -78,7 +78,7 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
   const props = ['email', 'password', 'company_name'];
   const utilFunc = 'createUser';
   const thenHandler = () => {};
-  const allowedErrors = ['user already exists'];
+  const allowedErrors = ['email already exists'];
 
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
@@ -88,7 +88,7 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
   const props = ['email', 'password'];
   const utilFunc = 'loginUser';
   const thenHandler = () => {};
-  const allowedErrors = ['user not found', 'incorrect password'];
+  const allowedErrors = ['email not found', 'incorrect password'];
 
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
@@ -106,7 +106,7 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
 (() => {
   const path = '/getNotebooks';
   const props = ['user_hash'];
-  const utilFunc = 'checkUser';
+  const utilFunc = 'getNotebooks';
   const thenHandler = () => {};
   const allowedErrors = ['user not found'];
 

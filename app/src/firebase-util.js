@@ -28,10 +28,10 @@ module.exports = {
     return new Promise(((resolve, reject) => {
       module.exports.loginUser(email, password)
         .then(() => {
-          reject(new Error('user already exists'));
+          reject(new Error('email already exists'));
         })
         .catch((err) => {
-          if (err.message === 'user not found') {
+          if (err.message === 'email not found') {
             const user_hash = admin.database().ref('UserList').push().key;
 
             const user_data = {
@@ -82,7 +82,7 @@ module.exports = {
               reject(new Error('incorrect password'));
             }
           } else {
-            reject(new Error('user not found'));
+            reject(new Error('email not found'));
           }
         })
         .catch(reject);
@@ -103,6 +103,10 @@ module.exports = {
 
         return Promise.reject(new Error('user not found'));
       });
+  },
+
+  getNotebooks(user_hash) {
+    return module.exports.checkUser(user_hash).then(user => ({notebook_list: user.notebook_list}));
   },
 
   saveNotebook(user_hash, _name) {
@@ -174,12 +178,6 @@ module.exports = {
   getEntry(user_hash, _uuid, entry_id, callback) {
     admin.database().ref(`/NotebookList/${_uuid}/data_entries/${entry_id}/`).once('value').then((fbdatasnap) => {
       callback(fbdatasnap.val());
-    });
-  },
-
-  getNotebooks(userHash, callback) {
-    admin.database().ref(`/UserList/${userHash}/Notebooks/`).once('value').then((fbdatasnap) => {
-      if (fbdatasnap.val() !== null) { callback(fbdatasnap.val()); }
     });
   },
 
