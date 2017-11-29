@@ -35,12 +35,8 @@ module.exports = {
     return admin.database().ref(path).once('value')
       .then((data) => {
         const permision = data.val();
-        if (permision && permision[action]) {
-          return true;
-        } else {
-          return false;
-        }
-      })
+        return permision && permision[action];
+      });
   },
 
   createUser(email, password, company_name) {
