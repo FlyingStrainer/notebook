@@ -15,7 +15,6 @@ async function testApi(path, req) {
     response = await request(api)
       .post(path)
       .send(req);
-
   } catch (e) {
     expect(e.message).toEqual('good');
   }
@@ -113,9 +112,8 @@ describe('POST /getNotebooks', () => {
     const req = {
       user_hash: '--user-key-1',
     };
-    
-    await testApi('/getNotebooks', req);
 
+    await testApi('/getNotebooks', req);
   });
 });
 
@@ -127,6 +125,5 @@ describe('POST /getNotebook', () => {
     };
 
     await testApi('/getNotebook', req);
-
   });
 });
