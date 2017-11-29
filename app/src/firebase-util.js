@@ -68,6 +68,8 @@ module.exports = {
               },
               notebooks: {},
             };
+            update[`companies/${company_name}/company_name`] = company_name;
+            update[`companies/${company_name}/users/${user_hash}`] = true;
 
             admin.database().ref().update(update)
               .then(() => {
