@@ -25,11 +25,12 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
   router.post(path, (req, res) => {
     const {body} = req;
     const args = [];
+    const line = JSON.stringify(body).split('\n')[0].substr(0, 120);
 
     for (let i = 0; i < props.length; i++) {
       const prop = props[i];
       if (!(body[prop])) {
-        console.log(`${path} bad`, body);
+        console.log(`${path} bad:`, line);
         res.sendStatus(400);
         return;
       }
@@ -41,159 +42,59 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
       return;
     }
 
-    console.log(`${path} attempt`);
+    console.log(`${path} attempt:`, line);
 
     res.setHeader('Content-Type', 'application/json');
 
     firebaseUtil[utilFunc].apply(null, args)
       .then((data) => {
-        console.log(`${path} good`);
+        const dataline = JSON.stringify(data).split('\n')[0].substr(0, 120);
+        console.log(`${path} good:`, dataline);
 
         res.status(200).send(data);
 
         return data;
       })
       .catch((err) => {
-        if (allowedErrors.contains(err.message)) {
-          res.status(403).send(err.message);
+        if (allowedErrors.includes(err.message)) {
+          res.status(403).send({message: err.message});
 
-          console.log(`${path} bad ${err.message}`);
+          console.log(`${path} bad:`, err.message);
         } else {
-          res.sendStatus(500);
+          res.status(500).send({message: err.message});
 
-          console.log(`${path} server failed ${err.message}`);
+          console.log(`${path} server failed:`, err.message);
         }
 
         return Promise.reject(err);
       })
-      .then(thenHandler);
+      .then(thenHandler)
+      .catch(() => {});
   });
 }
 
-router.post('/register', (req, res) => {
-  const {email, password, company_name} = req.body;
+(() => {
+  const path = '/register';
+  const props = ['email', 'password', 'company_name'];
+  const utilFunc = 'createUser';
+  const thenHandler = () => {};
+  const allowedErrors = ['user already exists'];
 
-  if (!(email && password && company_name)) {
-    console.log('/register bad', req.body);
-    res.sendStatus(400);
-    return;
-  }
-
-  if (firebaseUtil.isTest) {
-    res.status(204).send();
-    return;
-  }
-
-  console.log(`/register ${email} attempt`);
-
-  res.setHeader('Content-Type', 'application/json');
-
-  // register
-  firebaseUtil.createUser(email, password, company_name)
-    .then((user_data) => {
-      res.status(200).send(user_data);
-
-      console.log(`/register ${email} success`);
-    })
-    .catch((err) => {
-      switch (err.message) {
-        case 'user already exists':
-          res.status(403).send({
-            message: err.message,
-            stack: err.stack,
-          });
-
-          console.log(`/register ${email} bad ${err.message}`);
-          break;
-        default:
-          res.status(500).send({
-            message: err.message,
-            stack: err.stack,
-          });
-
-          console.log(`/register ${email} server failed ${err.message}`);
-      }
-    });
-});
-
-router.post('/login', (req, res) => {
-  const {email, password} = req.body;
-
-  if (!(email && password)) {
-    console.log('/login bad', req.body);
-    res.sendStatus(400);
-    return;
-  }
-
-  if (firebaseUtil.isTest) {
-    res.status(204).send();
-    return;
-  }
-
-  console.log(`/login ${email} attempt`);
-
-  res.setHeader('Content-Type', 'application/json');
-
-  // login
-  firebaseUtil.loginUser(email, password).then((user_data) => {
-    res.status(200).send(user_data);
-
-    console.log(`/login ${email} success`);
-  }).catch((err) => {
-    switch (err.message) {
-      case 'user not found':
-      case 'incorrect password':
-        res.status(403).send({message: err.message});
-
-        console.log(`/login ${email} bad ${err.message}`);
-        break;
-      default:
-        res.sendStatus(500);
-
-        console.log(`/login ${email} server failed ${err.message}`);
-    }
-  });
-});
-
-router.post('/user', (req, res) => {
-  const {user_hash} = req.body;
-
-  if (!(user_hash)) {
-    console.log('/user bad', req.body);
-    res.sendStatus(400);
-    return;
-  }
-
-  if (firebaseUtil.isTest) {
-    res.status(204).send();
-    return;
-  }
-
-  console.log('/user attempt');
-
-  res.setHeader('Content-Type', 'application/json');
-
-  firebaseUtil.checkUser(user_hash)
-    .then((data) => {
-      res.status(200).send(data);
-
-      console.log('/user good: ', data);
-    })
-    .catch((err) => {
-      if (err.message === 'user not found') {
-        res.status(403).send(err.message);
-
-        console.log('/user bad request: ', err.message);
-      } else {
-        res.status(500).send(err.message);
-
-        console.log('/user server error: ', err.message);
-      }
-    });
-});
+  addRoute(path, props, utilFunc, thenHandler, allowedErrors);
+})();
 
 (() => {
-  const path = 'getNotebooks';
+  const path = '/login';
+  const props = ['email', 'password'];
+  const utilFunc = 'loginUser';
+  const thenHandler = () => {};
+  const allowedErrors = ['user not found', 'incorrect password'];
+
+  addRoute(path, props, utilFunc, thenHandler, allowedErrors);
+})();
+
+(() => {
+  const path = '/user';
   const props = ['user_hash'];
   const utilFunc = 'checkUser';
   const thenHandler = () => {};
@@ -202,27 +103,15 @@ router.post('/user', (req, res) => {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
-// router.post('/getNotebooks', async (req, res) => {
-//   const {user_hash} = req.body;
-//
-//   if (!(user_hash)) {
-//     console.log('/getNotebooks bad', req.body);
-//     res.sendStatus(400);
-//     return;
-//   }
-//
-//   if (firebaseUtil.isTest) {
-//     res.status(204).send();
-//     return;
-//   }
-//
-//   firebaseUtil.getNotebooks(user_hash, (snapshot) => {
-//     // This is done so that if the user does not exist, a empty obj is returned
-//     const response = Object.assign({}, snapshot.val());
-//
-//     res.send(response);
-//   });// old: await db.ref(`words/${userId}`).once('value');
-// });
+(() => {
+  const path = '/getNotebooks';
+  const props = ['user_hash'];
+  const utilFunc = 'checkUser';
+  const thenHandler = () => {};
+  const allowedErrors = ['user not found'];
+
+  addRoute(path, props, utilFunc, thenHandler, allowedErrors);
+})();
 
 router.post('/getNotebook', async (req, res) => {
   const {user_hash, notebook_hash} = req.body;

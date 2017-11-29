@@ -35,6 +35,7 @@ module.exports = {
             const user_hash = admin.database().ref('UserList').push().key;
 
             const user_data = {
+              email,
               password,
               user_hash,
               company_name,
@@ -94,9 +95,9 @@ module.exports = {
         const user = snap.val();
 
         if (user) {
-          if (user.notebook_list) {
-            user.notebook_list = Object.keys(user.notebook_list);
-          }
+          user.notebook_list = user.notebook_list || {};
+          user.notebook_list = Object.keys(user.notebook_list);
+
           return user;
         }
 
