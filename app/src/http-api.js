@@ -122,7 +122,7 @@ router.post('/user', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
 
   firebaseUtil.checkUser(user_hash)
-    .then((user) => {
+    .then((data) => {
       res.status(200).send(data);
 
       console.log('/user good: ', data);

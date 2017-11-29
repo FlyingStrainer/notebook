@@ -27,7 +27,7 @@ module.exports = {
   createUser(email, password, company_name) {
     return new Promise(((resolve, reject) => {
       module.exports.loginUser(email, password)
-        .then((user_data) => {
+        .then(() => {
           reject(new Error('user already exists'));
         })
         .catch((err) => {
