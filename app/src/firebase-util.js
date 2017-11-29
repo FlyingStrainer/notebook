@@ -25,6 +25,23 @@ admin.initializeApp({
 
 
 module.exports = {
+  loginUser(email, password) {
+    firebase.auth().signInWithEmailAndPassword(email, password).catch((error) => {
+      // Handle Errors here.
+      const errorCode = error.code;
+      const errorMessage = error.message;
+    // ...
+    });
+
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        callback(user);
+      } else {
+        // No user is signed in.
+      }
+    });
+  },
+
   createUser(username, date_added, usr_id) {
     const user = {username, initDate: date_added, userId: usr_id};
     return user;
@@ -106,23 +123,6 @@ module.exports = {
     admin.database().child('UserList').child('user_hash').once('value', (fbdatasnap) => {
       const exists = (fbdatasnap.val());
       if (fbdatasnap !== null) { callback(exists); }
-    });
-  },
-
-  loginUser(email, password) {
-    firebase.auth().signInWithEmailAndPassword(email, password).catch((error) => {
-      // Handle Errors here.
-      const errorCode = error.code;
-      const errorMessage = error.message;
-    // ...
-    });
-
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        callback(user);
-      } else {
-        // No user is signed in.
-      }
     });
   },
 
