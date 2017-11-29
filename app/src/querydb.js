@@ -6,22 +6,20 @@ const index = algolia.initIndex('entries');
 
 // load values from the .env file in this directory into process.env
 
+let firebaseAdmin = null;
+
 module.exports = {
-   algolia: algoliasearch(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_API_KEY),
-   indexEx: algolia.initIndex('entries'),
+
+  algolia,
+  indexEx: index,
+
+  init(myadmin) {
+    firebaseAdmin = myadmin;
+  },
 
   resetAlgolia() {
-    var firebaseAdmin = require("firebase-admin");
-    var serviceAccount = require("../serviceAccountKey.json");
-    firebaseAdmin.initializeApp({
-      credential: firebaseAdmin.credential.cert(serviceAccount),
-      databaseURL: process.env.FIREBASE_DATABASE_URL
-    });
     var database = firebaseAdmin.database();
-    
 
-    
-    
     var notebooksRef = database.ref("/Notebooks");
     //clear before import
     index.clearIndex(function(err, content) {
@@ -32,7 +30,7 @@ module.exports = {
   },
 
   initialImport(dataSnapshot) {
-  
+
     // Array of data to index
     var objectsToIndex = [];
     // Get all objects
@@ -61,16 +59,16 @@ module.exports = {
   searchForText(text) {
     // Search query
     const query = text;
-    
+
       // Perform an Algolia search:
       // https://www.algolia.com/doc/api-reference/api-methods/search/
-      index.search({
+    return index.search({
           query
         }).then(responses => {
           // Response from Algolia:
           // https://www.algolia.com/doc/api-reference/api-methods/search/#response-format
           console.log(responses.hits);
-        }); 
+        });
   },
 
 }
