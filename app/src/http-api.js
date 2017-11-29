@@ -98,7 +98,7 @@ router.post('/register', (req, res) => {
   }
 
   if (firebase.isTest) {
-    res.status(204).send();
+    res.status(501).send();
     return;
   }
 
@@ -283,7 +283,7 @@ router.post('/searchText', async (req, res) => {
   const {user_hash, text} = req.body;
 
   if (!(user_hash)) {
-    console.log('/getNotebooks bad', req.body);
+    console.log('/searchText bad', req.body);
     res.sendStatus(400);
     return;
   }
@@ -322,6 +322,135 @@ router.post('/makePDF', async (req, res) => {
     const response = Object.assign({}, snapshot.val());
     res.send(response);
   });// old: await db.ref(`words/${userId}`).once('value');
+});
+
+router.post('/managerView', async (req, res) => {
+  const {user_hash, notebook_hash} = req.body;
+
+  // TODO check for all options
+  if (!(user_hash && notebook_hash)) {
+    console.log('/getLink bad', req.body);
+    res.sendStatus(400);
+    return;
+  }
+
+  if (firebase.isTest) {
+    res.status(501).send();
+    return;
+  }
+
+  // TODO
+});
+
+router.post('/getBackup', async (req, res) => {
+  const {user_hash, notebook_hash} = req.body;
+
+  // TODO check for all options
+  if (!(user_hash && notebook_hash)) {
+    console.log('/getLink bad', req.body);
+    res.sendStatus(400);
+    return;
+  }
+
+  if (firebase.isTest) {
+    res.status(501).send();
+    return;
+  }
+
+  // TODO
+});
+
+router.post('/feedback', async (req, res) => {
+  const {message} = req.body;
+
+  // TODO check for all options
+  if (!(message)) {
+    console.log('/getLink bad', req.body);
+    res.sendStatus(400);
+    return;
+  }
+
+  if (firebase.isTest) {
+    res.status(501).send();
+    return;
+  }
+
+  // TODO
+  // Given that I submit the feedback, it will send a message from the user to our emails
+});
+
+router.post('/setNotebookPermisions', async (req, res) => {
+  const {user_hash, notebook_hash} = req.body;
+
+  // TODO check for all options
+  if (!(user_hash && notebook_hash)) {
+    console.log('/getLink bad', req.body);
+    res.sendStatus(400);
+    return;
+  }
+
+  if (firebase.isTest) {
+    res.status(501).send();
+    return;
+  }
+
+  // TODO
+});
+
+router.post('/format', async (req, res) => {
+  const {user_hash, notebook_hash} = req.body;
+
+  // TODO check for formatting options
+  if (!(user_hash && notebook_hash)) {
+    console.log('/format bad', req.body);
+    res.sendStatus(400);
+    return;
+  }
+
+  if (firebase.isTest) {
+    res.status(501).send();
+    return;
+  }
+
+  // TODO
+});
+
+module.exports = router;
+
+router.post('/getLink', async (req, res) => {
+  const {user_hash, notebook_hash} = req.body;
+
+  // TODO check for all options
+  if (!(user_hash && notebook_hash)) {
+    console.log('/getLink bad', req.body);
+    res.sendStatus(400);
+    return;
+  }
+
+  if (firebase.isTest) {
+    res.status(501).send();
+    return;
+  }
+
+  // TODO
+});
+
+router.post('/format', async (req, res) => {
+  const {user_hash, notebook_hash} = req.body;
+
+  // TODO check for formatting options
+  if (!(user_hash && notebook_hash)) {
+    console.log('/format bad', req.body);
+    res.sendStatus(400);
+    return;
+  }
+
+  if (firebase.isTest) {
+    res.status(501).send();
+    return;
+  }
+
+  // TODO
 });
 
 module.exports = router;
