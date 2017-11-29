@@ -30,6 +30,19 @@ module.exports = {
   pdfgen,
   querydb,
 
+  checkNotebookPermision(user_hash, notebook_hash, action) {
+    const path = `UserList/${user_hash}/notebooks/${notebook_hash}`;
+    return admin.database().ref(path).once('value')
+      .then((data) => {
+        const permision = data.val();
+        if (permision && permision[action]) {
+          return true;
+        } else {
+          return false;
+        }
+      })
+  },
+
   createUser(email, password, company_name) {
     return new Promise(((resolve, reject) => {
       module.exports.loginUser(email, password)
