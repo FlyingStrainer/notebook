@@ -2,34 +2,25 @@
 module.exports = {
   isTest: true,
 
-  createUser() {
-
+  querydb: {
+    indexEx: {
+      search() {},
+    },
   },
 
-  saveNotebook() {
-
+  pdfgen: {
+    genPDF() {},
   },
 
-  addEntry() {
+  createUser() {},
+  loginUser() {},
+  checkUser() {},
+  getNotebooks() {},
 
-  },
-
-  getEntries() {
-
-  },
-
-  getEntry() {
-
-  },
-
-  loginUser() {
-
-  },
-
-  getNotebooks() {
-
-  },
-
+  saveNotebook() {},
+  addEntry() {},
+  getEntries() {},
+  getEntry() {},
   managerView() {},
   // getBackup() {},
   feedback() {},

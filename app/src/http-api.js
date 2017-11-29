@@ -6,7 +6,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const firebaseUtil = require('./firebase-util.js');
+
 const {pdfgen, querydb} = firebaseUtil;
+
 // Setup
 // const db = admin.database();
 const router = express();
@@ -278,14 +280,15 @@ router.post('/searchText', async (req, res) => {
     res.status(204).send();
   }
 
-  // TODO add this back in before finishing
-  // querydb.indexEx.search({
-  //   query,
-  // }).then((responses) => {
-  //   // Response from Algolia:
-  //   // https://www.algolia.com/doc/api-reference/api-methods/search/#response-format
-  //   res.send(responses.hits);
-  // });
+  const query = text;
+
+  querydb.indexEx.search({
+    query,
+  }).then((responses) => {
+    // Response from Algolia:
+    // https://www.algolia.com/doc/api-reference/api-methods/search/#response-format
+    res.send(responses.hits);
+  });
 });
 
 router.post('/makePDF', async (req, res) => {
