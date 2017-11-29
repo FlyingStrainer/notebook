@@ -40,8 +40,10 @@ module.exports = {
               company_name,
             };
 
+            const email64 = Buffer.from(email).toString('base64');
+
             const update = {};
-            update[`login_info/${email}`] = user_data;
+            update[`login_info/${email64}`] = user_data;
             update[`UserList/${user_hash}`] = {
               user_hash,
               company_name,
@@ -65,13 +67,19 @@ module.exports = {
   },
 
   loginUser(email, password) {
+    const email64 = Buffer.from(email).toString('base64');
+
     return new Promise(((resolve, reject) => {
-      admin.database().ref(`login_info/${email}:${password}`).once('value')
+      admin.database().ref(`login_info/${email64}`).once('value')
         .then((snap) => {
           const user_data = snap.val();
           if (user_data) {
-            delete user_data.password;
-            resolve(user_data);
+            if (user_data.password === password) {
+              delete user_data.password;
+              resolve(user_data);
+            } else {
+              reject(new Error('incorrect password'));
+            }
           } else {
             reject(new Error('user not found'));
           }

@@ -6,7 +6,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const firebaseUtil = require('./firebase-util.js');
-const pdfgen = require('./PDFGen.js');
+// const pdfgen = require('./PDFGen.js');
 // const querydb = require('./querydb.js');
 // Setup
 // const db = admin.database();
@@ -23,10 +23,10 @@ router.use(bodyParser.json());
 
 function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
   router.post(path, (req, res) => {
-    const body = req.body;
+    const {body} = req;
     const args = [];
 
-    for (var i = 0; i < props.length; i++) {
+    for (let i = 0; i < props.length; i++) {
       const prop = props[i];
       if (!(body[prop])) {
         console.log(`${path} bad`, body);
@@ -41,13 +41,15 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
       return;
     }
 
-    console.log(`${path} ${email} attempt`);
+    console.log(`${path} attempt`);
 
     res.setHeader('Content-Type', 'application/json');
 
     firebaseUtil[utilFunc].apply(null, args)
       .then((data) => {
         console.log(`${path} good`);
+
+        res.status(200).send(data);
 
         return data;
       })
@@ -56,8 +58,7 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
           res.status(403).send(err.message);
 
           console.log(`${path} bad ${err.message}`);
-        }
-        else {
+        } else {
           res.sendStatus(500);
 
           console.log(`${path} server failed ${err.message}`);
@@ -97,14 +98,20 @@ router.post('/register', (req, res) => {
     .catch((err) => {
       switch (err.message) {
         case 'user already exists':
-          res.status(403).send(err.message);
+          res.status(403).send({
+            message: err.message,
+            stack: err.stack,
+          });
 
           console.log(`/register ${email} bad ${err.message}`);
           break;
         default:
-          res.sendStatus(500);
+          res.status(500).send({
+            message: err.message,
+            stack: err.stack,
+          });
 
-          console.log(`/register ${email} server failed`);
+          console.log(`/register ${email} server failed ${err.message}`);
       }
     });
 });
@@ -135,14 +142,15 @@ router.post('/login', (req, res) => {
   }).catch((err) => {
     switch (err.message) {
       case 'user not found':
-        res.status(403).send(err.message);
+      case 'incorrect password':
+        res.status(403).send({message: err.message});
 
         console.log(`/login ${email} bad ${err.message}`);
         break;
       default:
         res.sendStatus(500);
 
-        console.log(`/login ${email} server failed`);
+        console.log(`/login ${email} server failed ${err.message}`);
     }
   });
 });
@@ -175,36 +183,46 @@ router.post('/user', (req, res) => {
       if (err.message === 'user not found') {
         res.status(403).send(err.message);
 
-        console.log('/user bad: ', err.message);
+        console.log('/user bad request: ', err.message);
       } else {
         res.status(500).send(err.message);
 
-        console.log('/user server bad: ', err.message);
+        console.log('/user server error: ', err.message);
       }
     });
 });
 
-router.post('/getNotebooks', async (req, res) => {
-  const {user_hash} = req.body;
+(() => {
+  const path = 'getNotebooks';
+  const props = ['user_hash'];
+  const utilFunc = 'checkUser';
+  const thenHandler = () => {};
+  const allowedErrors = ['user not found'];
 
-  if (!(user_hash)) {
-    console.log('/getNotebooks bad', req.body);
-    res.sendStatus(400);
-    return;
-  }
+  addRoute(path, props, utilFunc, thenHandler, allowedErrors);
+})();
 
-  if (firebaseUtil.isTest) {
-    res.status(204).send();
-    return;
-  }
-
-  firebaseUtil.getNotebooks(user_hash, (snapshot) => {
-    // This is done so that if the user does not exist, a empty obj is returned
-    const response = Object.assign({}, snapshot.val());
-
-    res.send(response);
-  });// old: await db.ref(`words/${userId}`).once('value');
-});
+// router.post('/getNotebooks', async (req, res) => {
+//   const {user_hash} = req.body;
+//
+//   if (!(user_hash)) {
+//     console.log('/getNotebooks bad', req.body);
+//     res.sendStatus(400);
+//     return;
+//   }
+//
+//   if (firebaseUtil.isTest) {
+//     res.status(204).send();
+//     return;
+//   }
+//
+//   firebaseUtil.getNotebooks(user_hash, (snapshot) => {
+//     // This is done so that if the user does not exist, a empty obj is returned
+//     const response = Object.assign({}, snapshot.val());
+//
+//     res.send(response);
+//   });// old: await db.ref(`words/${userId}`).once('value');
+// });
 
 router.post('/getNotebook', async (req, res) => {
   const {user_hash, notebook_hash} = req.body;
