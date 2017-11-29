@@ -188,5 +188,10 @@ module.exports = {
       });
   },
 
-  format() {},
+  format(user_hash, notebook_hash, format) {
+    const updates = {};
+    updates[`/NotebookList/${notebook_hash}/format`] = format;
+
+    return admin.database().ref().update(updates);
+  }
 };
