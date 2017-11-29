@@ -24,38 +24,55 @@ admin.initializeApp({
 // const database = admin.database();
 
 module.exports = {
-  loginUser(email, password) {
-    firebase.database().ref(`login_info/${email}:${password}`).once('value', (snap) => {
-      const val = snap.val();
-      if (val) {
-        return val;
-      }
-      else {
-        throw 'can\'t find user';
-      }
+  createUser(email, password, company_name) {
+    return new Promise(function(resolve, reject) {
+      module.exports.loginUser(email, password)
+        .then((user_data) => {
+          reject(new Error('user already exists'));
+        })
+        .catch((err) => {
+          if (err.message === 'user not found') {
+            const user_hash = admin.database().ref('UserList').push().key;
+
+            const user_data = {
+              user_hash,
+              company_name,
+            };
+
+            const update = {};
+            update[`login_info/${email}:${password}`] = user_data;
+            update[`UserList/${user_hash}`] = {
+              user_hash,
+              company_name,
+              role_list: {
+                user: true,
+              },
+              notebook_list: {},
+            };
+
+            admin.database().ref().update(update).then(() => {
+              resolve(user_data);
+            }).catch(reject);
+          }
+          else {
+            reject(err);
+          }
+        });
     });
   },
 
-  createUser(email, password, company_name) {
-    const user_hash = admin.database().ref('UserList').push().key;
-
-    const user_data = {
-      user_hash,
-      company_name,
-    };
-
-    const update = {};
-    update[`login_info/${email}:${password}`] = user_data;
-    update[`UserList/${user_hash}`] = {
-      user_hash,
-      company_name,
-      role_list: {
-        user: true,
-      },
-      notebook_list: {},
-    };
-
-    return user_data;
+  loginUser(email, password) {
+    return new Promise(function(resolve, reject) {
+      admin.database().ref(`login_info/${email}:${password}`).once('value', (snap) => {
+        const val = snap.val();
+        if (val) {
+          resolve(val);
+        }
+        else {
+          reject(new Error('user not found'));
+        }
+      }).catch(reject);
+    });
   },
 
   saveNotebook(user_hash, _name) {
@@ -154,7 +171,7 @@ module.exports = {
           return fbdatasnap.val();
         }
         else {
-          throw 'can\'t find notebook';
+          throw new Error('can\'t find notebook');
         }
       });
   },

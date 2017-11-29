@@ -25,6 +25,46 @@ router.use(bodyParser.json());
 
 // TODO add account api
 
+router.post('/register', (req, res) => {
+  const {email, password, company_name} = req.body;
+
+  if (!(email && password && company_name)) {
+    console.log('/register bad', req.body);
+    res.sendStatus(400);
+    return;
+  }
+
+  if (firebaseUtil.isTest) {
+    res.status(204).send();
+    return;
+  }
+
+  console.log(`/register ${email} attempt`);
+
+  res.setHeader('Content-Type', 'application/json');
+
+  // register
+  firebaseUtil.createUser(email, password, company_name)
+    .then((user_data) => {
+      res.status(200).send(user_data);
+
+      console.log(`/register ${email} success`);
+    })
+    .catch((err) => {
+      switch (err.message) {
+        case 'user already exists':
+          res.status(403).send(err.message);
+
+          console.log(`/register ${email} bad ${err.message}`);
+          break;
+        default:
+          res.sendStatus(500);
+
+          console.log(`/register ${email} server failed`);
+      }
+    });
+});
+
 router.post('/login', (req, res) => {
   const {email, password} = req.body;
 
@@ -36,16 +76,31 @@ router.post('/login', (req, res) => {
 
   if (firebaseUtil.isTest) {
     res.status(204).send();
+    return;
   }
 
-  // TODO get user_hash for key
-  // firebaseUtil.loginUser(user_hash, (snapshot) => {
-  //   // This is done so that if the user does not exist, a empty obj is returned
-  //   const data = Object.assign({}, snapshot.val());
-  //   res.send(data);
-  //   console.log('/login good: ', data);
-  //   // res.send(JSON.stringify(data));
-  // });
+  console.log(`/login ${email} attempt`);
+
+  res.setHeader('Content-Type', 'application/json');
+
+  // login
+  firebaseUtil.loginUser(email, password).then((user_data) => {
+    res.status(200).send(user_data);
+
+    console.log(`/login ${email} success`);
+  }).catch((err) => {
+    switch (err.message) {
+      case 'user not found':
+        res.status(403).send(err.message);
+
+        console.log(`/login ${email} bad ${err.message}`);
+        break;
+      default:
+        res.sendStatus(500);
+
+        console.log(`/login ${email} server failed`);
+    }
+  });
 });
 
 
@@ -85,27 +140,6 @@ router.post('/getNotebook', async (req, res) => {
   }
 
   // TODO
-});
-
-router.post('/register', (req, res) => {
-  const {email, password, company_name} = req.body;
-
-  if (!(email && password && company_name)) {
-    console.log('/register bad', req.body);
-    res.sendStatus(400);
-    return;
-  }
-
-  if (firebaseUtil.isTest) {
-    res.status(501).send();
-    return;
-  }
-
-  // TODO actually create user
-  console.log('/register good');
-  firebaseUtil.createUser(email, password, company_name).then((data) => {
-    res.sendStatus(200);
-  });
 });
 
 router.post('/user', (req, res) => {
