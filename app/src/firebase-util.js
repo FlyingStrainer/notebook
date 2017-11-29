@@ -35,12 +35,13 @@ module.exports = {
             const user_hash = admin.database().ref('UserList').push().key;
 
             const user_data = {
+              password,
               user_hash,
               company_name,
             };
 
             const update = {};
-            update[`login_info/${email}:${password}`] = user_data;
+            update[`login_info/${email}`] = user_data;
             update[`UserList/${user_hash}`] = {
               user_hash,
               company_name,
@@ -51,6 +52,7 @@ module.exports = {
             };
 
             admin.database().ref().update(update).then(() => {
+              delete user_data.password;
               resolve(user_data);
             }).catch(reject);
           }
@@ -64,9 +66,10 @@ module.exports = {
   loginUser(email, password) {
     return new Promise(function(resolve, reject) {
       admin.database().ref(`login_info/${email}:${password}`).once('value', (snap) => {
-        const val = snap.val();
-        if (val) {
-          resolve(val);
+        const user_data = snap.val();
+        if (user_data) {
+          delete user_data.password;
+          resolve(user_data);
         }
         else {
           reject(new Error('user not found'));
