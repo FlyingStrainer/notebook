@@ -103,7 +103,9 @@ router.post('/register', (req, res) => {
 
   // TODO actually create user
   console.log('/register good');
-  res.sendStatus(201);
+  firebaseUtil.createUser(email, password, company_name).then((data) => {
+    res.sendStatus(200);
+  });
 });
 
 router.post('/user', (req, res) => {

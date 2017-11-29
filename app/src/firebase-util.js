@@ -23,28 +23,39 @@ admin.initializeApp({
 
 // const database = admin.database();
 
-
 module.exports = {
   loginUser(email, password) {
-    firebase.auth().signInWithEmailAndPassword(email, password).catch((error) => {
-      // Handle Errors here.
-      const errorCode = error.code;
-      const errorMessage = error.message;
-    // ...
-    });
-
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        callback(user);
-      } else {
-        // No user is signed in.
+    firebase.database().ref(`login_info/${email}:${password}`).once('value', (snap) => {
+      const val = snap.val();
+      if (val) {
+        return val;
+      }
+      else {
+        throw 'can\'t find user';
       }
     });
   },
 
-  createUser(username, date_added, usr_id) {
-    const user = {username, initDate: date_added, userId: usr_id};
-    return user;
+  createUser(email, password, company_name) {
+    const user_hash = admin.database().ref('UserList').push().key;
+
+    const user_data = {
+      user_hash,
+      company_name,
+    };
+
+    const update = {};
+    update[`login_info/${email}:${password}`] = user_data;
+    update[`UserList/${user_hash}`] = {
+      user_hash,
+      company_name,
+      role_list: {
+        user: true,
+      },
+      notebook_list: {},
+    };
+
+    return user_data;
   },
 
   saveNotebook(user_hash, _name) {
