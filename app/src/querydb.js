@@ -1,13 +1,17 @@
 var dotenv = require('dotenv');
 var algoliasearch = require('algoliasearch');
 
+let globalFirebaseAdmin;
+
 // load values from the .env file in this directory into process.env
 dotenv.load();
 module.exports = {
-   algolia: algoliasearch(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_API_KEY),
-   indexEx: algolia.initIndex('entries'),
+  algolia: algoliasearch(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_API_KEY),
+  indexEx: algolia.initIndex('entries'),
+  init(firebaseAdmin) {
+    globalFirebaseAdmin = firebaseAdmin;
+  }
 }
-
 
 //local index for testing functiions from this file
 var index = module.exports.algolia.initIndex('entries');
@@ -15,17 +19,9 @@ var index = module.exports.algolia.initIndex('entries');
 searchForText("test");
 
 function resetAlgolia() {
-  var firebaseAdmin = require("firebase-admin");
-  var serviceAccount = require("../serviceAccountKey.json");
-  firebaseAdmin.initializeApp({
-    credential: firebaseAdmin.credential.cert(serviceAccount),
-    databaseURL: process.env.FIREBASE_DATABASE_URL
-  });
+  var firebaseAdmin = globalFirebaseAdmin;
   var database = firebaseAdmin.database();
-  
 
-  
-  
   var notebooksRef = database.ref("/Notebooks");
   //clear before import
   index.clearIndex(function(err, content) {
@@ -36,7 +32,7 @@ function resetAlgolia() {
 }
 
 function initialImport(dataSnapshot) {
-  
+
   // Array of data to index
   var objectsToIndex = [];
   // Get all objects
@@ -65,7 +61,7 @@ function initialImport(dataSnapshot) {
 function searchForText(text) {
   // Search query
   const query = text;
-  
+
     // Perform an Algolia search:
     // https://www.algolia.com/doc/api-reference/api-methods/search/
     index.search({
@@ -74,7 +70,7 @@ function searchForText(text) {
         // Response from Algolia:
         // https://www.algolia.com/doc/api-reference/api-methods/search/#response-format
         console.log(responses.hits);
-      }); 
+      });
 }
 
 

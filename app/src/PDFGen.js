@@ -1,19 +1,16 @@
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
-const admin = require('firebase-admin');
+let admin;
 
-const serviceAccount = require('../serviceAccountKey.json');
 const Notebook = require('./objects/Notebook');
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://vent-91586.firebaseio.com',
-});
-
 
 // Create a document
 
 module.exports = {
+  init(myAdmin) {
+    admin = myAdmin;
+  },
+
   genPDF(entries, pdfName, location) {
     const doc = new PDFDocument();
 

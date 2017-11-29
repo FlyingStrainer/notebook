@@ -6,8 +6,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const firebaseUtil = require('./firebase-util.js');
-// const pdfgen = require('./PDFGen.js');
-// const querydb = require('./querydb.js');
+const {pdfgen, querydb} = firebaseUtil;
 // Setup
 // const db = admin.database();
 const router = express();

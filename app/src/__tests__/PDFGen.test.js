@@ -6,6 +6,16 @@
 const PDFGen = require('../PDFGen');
 const fs = require('fs');
 
+const admin = require('firebase-admin');
+const serviceAccount = require('../../serviceAccountKey.json');
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: 'https://vent-91586.firebaseio.com',
+});
+
+PDFGen.init(admin);
+
 it('tests', () => {
   const testImagePath = '../test-util/testImage.jpg';
   const fname = 'pdfgenout.test';

@@ -15,15 +15,21 @@ eslint import/no-unresolved: [2, {
 const admin = require('firebase-admin');
 const serviceAccount = require('../serviceAccountKey.json');
 const Notebook = require('./objects/Notebook');
+const pdfgen = require('./PDFGen.js');
+const querydb = require('./querydb.js');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: 'https://vent-91586.firebaseio.com',
 });
 
-// const database = admin.database();
+pdfgen.init(admin);
+querydb.init(admin);
 
 module.exports = {
+  pdfgen,
+  querydb,
+
   createUser(email, password, company_name) {
     return new Promise(((resolve, reject) => {
       module.exports.loginUser(email, password)
