@@ -2,13 +2,13 @@ var dotenv = require('dotenv');
 var algoliasearch = require('algoliasearch');
 dotenv.load();
 const algolia = algoliasearch(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_API_KEY);
-const index = algolia.initIndex('entries');
+const index = algolia.initIndex(process.env.ALGOLIA_INDEX_NAME);
 
 // load values from the .env file in this directory into process.env
 
 module.exports = {
    algolia: algoliasearch(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_API_KEY),
-   indexEx: algolia.initIndex('entries'),
+   indexEx: algolia.initIndex(process.env.ALGOLIA_INDEX_NAME),
 
   resetAlgolia() {
     var firebaseAdmin = require("firebase-admin");
@@ -65,7 +65,9 @@ module.exports = {
       // Perform an Algolia search:
       // https://www.algolia.com/doc/api-reference/api-methods/search/
       index.search({
-          query
+          query: "test"
+          
+          
         }).then(responses => {
           // Response from Algolia:
           // https://www.algolia.com/doc/api-reference/api-methods/search/#response-format
@@ -76,4 +78,4 @@ module.exports = {
 }
 
 
-//module.exports.searchForText("");
+module.exports.searchForText("test");
