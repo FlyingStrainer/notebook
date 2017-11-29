@@ -9,18 +9,12 @@ const index = algolia.initIndex(process.env.ALGOLIA_INDEX_NAME);
 let firebaseAdmin = null;
 
 module.exports = {
-<<<<<<< HEAD
-
   algolia,
   indexEx: index,
 
   init(myadmin) {
     firebaseAdmin = myadmin;
   },
-=======
-   algolia: algoliasearch(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_API_KEY),
-   indexEx: algolia.initIndex(process.env.ALGOLIA_INDEX_NAME),
->>>>>>> 1545a796d37041b5ff1a42ba94218abe722a0e26
 
   resetAlgolia() {
     var database = firebaseAdmin.database();
