@@ -5,7 +5,7 @@
 // var access = require('access-control');
 const express = require('express');
 const bodyParser = require('body-parser');
-const firebase = require('./firebase-util.js');
+const firebaseUtil = require('./firebase-util.js');
 const pdfgen = require('./PDFGen.js');
 // const querydb = require('./querydb.js');
 // Setup
@@ -34,13 +34,13 @@ router.post('/login', (req, res) => {
     return;
   }
 
-  if (firebase.isTest) {
+  if (firebaseUtil.isTest) {
     res.status(204).send();
     return;
   }
 
   // TODO get user_hash for key
-  firebase.loginUser(user_hash, (snapshot) => {
+  firebaseUtil.loginUser(user_hash, (snapshot) => {
     // This is done so that if the user does not exist, a empty obj is returned
     const data = Object.assign({}, snapshot.val());
     res.send(data);
@@ -59,12 +59,12 @@ router.post('/getNotebooks', async (req, res) => {
     return;
   }
 
-  if (firebase.isTest) {
+  if (firebaseUtil.isTest) {
     res.status(204).send();
     return;
   }
 
-  firebase.getNotebooks(user_hash, (snapshot) => {
+  firebaseUtil.getNotebooks(user_hash, (snapshot) => {
     // This is done so that if the user does not exist, a empty obj is returned
     const response = Object.assign({}, snapshot.val());
 
@@ -81,7 +81,7 @@ router.post('/getNotebook', async (req, res) => {
     return;
   }
 
-  if (firebase.isTest) {
+  if (firebaseUtil.isTest) {
     res.status(501).send();
   }
 
@@ -97,7 +97,7 @@ router.post('/register', (req, res) => {
     return;
   }
 
-  if (firebase.isTest) {
+  if (firebaseUtil.isTest) {
     res.status(501).send();
     return;
   }
@@ -116,7 +116,7 @@ router.post('/user', (req, res) => {
     return;
   }
 
-  if (firebase.isTest) {
+  if (firebaseUtil.isTest) {
     res.status(204).send();
     return;
   }
@@ -132,7 +132,7 @@ router.post('/user', (req, res) => {
     roles: (user|manager),
   };
   */
-  firebase.checkUser(user_hash, (snapshot) => {
+  firebaseUtil.checkUser(user_hash, (snapshot) => {
     // This is done so that if the user does not exist, a empty obj is returned
     const data = Object.assign({}, snapshot.val());
     res.send(data);
@@ -153,13 +153,13 @@ router.post('/addNotebook', (req, res) => {
     return;
   }
 
-  if (firebase.isTest) {
+  if (firebaseUtil.isTest) {
     res.status(204).send();
     return;
   }
 
   // TODO verify saveNotebook works
-  firebase.saveNotebook(user_hash, name).then(() => {
+  firebaseUtil.saveNotebook(user_hash, name).then(() => {
     console.log('/addNotebook good');
     res.sendStatus(201);
   }).catch(() => {
@@ -180,7 +180,7 @@ router.post('/addEntry', (req, res) => {
     return;
   }
 
-  if (firebase.isTest) {
+  if (firebaseUtil.isTest) {
     res.status(204).send();
     return;
   }
@@ -188,7 +188,7 @@ router.post('/addEntry', (req, res) => {
   // TODO add entry to notebook
   // NOTE the addEntry function here does not match the true api
   //
-  // firebase.addEntry(notebook_uuid, _text, _image,
+  // firebaseUtil.addEntry(notebook_uuid, _text, _image,
   //   _caption, _date_created, _authorID, _tag_arr).then(() => {
   //   console.log('/addEntry good');
   //   res.sendStatus(201);
@@ -209,7 +209,7 @@ router.post('/cosignEntry', (req, res) => {
     return;
   }
 
-  if (firebase.isTest) {
+  if (firebaseUtil.isTest) {
     res.status(204).send();
     return;
   }
@@ -229,7 +229,7 @@ router.post('/getEntries', async (req, res) => {
     return;
   }
 
-  if (firebase.isTest) {
+  if (firebaseUtil.isTest) {
     res.status(204).send();
     return;
   }
@@ -245,7 +245,7 @@ router.post('/getEntries', async (req, res) => {
 
   // TODO verify this works
 
-  firebase.getEntries(user_hash, notebook_hash, (snapshot) => {
+  firebaseUtil.getEntries(user_hash, notebook_hash, (snapshot) => {
     // This is done so that if the user does not exist, a empty obj is returned
     const response = Object.assign({}, snapshot.val());
 
@@ -263,14 +263,14 @@ router.post('/getEntry', async (req, res) => {
     return;
   }
 
-  if (firebase.isTest) {
+  if (firebaseUtil.isTest) {
     res.status(204).send();
     return;
   }
 
   // TODO verify this works
 
-  firebase.getEntry(user_hash, notebook_hash, entry_hash, (snapshot) => {
+  firebaseUtil.getEntry(user_hash, notebook_hash, entry_hash, (snapshot) => {
     // This is done so that if the user does not exist, a empty obj is returned
     const response = Object.assign({}, snapshot.val());
 
@@ -288,7 +288,7 @@ router.post('/searchText', async (req, res) => {
     return;
   }
 
-  if (firebase.isTest) {
+  if (firebaseUtil.isTest) {
     res.status(204).send();
     return;
   }
@@ -312,7 +312,7 @@ router.post('/makePDF', async (req, res) => {
     return;
   } */
 
-  if (firebase.isTest) {
+  if (firebaseUtil.isTest) {
     res.status(204).send();
     return;
   }
@@ -334,7 +334,7 @@ router.post('/managerView', async (req, res) => {
     return;
   }
 
-  if (firebase.isTest) {
+  if (firebaseUtil.isTest) {
     res.status(501).send();
     return;
   }
@@ -352,7 +352,7 @@ router.post('/getBackup', async (req, res) => {
     return;
   }
 
-  if (firebase.isTest) {
+  if (firebaseUtil.isTest) {
     res.status(501).send();
     return;
   }
@@ -370,7 +370,7 @@ router.post('/feedback', async (req, res) => {
     return;
   }
 
-  if (firebase.isTest) {
+  if (firebaseUtil.isTest) {
     res.status(501).send();
     return;
   }
@@ -389,33 +389,13 @@ router.post('/setNotebookPermisions', async (req, res) => {
     return;
   }
 
-  if (firebase.isTest) {
+  if (firebaseUtil.isTest) {
     res.status(501).send();
     return;
   }
 
   // TODO
 });
-
-router.post('/format', async (req, res) => {
-  const {user_hash, notebook_hash} = req.body;
-
-  // TODO check for formatting options
-  if (!(user_hash && notebook_hash)) {
-    console.log('/format bad', req.body);
-    res.sendStatus(400);
-    return;
-  }
-
-  if (firebase.isTest) {
-    res.status(501).send();
-    return;
-  }
-
-  // TODO
-});
-
-module.exports = router;
 
 router.post('/getLink', async (req, res) => {
   const {user_hash, notebook_hash} = req.body;
@@ -427,7 +407,7 @@ router.post('/getLink', async (req, res) => {
     return;
   }
 
-  if (firebase.isTest) {
+  if (firebaseUtil.isTest) {
     res.status(501).send();
     return;
   }
@@ -445,7 +425,7 @@ router.post('/format', async (req, res) => {
     return;
   }
 
-  if (firebase.isTest) {
+  if (firebaseUtil.isTest) {
     res.status(501).send();
     return;
   }
