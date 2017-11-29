@@ -81,12 +81,14 @@ module.exports = {
   },
 
   checkUser(user_hash) {
-    return admin.database().child('UserList').child(user_hash).once('value')
+    return admin.database().ref(`UserList/${user_hash}`).once('value')
       .then((snap) => {
         const user = snap.val();
 
         if (user) {
-          user.notebook_list = Object.keys(user.notebook_list);
+          if (user.notebook_list) {
+            user.notebook_list = Object.keys(user.notebook_list);
+          }
           return user;
         }
 
