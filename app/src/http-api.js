@@ -43,7 +43,7 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
       return;
     }
 
-    console.log(`${path} attempt:`, line);
+    console.log(`${path} attempt:\t\t`, line);
 
     res.setHeader('Content-Type', 'application/json');
 
@@ -60,11 +60,11 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
         if (allowedErrors.includes(err.message)) {
           res.status(403).send({message: err.message});
 
-          console.log(`${path} bad:`, err.message);
+          console.log(`${path} bad:\t\t\t`, err.message);
         } else {
           res.status(500).send({message: err.message});
 
-          console.log(`${path} server failed:`, err.message);
+          console.log(`${path} server failed:\t`, err.message);
         }
 
         return Promise.reject(err);
