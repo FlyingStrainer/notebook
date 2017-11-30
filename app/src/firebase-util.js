@@ -218,23 +218,6 @@ module.exports = {
     }));
   },
 
-  saveNotebookCB(user_hash, _name) {
-    const updates = {};
-    // Add notebook updates
-    const new_notebook_key = admin.database().ref('NotebookList').push().key;
-    const notebook = new Notebook({
-      uuid: new_notebook_key,
-      name: _name,
-      managerList: [],
-    });
-    updates[`/NotebookList/${new_notebook_key}`] = notebook;
-
-    // Add user updates
-    updates[`/UserList/${user_hash}/NotebookList/${new_notebook_key}`] = true;
-
-    return admin.database().ref().update(updates);
-  },
-
   addEntry(user_hash, notebook_uuid, _text, _image, _caption, _date_created, _authorID, _tagArr) {
     admin.database().child('UserList').child('user_hash').once('value', (fbdatasnap) => {
       const exists = (fbdatasnap.val() !== null);
