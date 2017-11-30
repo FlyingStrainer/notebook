@@ -346,7 +346,8 @@ module.exports = {
     return admin.database().ref(`/NotebookList/${notebook_hash}/`).once('value')
       .then((snap) => {
         if (snap.val() !== null) {
-          return snap.val();
+          const link = `http://endor-vm1.cs.purdue.edu/notebook/${notebook_hash}`
+          return {link};
         }
 
         throw new Error('can\'t find notebook');
