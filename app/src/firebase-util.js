@@ -330,15 +330,10 @@ module.exports = {
     const updates = {};
 
     for (let i = 0; i < change_list.length; i++) {
-      const {type} = change_list[i];
+      const {change} = change_list[i];
       const other_hash = change_list[i].user_hash;
 
-      if (type === 'add') {
-        // TODO set true permissions
-        updates[`UserList/${other_hash}/permissions/notebooks/${notebook_hash}`] = true;
-      } else if (type === 'remove') {
-        updates[`UserList/${other_hash}/permissions/notebooks/${notebook_hash}`] = null;
-      }
+      updates[`UserList/${other_hash}/permissions/notebooks/${notebook_hash}`] = change;
     }
 
     return admin.database().ref().update(updates);

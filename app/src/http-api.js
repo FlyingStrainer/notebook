@@ -302,10 +302,10 @@ router.post('/feedback', async (req, res) => {
 });
 
 router.post('/setNotebookPermissions', async (req, res) => {
-  const {user_hash, notebook_hash} = req.body;
+  const {user_hash, notebook_hash, change_list} = req.body;
 
   // TODO check for all options
-  if (!(user_hash && notebook_hash)) {
+  if (!(user_hash && notebook_hash && change_list)) {
     console.log('/getLink bad', req.body);
     res.sendStatus(400);
     return;
