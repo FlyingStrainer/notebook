@@ -213,12 +213,12 @@ router.post('/searchByText', async (req, res) => {
     const entryArr = [];
     let retCount = 0;
     const notebooksArr = [];
-    for (let i = 0; i < responses.hits.length; i++) {
-      notebooksArr[i] = responses.hits[i].notebook_hash;
+    for (let i = 0; i < JSON.parse(responses).hits.length; i++) {
+      notebooksArr[i] = JSON.parse(responses).hits[i].notebook_hash;
 
-      for (const entry_hash in responses.hits[i].data_entires) {
-        if (responses.hits[i].data_entires[entry_hash].text.indexOf(text) !== -1) {
-          entryArr[retCount] = responses.hits.data_entires[i].entry_hash;
+      for (const entry_hash in Object.keys(JSON.parse(responses).hits[i].data_entires)) {
+        if (JSON.parse(responses).hits[i].data_entires[entry_hash].text.indexOf(text) !== -1) {
+          entryArr[retCount] = JSON.parse(responses).hits.data_entires[i].entry_hash;
           retCount++;
         }
       }
@@ -246,10 +246,10 @@ router.post('/makePDF', async (req, res) => {
 
   firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
     res.setHeader('Content-Type', 'application/json');
-    var pdfarray = Object.values(JSON.parse(notebook).data_entires);
-    var pdfname = JSON.parse(notebook).name;
-    pdfgen.genPDF(pdfarray,pdfname , "server");
-    res.send(JSON.stringify({url: req.protocol+'://'+req.get('host') + req.path + '/' + pdfname+'.pdf'}));
+    const pdfarray = Object.values(JSON.parse(notebook).data_entires);
+    const pdfname = JSON.parse(notebook).name;
+    pdfgen.genPDF(pdfarray, pdfname, 'server');
+    res.send(JSON.stringify({url: `${req.protocol}://${req.get('host')}${req.path}/${pdfname}.pdf`}));
   });
 
   // old: await db.ref(`words/${userId}`).once('value');

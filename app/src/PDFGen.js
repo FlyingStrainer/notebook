@@ -25,10 +25,10 @@ module.exports = {
     //   .fontSize(25)
     //   .text('Some text with an embedded font!', 100, 100)
     for (let i = 0; i < entries.length; i++) {
-      //const buf = new Buffer(entries[i].imgpath.replace(/^data:image\/png;base64,/, ''), 'base64');
+      // const buf = new Buffer(entries[i].imgpath.replace(/^data:image\/png;base64,/, ''), 'base64');
       doc.text(entries[i].date_created, 100, 200);
       doc.text(entries[i].author, 100, 220);
-      //doc.image(buf, 100, 300, {fit: [200, 200]});
+      // doc.image(buf, 100, 300, {fit: [200, 200]});
       doc.text(entries[i].text, 100, 502);
       doc.addPage();
     }
@@ -42,7 +42,7 @@ module.exports = {
     }
   },
 
-  /*saveTestImage(base64Img) {
+  /* saveTestImage(base64Img) {
     const base64Data = base64Img.replace(/^data:image\/png;base64,/, '');
 
 
@@ -55,17 +55,15 @@ module.exports = {
         console.log('success');
       },
     );
-  },*/
+  }, */
 };
 // /date -> text -> image -> caption
 // const pdfnamein = 'testfile';
-  
 
 
-
- // var entries = [{date:"11-5-2017", text:"text1", imgpath: testImage, caption:"cap cap cap"}, {date:"11-3-2017", text:"text2",
- //  imgpath: testImage, caption:"cap cap cap"}];
- // module.exports.genPDF(entries, "genpdf", "server");
+// var entries = [{date:"11-5-2017", text:"text1", imgpath: testImage, caption:"cap cap cap"}, {date:"11-3-2017", text:"text2",
+//  imgpath: testImage, caption:"cap cap cap"}];
+// module.exports.genPDF(entries, "genpdf", "server");
 // module.exports.saveTestImage(testImage);
 
 // Create a root reference
