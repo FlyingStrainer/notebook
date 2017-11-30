@@ -1,7 +1,8 @@
 // PDF Smoke Test
-// Test basic implentation and generagtion of a smoke test
+// Test basic implentation and of a smoke test
 
-// TODO: Test to see if actual PDF is renedered and placed in current directory, maybe somehow look to see if text requested is present in document created??
+// TODO: Test to see if actual PDF is renedered and placed in current directory,
+// maybe somehow look to see if text requested is present in document created??
 
 const PDFGen = require('../PDFGen');
 const fs = require('fs');
