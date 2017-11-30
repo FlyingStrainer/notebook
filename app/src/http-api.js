@@ -246,8 +246,8 @@ router.post('/makePDF', async (req, res) => {
 
   firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
     res.setHeader('Content-Type', 'application/json');
-    var pdfarray = Object.values(JSON.parse(notebook).data_entires);
-    pdfgen.genPDF(pdfarray, JSON.parse(notebook).name, "server", (snapshot) => {
+    const pdfarray = Object.values(JSON.parse(notebook).data_entires);
+    pdfgen.genPDF(pdfarray, JSON.parse(notebook).name, 'server', (snapshot) => {
       // This is done so that if the user does not exist, a empty obj is returned
       const response = Object.assign({}, snapshot.val());
       res.send(response);

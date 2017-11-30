@@ -65,9 +65,9 @@ module.exports = {
 
 
 
- var entries = [{date:"11-5-2017", text:"text1", imgpath: testImage, caption:"cap cap cap"}, {date:"11-3-2017", text:"text2",
-  imgpath: testImage, caption:"cap cap cap"}];
- module.exports.genPDF(entries, "genpdf", "server");
+ // var entries = [{date:"11-5-2017", text:"text1", imgpath: testImage, caption:"cap cap cap"}, {date:"11-3-2017", text:"text2",
+ //  imgpath: testImage, caption:"cap cap cap"}];
+ // module.exports.genPDF(entries, "genpdf", "server");
 // module.exports.saveTestImage(testImage);
 
 // Create a root reference
