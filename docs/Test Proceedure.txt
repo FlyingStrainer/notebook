@@ -1,0 +1,97 @@
+test procedure
+
+
+delete /login_info/bWUyQGVtYWlsLmNvbQ==
+
+
+/register
+
+new email
+    POST
+    {
+        "email": "me2@email.com",
+        "password": "pass",
+        "company_name": "test"
+    }
+    200 OK
+    {
+        "email": "me2@email.com",
+        "user_hash": "-L-8Z2k2Z53Sj0bSTDET",
+        "company_name": "test"
+    }
+
+old email
+    POST
+    {
+        "email": "me@email.com",
+        "password": "pass",
+        "company_name": "test"
+    }
+    403 Forbidden
+    {
+        "message": "user already exists"
+    }
+
+/login
+
+good login
+    POST
+    {
+        "email": "me@email.com",
+        "password": "pass"
+    }
+    200 OK
+    {
+        "email": "me@email.com",
+        "user_hash": "-L-8QoyVT8yTVaYIU3IM",
+        "company_name": "test"
+    }
+
+bad email
+    POST
+    {
+        "email": "not an email",
+        "password": "pass"
+    }
+    403 Forbidden
+    {
+        "message": "user not found"
+    }
+
+bad password
+    POST
+    {
+        "email": "me@email.com",
+        "password": "not a password"
+    }
+    403 Forbidden
+    {
+        "message": "incorrect password"
+    }
+
+/user
+
+valid hash
+    POST
+    {
+        "user_hash": "-L-8QoyVT8yTVaYIU3IM"
+    }
+    200 OK
+    {
+        "company_name": "test",
+        "role_list": {
+            "user": true
+        },
+        "user_hash": "-L-8QoyVT8yTVaYIU3IM",
+        "notebook_list": []
+    }
+
+invalid hash
+    POST
+    {
+        "user_hash": "not a hash"
+    }
+    403 Forbidden
+    {
+        "message": "user not found"
+    }

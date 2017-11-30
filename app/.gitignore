@@ -1,5 +1,7 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
+.eslintignore
+
 # firebase
 src/fire.js
 
@@ -23,6 +25,11 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Vim swap files
+*.swp
+*.swo
+*~
+
 #keys
 serviceAccountKey.json
-
+testServiceAccountKey.json

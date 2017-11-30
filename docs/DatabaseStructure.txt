@@ -1,0 +1,28 @@
+Firebase Database Structure
+sepearate users and notebook sections
+firebase.user documentation: https://firebase.google.com/docs/reference/js/firebase.User
+uuids are implied
+'+' indicates that more than one can exist in a given sub area(?)
+
+|- NotebookList
+|	|- NotebookUUID+
+|		|-EntryList
+|		|	|-Entry
+|		|		|- Text
+|		|		|- Date modified
+|		|		|- Date created
+|		|		|- author
+|		|		|- signatures
+|		|			|- user uuid+
+|		|		|- tagsList
+|		|			|-tag string+
+|		|- ManagersList
+|		|	|- user uuid+
+|		|- Date created
+|		|- Date modified
+|		|- isPublic (1: Public, 0: Private)
+|- UserList
+	|- User (type: firebase.user)+
+		|- notebook uuid that they have access too+
+		|- Role
+		|- other json properties inlcuded in firebase.user

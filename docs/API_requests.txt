@@ -1,0 +1,201 @@
+api/login
+body:
+{
+	"email": "",
+	"password": ""
+}
+response:
+{
+	"user_hash": ""
+}
+
+
+api/register
+body:
+{
+	"email": "",
+	"password": "",
+	"company_name:: ""
+}
+
+
+api/user
+body:
+{
+	"user_hash": ""
+}
+response:
+{
+	"user_hash": "",
+	"company_name": "",
+	"notebooks": [
+		"notebook_hash",
+		"notebook_hash",
+		...
+	],
+	"roles": [
+		<role>,
+		<role>
+	]
+}
+
+role: "user", "manager"
+
+
+api/getNotebooks GET //Get notebooks for user
+body:
+{
+	"user_hash": ""
+}
+response:
+{
+	"user_hash": "",
+	"notebooks":
+	[
+		"notebook_hash",
+		"notebook_hash",
+		...
+	]
+}
+
+
+api/getNotebook
+body:
+{
+	"user_hash": "",
+	"notebook_hash": ""
+}
+response:
+{
+	"notebook_hash": "",
+	"name": "",
+	"managers" [
+		"user_hash",
+		"user_hash",
+		...
+	],
+	"date_modified": Date,
+	"date_created": Date,
+	tags: [
+		"tag",
+		"tag",
+		...
+	]
+	"permissions": {
+		"read": true,
+		"write": true
+	}
+}
+
+
+api/addNotebook POST //Creates new notebook
+body:
+{
+	"user_hash": "",
+	"name": ""
+}
+{
+    "dateModified": "2017-11-30T19:34:33.257Z",
+    "dateCreated": "2017-11-30T19:34:33.257Z",
+    "tagList": [],
+    "dataEntries": [],
+    "notebook_hash": "-L-DQ5NNzqD2qo273Bw7",
+    "name": "new notebook",
+    "managers": {
+        "-L-CweIPj31ave9zE8Oq": true
+    }
+}
+
+
+api/addEntry POST //Add entry to notebook
+body:
+{
+    "user_hash": "-L-9i0Xmynq_Xsao14rd",
+    "notebook_hash": "-L-DVXx7_wXDcqCE1CAb",
+    "entry": {
+    	"type": "text",
+    	"text": "Hello World!"
+    }
+}
+response:
+{
+    "entry_hash": "1512072142972-L-DWT0ZxH_exYZFaelm",
+    "author": "me2@email.com",
+    "author_hash": "-L-9i0Xmynq_Xsao14rd",
+    "date_modified": "2017-11-30T20:02:22.972Z",
+    "date_created": "2017-11-30T20:02:22.972Z",
+    "tags": [],
+    "type": "text",
+    "text": "Hello World!"
+}
+
+include either text or image depending on type of entry
+
+api/getEntry
+body:
+{
+	"user_hash": "",
+	"notebook_hash": "",
+	"entry_hash": ""
+}
+reponse:
+{
+	entry_hash
+	author: email
+	cosigned_by
+	date_modified
+	date_created
+	tags: []
+	type
+	text
+}
+
+
+
+api/cosignEntry POST //Cosign entry
+body:
+{
+	"user_hash": "",	// User_hash of cosigner, also used to authenticate
+	"notebook_hash": "",
+	"entry_hash": ""	// Unique id of entry being cosigned
+}
+
+
+
+api/searchByTimestamp POST // Search for entry using timestamp
+
+body:
+{
+	"user_hash": "",
+        "notebook_hash" : "", //Optional, limits scope of search to this notebook
+        "entry_hash" : "", // Optional, limits scope of search to this entry
+	"date": Date()
+}
+
+response: 
+{
+	"user_hash" : "",
+	"notebook_hash" : "",
+	"entry_hash" : "",
+}
+
+
+
+api/searchByText POST // Search for entry using text
+
+body:
+{
+
+	"user_hash" : "",
+        "notebook_hash" : "", //Optional, limits scope of search to this notebook
+        "entry_hash" : "", // Optional, limits scope of search to this entry
+	"text" : ""
+}
+
+response: 
+{
+	"user_hash" : "",
+	"notebook_hash" : "",
+	"entry_hash" : "",
+	//Text location in entry?
+}

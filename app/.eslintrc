@@ -1,0 +1,38 @@
+
+{
+  "extends": "airbnb",
+  "env": {
+    "browser": true,
+    "jest": true
+  },
+  "rules": {
+    "react/jsx-filename-extension": "off",
+    "object-curly-spacing": "off",
+    "vars-on-top": "off",
+    "no-console": "off",
+    "prefer-arrow-callback": [
+      "error",
+      {
+        "allowNamedFunctions": true,
+        "allowUnboundThis": true
+      }
+    ],
+    "max-len": ["warn", 120],
+    "no-unused-vars": "warn",
+    "no-param-reassign": ["warn", { "props": true }],
+    "no-use-before-define": "warn",
+    "camelcase": "off",
+    "no-plusplus": "off",
+    "eqeqeq": "warn",
+    "prefer-destructuring": [
+      "error",
+      {
+        "array": false,
+        "object": true
+      },
+      {
+        "enforceForRenamedProperties": false
+      }
+    ]
+  }
+}
