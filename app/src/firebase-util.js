@@ -278,6 +278,7 @@ module.exports = {
   },
 
   getEntries(user_hash, notebook_hash) {
+    // NOTE does not check for permission
     return admin.database().ref(`/NotebookList/${notebook_hash}/`).once('value').then((snap) => {
       const notebook = snap.val();
       if (!notebook) {
@@ -290,6 +291,7 @@ module.exports = {
   },
 
   getEntry(user_hash, notebook_hash, entry_hash) {
+    // NOTE does not check for permission
     const path = `/NotebookList/${notebook_hash}/data_entries/${entry_hash}/`;
     return admin.database().ref(path).once('value').then((snap) => {
       const entry = snap.val();
@@ -306,6 +308,7 @@ module.exports = {
   },
 
   getNotebook(user_hash, notebook_hash) {
+    // NOTE does not check for permission
     return admin.database().ref(`/NotebookList/${notebook_hash}/`).once('value')
       .then((snap) => {
         if (snap.val() !== null) {
@@ -326,6 +329,7 @@ module.exports = {
   },
 
   setNotebookPermissions(user_hash, notebook_hash, change_list) {
+    // NOTE does not check for permission
     const updates = {};
 
     for (let i = 0; i < change_list.length; i++) {
@@ -350,6 +354,7 @@ module.exports = {
   },
 
   format(user_hash, notebook_hash, format) {
+    // NOTE does not check for permission
     const updates = {};
     updates[`/NotebookList/${notebook_hash}/format`] = format;
 
@@ -357,6 +362,7 @@ module.exports = {
   },
 
   getCompanyUsers(user_hash) {
+    // NOTE does not check for permission
     return new Promise((resolve, reject) => {
       const getCompanyUsers = (snap) => {
         const company = snap.val();
@@ -384,6 +390,7 @@ module.exports = {
   },
 
   getCompanyUsersPermission(user_hash, notebook_hash) {
+    // NOTE does not check for permission
     return new Promise((resolve, reject) => {
       const checkUsers = (company_name, users) => {
         const my_users = Object.assign({}, users);
