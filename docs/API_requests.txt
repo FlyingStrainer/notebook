@@ -136,6 +136,20 @@ response:
 
 include either text or image depending on type of entry
 
+api/getEntries
+body:
+{
+    "user_hash": "-L-9i0Xmynq_Xsao14rd",
+    "notebook_hash": "-L-9iDACSg1i79u3QJF7"
+}
+response:
+[
+    <page_hash>,
+    "1512075652380-L-Diqu1W7oPUffwA39u",
+    "1512075687125-L-DizNrJBcj34uZnPzb",
+    "1512075689900-L-Dj-3CQiyYfnxkbTVB"
+]
+
 api/getEntry
 body:
 {
