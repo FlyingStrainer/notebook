@@ -10,12 +10,12 @@ admin.initializeApp({
 
 query.init(admin);
 
-//makes sure algolia connection is working, as we are searching for an empty string which
-//should return all objects in algolia
+// makes sure algolia connection is working, as we are searching for an empty string which
+// should return all objects in algolia
 it('should return non empty json', () => {
-    expect.assertions(1);
+  expect.assertions(1);
 
-    return query.searchForText("").then((data) => {
-        expect(data).toBeDefined()
-    });
+  return query.searchForText('').then((data) => {
+    expect(data).toBeDefined();
+  });
 });
