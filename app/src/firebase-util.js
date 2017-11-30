@@ -67,6 +67,7 @@ module.exports = {
                 update[`login_info/${email64}`] = login_data;
 
                 const user_data = {
+                  email,
                   user_hash,
                   permissions: {
                     role: user_admin ? 'admin' : 'user',
@@ -217,64 +218,87 @@ module.exports = {
     }));
   },
 
-  saveNotebookCB(user_hash, _name) {
-    const updates = {};
-    // Add notebook updates
-    const new_notebook_key = admin.database().ref('NotebookList').push().key;
-    const notebook = new Notebook({
-      uuid: new_notebook_key,
-      name: _name,
-      managerList: [],
+  addEntry(user_hash, notebook_hash, entry) {
+    return new Promise(((resolve, reject) => {
+      const {type} = entry;
+      const data = entry[type];
+
+      if (!(type && data)) {
+        reject(new Error('invalid request'));
+        return;
+      }
+
+      const updateAll = (user_data) => {
+        const updates = {};
+
+        const {email} = user_data;
+
+        // notebook
+        const now = new Date();
+        const entry_hash = now.getTime() + admin.database().ref('NotebookList').push().key;
+
+        const entry_update = {
+          entry_hash,
+          author: email,
+          author_hash: user_hash,
+          date_modified: now,
+          date_created: now,
+          tags: [],
+          type: entry.type,
+        };
+        entry_update[type] = data;
+        updates[`/NotebookList/${notebook_hash}/data_entries/${entry_hash}`] = entry_update;
+
+        updates[`/NotebookList/${notebook_hash}/dateModified`] = now;
+
+        admin.database().ref().update(updates)
+          .then(() => {
+            resolve(entry_update);
+          })
+          .catch(reject);
+      };
+
+      const checkForPermission = (user_data) => {
+        let check = user_data;
+        check = check.permissions || {};
+        check = check.notebooks || {};
+        check = check[notebook_hash] || {};
+        check = !check.write;
+        if (check) {
+          return Promise.reject(new Error('permission denied'));
+        }
+
+        return user_data;
+      };
+
+      module.exports.checkUser(user_hash)
+        .then(checkForPermission)
+        .then(updateAll)
+        .catch(reject);
+    }));
+  },
+
+  getEntries(user_hash, notebook_hash) {
+    return admin.database().ref(`/NotebookList/${notebook_hash}/`).once('value').then((snap) => {
+      const notebook = snap.val();
+      if (!notebook) {
+        return Promise.reject(new Error('invalid request'));
+      }
+
+      const data_entries = notebook.data_entries || {};
+      return Object.keys(data_entries);
     });
-    updates[`/NotebookList/${new_notebook_key}`] = notebook;
-
-    // Add user updates
-    updates[`/UserList/${user_hash}/NotebookList/${new_notebook_key}`] = true;
-
-    return admin.database().ref().update(updates);
   },
 
-  addEntry(user_hash, notebook_uuid, _text, _image, _caption, _date_created, _authorID, _tagArr) {
-    admin.database().child('UserList').child('user_hash').once('value', (fbdatasnap) => {
-      const exists = (fbdatasnap.val() !== null);
-      addEntryCB(
-        user_hash, notebook_uuid, _text, _image,
-        _caption, _dateCreated, _authorID, _tagArr, exists,
-      );
-    });
-  },
+  getEntry(user_hash, notebook_hash, entry_hash) {
+    const path = `/NotebookList/${notebook_hash}/data_entries/${entry_hash}/`;
+    return admin.database().ref(path).once('value').then((snap) => {
+      const entry = snap.val();
+      if (!entry) {
+        return Promise.reject(new Error('invalid request'));
+      }
 
-  addEntryCB(
-    user_hash, notebook_uuid, _text, _image,
-    _caption, _date_created, _authorID, _tag_arr, exists,
-  ) {
-    if (exists === false) return;
-    const new_key = admin.database().ref().child('NotebookList').child(notebook_uuid)
-      .child('Entries')
-      .push().key;
-    const notebookEntry = {
-      uuid: new_key,
-      text: _text,
-      image: _image,
-      caption: _caption,
-      date_created: _date_created,
-      author_id: _authorID,
-      tags: _tagArr,
-    };
-    const updates = {};
-    updates[`/NotebookList/${notebook_uuid}/data_entries/${newKey}`] = notebookEntry;
-    return admin.database().ref().update(updates);
-  },
-
-  getEntries(user_hash, _uuid, callback) {
-    admin.database().ref(`/NotebookList/${_uuid}/data_entries/`).once('value').then((fbdatasnap) => {
-      callback(JSON.stringify(Object.keys(fbdatasnap.val())));
-    });
-  },
-
-  getEntry(user_hash, _uuid, entry_id, callback) {
-    admin.database().ref(`/NotebookList/${_uuid}/data_entries/${entry_id}/`).once('value').then((fbdatasnap) => {
-      callback(fbdatasnap.val());
+      return entry;
     });
   },
 

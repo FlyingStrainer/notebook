@@ -23,6 +23,18 @@ async function testApi(path, req) {
   expect(response.statusCode).toBeLessThan(300);
 }
 
+describe('POST /register', () => {
+  it('should return a user hash', async () => {
+    const req = {
+      email: 'testuser1@email.com',
+      password: 'testpassword1',
+      company_name: 'test',
+    };
+
+    await testApi('/register', req);
+  });
+});
+
 describe('POST /login', () => {
   it('should return a user hash', async () => {
     const req = {

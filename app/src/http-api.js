@@ -125,23 +125,19 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
-router.post('/addEntry', (req, res) => {
-  const {user_hash, notebook_hash, entry} = req.body;
-  const {type} = entry;
-  const data = entry[type];
+(() => {
+  // const {user_hash, notebook_hash, entry} = req.body;
+  // const {type} = entry;
+  // const data = entry[type];
+  //
+  const path = '/addEntry';
+  const props = ['user_hash', 'notebook_hash', 'entry'];
+  const utilFunc = 'addEntry';
+  const thenHandler = () => {};
+  const allowedErrors = ['invalid request'];
 
-  if (!(user_hash && notebook_hash && entry && type && data)) {
-    console.log('/addEntry bad', req.body);
-    // bad request
-    res.sendStatus(400);
-    return;
-  }
-
-  if (firebaseUtil.isTest) {
-    res.status(204).send();
-    return;
-  }
-
+  addRoute(path, props, utilFunc, thenHandler, allowedErrors);
+  //
   // TODO add entry to notebook
   // NOTE the addEntry function here does not match the true api
   //
@@ -153,17 +149,6 @@ router.post('/addEntry', (req, res) => {
   //   console.log('/addEntry internal bad');
   //   res.sendStatus(500);
   // });
-  console.log('/addEntry internal bad');
-  res.sendStatus(500);
-});
-(() => {
-  const path = '/addEntry';
-  const props = ['user_hash', 'notebook_hash', 'entry'];
-  const utilFunc = 'addEntry';
-  const thenHandler = () => {};
-  const allowedErrors = ['Add entry failed'];
-
-  addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
 (() => {
@@ -197,7 +182,6 @@ router.post('/addEntry', (req, res) => {
 
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
-
 
 // might need to filter/parse the data returned from this
 router.post('/searchText', async (req, res) => {
