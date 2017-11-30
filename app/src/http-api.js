@@ -189,7 +189,7 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
-// might need to filter/parse the data returned from this
+/*// might need to filter/parse the data returned from this
 router.post('/searchByText', async (req, res) => {
   const {user_hash, text} = req.body;
 
@@ -227,9 +227,11 @@ router.post('/searchByText', async (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.status(200).send(JSON.stringify({user_hash, notebook_hash: notebooksArr, entry_hash: entryArr}));
   });
-});
+});*/
 
 router.post('/makePDF', async (req, res) => {
+
+  
   const {notebook_hash} = req.body;
 
   // TODO determine error conditions for PDF generation
@@ -243,14 +245,21 @@ router.post('/makePDF', async (req, res) => {
     res.status(204).send();
     return;
   }
-
-  firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
-    res.setHeader('Content-Type', 'application/json');
-    const pdfarray = Object.values(JSON.parse(notebook).data_entires);
-    const pdfname = JSON.parse(notebook).name;
+  //`${req.protocol}://${req.get('host')}${req.path}/${pdfname}.pdf`}
+  //res.status(200).send(JSON.stringify({url: req.protocol}));
+  //console.log(notebook_hash);
+  
+ firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
+   console.log("TEST:" + notebook.data_entries);
+    const pdfarray = Object.values(notebook.data_entries);
+    const pdfname = notebook.name;
     pdfgen.genPDF(pdfarray, pdfname, 'server');
-    res.send(JSON.stringify({url: `${req.protocol}://${req.get('host')}${req.path}/${pdfname}.pdf`}));
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify({url: `${req.protocol}://${req.get('host')}/pdfdisp/${pdfname}.pdf`}));
+
   });
+  //var pdfname = "fsda";
+  
 
   // old: await db.ref(`words/${userId}`).once('value');
 });
@@ -323,6 +332,13 @@ router.get('/notebook/:notebook_hash', async (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.status(200).send(JSON.stringify(notebook, null, 4));
   });
+});
+
+router.get('/pdfdisp/:pdfname', function(req, res){
+  const {pdfname} = req.params;
+  console.log(req.params);
+  var file = './genPDFs/' + pdfname;
+  res.download(file); // Set disposition and send it.
 });
 
 (() => {

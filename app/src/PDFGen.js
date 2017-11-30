@@ -14,11 +14,16 @@ module.exports = {
 
   genPDF(entries, pdfName, location) {
     const doc = new PDFDocument();
-
+    var dir = './genPDFs';
+    
+    if (!fs.existsSync(dir)){
+        fs.mkdirSync(dir);
+    }
+  
 
     // Pipe its output somewhere, like to a file or HTTP response
     // See below for browser usage
-    doc.pipe(fs.createWriteStream(`${pdfName}.pdf`));
+    doc.pipe(fs.createWriteStream(`./genPDFs/${pdfName}.pdf`));
     doc.fontSize(12);
     // Embed a font, set the font size, and render some text
     // doc.font('fonts/PalatinoBold.ttf')
