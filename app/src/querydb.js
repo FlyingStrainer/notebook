@@ -52,7 +52,7 @@ module.exports = {
         throw err;
       }
       console.log('Firebase<>Algolia import done');
-      process.exit(0);
+      //process.exit(0);
     });
   },
 
