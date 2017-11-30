@@ -47,34 +47,51 @@ module.exports = {
         })
         .catch((err) => {
           if (err.message === 'email not found') {
-            const user_hash = admin.database().ref('UserList').push().key;
 
-            const user_data = {
-              email,
-              password,
-              user_hash,
-              company_name,
-            };
+            admin.database().ref(`companies/${company_name}`).once('value')
+              .then((snap) => {
+                let admin = !snap.val();
 
-            const email64 = Buffer.from(email).toString('base64');
+                const user_hash = admin.database().ref('UserList').push().key;
 
-            const update = {};
-            update[`login_info/${email64}`] = user_data;
-            update[`UserList/${user_hash}`] = {
-              user_hash,
-              company_name,
-              role_list: {
-                user: true,
-              },
-              notebooks: {},
-            };
-            update[`companies/${company_name}/company_name`] = company_name;
-            update[`companies/${company_name}/users/${user_hash}`] = true;
+                const login_data = {
+                  email,
+                  password,
+                  user_hash,
+                  company_name,
+                };
 
-            admin.database().ref().update(update)
-              .then(() => {
-                delete user_data.password;
-                resolve(user_data);
+                const user_data = {
+                  user_hash,
+                  permissions: {
+                    role: admin ? 'admin' : 'user',
+                    create_notebooks: 'true',
+                    notebooks: {},
+                  },
+                  company_name,
+                }
+
+                const company_data = {
+                  company_name,
+                  admin: user_hash,
+                  users: {
+                    user_hash: true,
+                  },
+                };
+
+                const email64 = Buffer.from(email).toString('base64');
+
+                const update = {};
+                update[`login_info/${email64}`] = login_data;
+                update[`UserList/${user_hash}`] = user_data;
+                update[`companies/${company_name}`] = company_data;
+
+                admin.database().ref().update(update)
+                  .then(() => {
+                    delete login_data.password;
+                    resolve(login_data);
+                  })
+                  .catch(reject);
               })
               .catch(reject);
           } else {
