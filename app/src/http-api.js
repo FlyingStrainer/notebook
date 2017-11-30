@@ -204,13 +204,19 @@ router.post('/searchByText', async (req, res) => {
   }).then((responses) => {
     // Response from Algolia:
     // https://www.algolia.com/doc/api-reference/api-methods/search/#response-format
-    res.send(responses.hits);
+    //res.send(responses.hits);
     var entryArr = [];
     var retCount = 0;
+    var notebooksArr = [];
     for (var i = 0; i <responses.hits.length; i++ ) {
-      if (response.hits.data_entires[i].text.indexOf(text) != -1)
-      entryArr[retCount] = response.hits.data_entires[i].entry_hash;
-      retCount++;
+      notebooksArr[i] = response.hits[i].notebook_hash;
+
+      for (var entry_hash in responses.hits[i].data_entires) {
+        if (responses.hits[i].data_entires[entry_hash].text.indexOf(text) != -1){
+         entryArr[retCount] = response.hits.data_entires[i].entry_hash;
+         retCount++;
+        }
+      }
     }
 
     res.setHeader('Content-Type', 'application/json');
