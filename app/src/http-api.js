@@ -132,30 +132,15 @@ router.post('/getNotebook', async (req, res) => {
 });
 
 // writing
-router.post('/addNotebook', (req, res) => {
-  const {user_hash, name} = req.body;
+(() => {
+  const path = '/addNotebook';
+  const props = ['user_hash', 'name'];
+  const utilFunc = 'saveNotebook';
+  const thenHandler = () => {};
+  const allowedErrors = [];
 
-  if (!(user_hash && name)) {
-    console.log('/addNotebook bad', req.body);
-    // bad request
-    res.sendStatus(400);
-    return;
-  }
-
-  if (firebaseUtil.isTest) {
-    res.status(204).send();
-    return;
-  }
-
-  // TODO verify saveNotebook works
-  firebaseUtil.saveNotebook(user_hash, name).then(() => {
-    console.log('/addNotebook good');
-    res.sendStatus(201);
-  }).catch(() => {
-    console.log('/addNotebook internal bad');
-    res.sendStatus(500);
-  });
-});
+  addRoute(path, props, utilFunc, thenHandler, allowedErrors);
+})();
 
 router.post('/addEntry', (req, res) => {
   const {user_hash, notebook_hash, entry} = req.body;
