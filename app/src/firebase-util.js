@@ -233,13 +233,18 @@ module.exports = {
         const now = new Date();
         const entry_hash = now.getTime() + admin.database().ref('NotebookList').push().key;
 
-        const entry_update = Object.apply({}, entry, {
+        const entry_update = {
           entry_hash,
           author: email,
           author_hash: user_hash,
           date_modified: now,
           date_created: now,
-        });
+          text: entry.text || null,
+          image: entry.image || null,
+          caption: entry.caption || null,
+          tags: entry.tags || [],
+        };
+        console.log(entry_update);
         entry_update.tags = entry_update.tags || [];
         updates[`/NotebookList/${notebook_hash}/data_entries/${entry_hash}`] = entry_update;
 
