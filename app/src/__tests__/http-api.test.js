@@ -38,6 +38,7 @@ describe('POST /user', () => {
   it('should return json', async () => {
     // TODO
     const req = {
+       user_hash: '--user-key-1',
     };
 
     await testApi('/user', req);
@@ -60,7 +61,7 @@ describe('POST /addEntry', () => {
     const req = {
       user_hash: '--user-key-1',
       notebook_hash: '--notebook-key-2',
-      entry: 'This is an example entry',
+      entry: { type: 'text', text: 'epsilon'},
     };
 
     await testApi('/addEntry', req);
@@ -78,7 +79,7 @@ describe('POST /getEntries', () => {
   });
 });
 
-describe('POST /getNotebooks', () => {
+describe.skip('POST /getNotebooks (depreciated)', () => { //depreciated
   it('Get the notbooks the user can access', async () => {
     const req = {
       user_hash: '--user-key-1',
