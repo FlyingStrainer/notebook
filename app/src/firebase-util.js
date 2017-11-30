@@ -399,7 +399,7 @@ module.exports = {
             let next = user;
             next = next.permissions || {};
             next = next.notebooks || {};
-            next = next[notebook_hash];
+            next = next[notebook_hash] || false;
             my_users[other_hash] = next;
           }
         }
