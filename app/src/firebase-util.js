@@ -279,12 +279,13 @@ module.exports = {
   },
 
   getEntries(user_hash, notebook_hash) {
-    return admin.database().ref(`/NotebookList/${notebook_hash}/data_entries/`).once('value').then((snap) => {
-      const data_entries = snap.val();
-      if (!data_entries) {
+    return admin.database().ref(`/NotebookList/${notebook_hash}/`).once('value').then((snap) => {
+      const notebook = snap.val();
+      if (!notebook) {
         return Promise.reject(new Error('invalid request'));
       }
 
+      const data_entries = notebook.data_entries || {};
       return Object.keys(data_entries);
     });
   },
