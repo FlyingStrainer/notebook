@@ -111,22 +111,27 @@ api/addEntry POST //Add entry to notebook
 body:
 {
     "user_hash": "-L-9i0Xmynq_Xsao14rd",
-    "notebook_hash": "-L-DVXx7_wXDcqCE1CAb",
+    "notebook_hash": "-L-9iDACSg1i79u3QJF7",
     "entry": {
-    	"type": "text",
-    	"text": "Hello World!"
+    	"text": "Hello World!",
+	
+	"image": null,
+	"caption": null,
+	
+	"tags": []
     }
 }
 response:
 {
-    "entry_hash": "1512072142972-L-DWT0ZxH_exYZFaelm",
+    "entry_hash": "1512074221957-L-DdO_fY4A7kFTEMasj",
     "author": "me2@email.com",
     "author_hash": "-L-9i0Xmynq_Xsao14rd",
-    "date_modified": "2017-11-30T20:02:22.972Z",
-    "date_created": "2017-11-30T20:02:22.972Z",
-    "tags": [],
-    "type": "text",
-    "text": "Hello World!"
+    "date_modified": "2017-11-30T20:37:01.957Z",
+    "date_created": "2017-11-30T20:37:01.957Z",
+    "text": "Hello World!",
+    "image": null,
+    "caption": null,
+    "tags": []
 }
 
 include either text or image depending on type of entry
