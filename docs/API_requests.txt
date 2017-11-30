@@ -218,3 +218,10 @@ response:
 	"entry_hash" : "",
 	//Text location in entry?
 }
+
+api/feedback
+body:
+{
+    "message": "Best thing ever"
+}
+no response
