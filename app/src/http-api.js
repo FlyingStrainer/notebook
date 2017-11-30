@@ -219,7 +219,7 @@ router.post('/searchByText', async (req, res) => {
     }
 
     res.setHeader('Content-Type', 'application/json');
-    res.status(200).send(JSON.stringify({user_hash: user_hash, entry_hash: entryArr}));
+    res.status(200).send(JSON.stringify({user_hash: user_hash, notebook_hash: notebooksArr, entry_hash: entryArr}));
   });
 });
 
