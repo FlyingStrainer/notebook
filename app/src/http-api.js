@@ -107,7 +107,7 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
 (() => {
   const path = '/getNotebook';
   const props = ['user_hash', 'notebook_hash'];
-  const utilFunc = ''; // TODO
+  const utilFunc = 'getNotebook';
   const thenHandler = () => {};
   const allowedErrors = ['notebook not found'];
 
