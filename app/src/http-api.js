@@ -224,7 +224,7 @@ router.post('/searchByText', async (req, res) => {
 });
 
 router.post('/makePDF', async (req, res) => {
-  const {pdfarray, filename, location} = req.body;
+  const {notebook_hash} = req.body;
 
   // TODO determine error conditions for PDF generation
   /* if (!(user_hash)) {
@@ -238,11 +238,17 @@ router.post('/makePDF', async (req, res) => {
     return;
   }
 
-  pdfgen.genPDF(pdfarray, filename, location, (snapshot) => {
-    // This is done so that if the user does not exist, a empty obj is returned
-    const response = Object.assign({}, snapshot.val());
-    res.send(response);
-  });// old: await db.ref(`words/${userId}`).once('value');
+  firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
+    res.setHeader('Content-Type', 'application/json');
+    var pdfarray = Object.values(JSON.parse(notebook).data_entires);
+    pdfgen.genPDF(pdfarray, JSON.parse(notebook).name, "server", (snapshot) => {
+      // This is done so that if the user does not exist, a empty obj is returned
+      const response = Object.assign({}, snapshot.val());
+      res.send(response);
+    });
+  });
+
+  // old: await db.ref(`words/${userId}`).once('value');
 });
 
 (() => {
