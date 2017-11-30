@@ -94,6 +94,17 @@ body:
 	"user_hash": "",
 	"name": ""
 }
+{
+    "dateModified": "2017-11-30T19:34:33.257Z",
+    "dateCreated": "2017-11-30T19:34:33.257Z",
+    "tagList": [],
+    "dataEntries": [],
+    "notebook_hash": "-L-DQ5NNzqD2qo273Bw7",
+    "name": "new notebook",
+    "managers": {
+        "-L-CweIPj31ave9zE8Oq": true
+    }
+}
 
 
 api/addEntry POST //Add entry to notebook
