@@ -49,12 +49,18 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
 
     firebaseUtil[utilFunc].apply(null, args)
       .then((data) => {
-        const dataline = JSON.stringify(data).split('\n')[0].substr(0, 60);
-        console.log(`${path} good:\t\t`, dataline);
+        if (data) {
+          const dataline = JSON.stringify(data).split('\n')[0].substr(0, 60);
+          console.log(`${path} good:\t\t`, dataline);
 
-        res.status(200).send(data);
+          res.status(200).send(data);
 
-        return data;
+          return data;
+        }
+
+        console.log(`${path} good:\t\tno response`);
+        res.status(204).send();
+        return {};
       })
       .catch((err) => {
         if (allowedErrors.includes(err.message)) {
