@@ -178,7 +178,6 @@ module.exports = {
 
         // user
         const notebook_permission = {
-          notebook_hash,
           read: true,
           write: true,
           manager: true,
@@ -355,5 +354,81 @@ module.exports = {
     updates[`/NotebookList/${notebook_hash}/format`] = format;
 
     return admin.database().ref().update(updates);
+  },
+
+  getCompanyUsers(user_hash) {
+    return new Promise((resolve, reject) => {
+      const getCompanyUsers = (snap) => {
+        const company = snap.val();
+
+        const users = Object.keys(company.users || {});
+        resolve({
+          users,
+        });
+      };
+
+      const getCompanyName = (snap) => {
+        const user = snap.val();
+        if (!user) {
+          reject(new Error('invalid request'));
+          return;
+        }
+
+        const {company_name} = user;
+
+        admin.database().ref(`/companies/${company_name}`).once('value').then(getCompanyUsers, reject);
+      };
+
+      admin.database().ref(`/UserList/${user_hash}`).once('value').then(getCompanyName, reject);
+    });
+  },
+
+  getCompanyUsersPermission(user_hash, notebook_hash) {
+    return new Promise((resolve, reject) => {
+      const checkUsers = (company_name, users) => {
+        const my_users = Object.assign({}, users);
+        const entries = Object.entries(users);
+
+        for (let i = 0; i < entries.length; i++) {
+          const other_hash = entries[i][0];
+          const user = entries[i][1];
+
+          if (user.company_name !== company_name) {
+            delete my_users[other_hash];
+          } else {
+            let next = user;
+            next = next.permissions || {};
+            next = next.notebooks || {};
+            next = next[notebook_hash];
+            my_users[other_hash] = next;
+          }
+        }
+
+        resolve(my_users);
+      };
+
+      const getUsers = (company_name) => {
+        admin.database().ref('/UserList').once('value').then((snap) => {
+          const users = snap.val() || {};
+
+          checkUsers(company_name, users);
+        });
+      };
+
+      const getCompanyName = (snap) => {
+        const user = snap.val();
+        if (!user) {
+          return Promise.reject(new Error('invalid request'));
+        }
+
+        const {company_name} = user;
+        return company_name;
+      };
+
+      admin.database().ref(`/UserList/${user_hash}`).once('value')
+        .then(getCompanyName)
+        .then(getUsers)
+        .catch(reject);
+    });
   },
 };

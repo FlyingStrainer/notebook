@@ -367,4 +367,24 @@ router.get('/notebook/:notebook_hash', async (req, res) => {
   });
 });
 
+(() => {
+  const path = '/getCompanyUsers';
+  const props = ['user_hash'];
+  const utilFunc = 'getCompanyUsers';
+  const thenHandler = () => {};
+  const allowedErrors = [];
+
+  addRoute(path, props, utilFunc, thenHandler, allowedErrors);
+})();
+
+(() => {
+  const path = '/getCompanyUsersPermission';
+  const props = ['user_hash', 'notebook_hash'];
+  const utilFunc = 'getCompanyUsersPermission';
+  const thenHandler = () => {};
+  const allowedErrors = [];
+
+  addRoute(path, props, utilFunc, thenHandler, allowedErrors);
+})();
+
 module.exports = router;
