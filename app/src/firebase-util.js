@@ -31,7 +31,7 @@ module.exports = {
   querydb,
 
   checkNotebookPermission(user_hash, notebook_hash, action) {
-    const path = `UserList/${user_hash}/notebooks/${notebook_hash}`;
+    const path = `UserList/${user_hash}/permissions/notebooks/${notebook_hash}`;
     return admin.database().ref(path).once('value')
       .then((data) => {
         const permission = data.val();
@@ -47,12 +47,16 @@ module.exports = {
         })
         .catch((err) => {
           if (err.message === 'email not found') {
-
             admin.database().ref(`companies/${company_name}`).once('value')
               .then((snap) => {
-                let admin = !snap.val();
+                const initCompany = !snap.val();
+                const user_admin = !snap.val();
+
+                const update = {};
 
                 const user_hash = admin.database().ref('UserList').push().key;
+
+                const email64 = Buffer.from(email).toString('base64');
 
                 const login_data = {
                   email,
@@ -60,31 +64,34 @@ module.exports = {
                   user_hash,
                   company_name,
                 };
+                update[`login_info/${email64}`] = login_data;
 
                 const user_data = {
                   user_hash,
                   permissions: {
-                    role: admin ? 'admin' : 'user',
+                    role: user_admin ? 'admin' : 'user',
                     create_notebooks: 'true',
                     notebooks: {},
                   },
                   company_name,
-                }
-
-                const company_data = {
-                  company_name,
-                  admin: user_hash,
-                  users: {
-                    user_hash: true,
-                  },
                 };
-
-                const email64 = Buffer.from(email).toString('base64');
-
-                const update = {};
-                update[`login_info/${email64}`] = login_data;
                 update[`UserList/${user_hash}`] = user_data;
-                update[`companies/${company_name}`] = company_data;
+
+                if (initCompany) {
+                  const company_users = {};
+                  company_users[user_hash] = true;
+
+                  const company_data = {
+                    company_name,
+                    admin_hash: user_hash,
+                    users: company_users,
+                    notebooks: {},
+                  };
+
+                  update[`companies/${company_name}`] = company_data;
+                } else {
+                  update[`companies/users/${user_hash}`] = true;
+                }
 
                 admin.database().ref().update(update)
                   .then(() => {
@@ -129,8 +136,8 @@ module.exports = {
         const user = snap.val();
 
         if (user) {
-          user.notebooks = user.notebooks || {};
-          user.notebooks = Object.keys(user.notebooks);
+          user.permissions.notebooks = user.permissions.notebooks || {};
+          user.notebook_list = Object.keys(user.permissions.notebooks);
 
           return user;
         }
@@ -141,22 +148,77 @@ module.exports = {
 
   // NOTE not used in frontend
   // getNotebooks(user_hash) {
-  //   return module.exports.checkUser(user_hash).then(user => ({notebooks: user.notebooks}));
+  //   return module.exports.checkUser(user_hash).then(user => ({notebook_list: user.notebook_list}));
   // },
 
-  saveNotebook(user_hash, _name) {
-    return admin.database().ref(`UserList/${user_hash}`).child('UserList').child('user_hash').once('value', (fbdatasnap) => {
-      const exists = (fbdatasnap.val() !== null);
-      saveNotebookCB(
-        user_hash, notebook_uuid, _text, _image,
-        _caption, _dateCreated, _authorID, _tagArr, exists,
-      );
-    });
+  saveNotebook(user_hash, notebook_name) {
+    return new Promise(((resolve, reject) => {
+      const updateAll = (user_data, company_data) => {
+        const {company_name, admin_hash} = company_data;
+
+        const updates = {};
+
+        // notebook
+        const notebook_hash = admin.database().ref('NotebookList').push().key;
+
+        const managers = {};
+        managers[user_hash] = true;
+        managers[admin_hash] = true;
+
+        const notebook_update = new Notebook({
+          notebook_hash,
+          name: notebook_name,
+          managers,
+        });
+        updates[`/NotebookList/${notebook_hash}`] = notebook_update;
+
+        // company
+        updates[`/companies/${company_name}/notebooks/${notebook_hash}`] = true;
+
+        // user
+        const notebook_permission = {
+          notebook_hash,
+          read: true,
+          write: true,
+          manager: true,
+        };
+
+        updates[`/UserList/${user_hash}/permissions/notebooks/${notebook_hash}`] = notebook_permission;
+        updates[`/UserList/${admin_hash}/permissions/notebooks/${notebook_hash}`] = notebook_permission;
+
+        admin.database().ref().update(updates)
+          .then(() => {
+            resolve(notebook_update);
+          })
+          .catch(reject);
+      };
+
+      const checkForPermission = (user_data) => {
+        if (!user_data.permissions.create_notebooks) {
+          return Promise.reject(new Error('permission denied'));
+        }
+
+        return user_data;
+      };
+
+      const sendUpdateData = (user_data) => {
+        const {company_name} = user_data;
+
+        admin.database().ref(`companies/${company_name}`).once('value').then((snap) => {
+          const company_data = snap.val();
+          updateAll(user_data, company_data);
+        });
+      };
+
+      module.exports.checkUser(user_hash)
+        .then(checkForPermission)
+        .then(sendUpdateData)
+        .catch(reject);
+    }));
   },
 
   saveNotebookCB(user_hash, _name) {
     const updates = {};
-    if (exists === false) return;
     // Add notebook updates
     const new_notebook_key = admin.database().ref('NotebookList').push().key;
     const notebook = new Notebook({
@@ -249,9 +311,10 @@ module.exports = {
       const user_hash = user_list[i].user_hash;
 
       if (type === 'add') {
-        updates[`UserList/${user_hash}/notebooks/${notebook_hash}`] = true;
+        // TODO set true permissions
+        updates[`UserList/${user_hash}/permissions/notebooks/${notebook_hash}`] = true;
       } else if (type === 'remove') {
-        updates[`UserList/${user_hash}/notebooks/${notebook_hash}`] = null;
+        updates[`UserList/${user_hash}/permissions/notebooks/${notebook_hash}`] = null;
       }
     }
 
