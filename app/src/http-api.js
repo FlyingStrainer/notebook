@@ -248,11 +248,8 @@ router.post('/makePDF', async (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     var pdfarray = Object.values(JSON.parse(notebook).data_entires);
     var pdfname = JSON.parse(notebook).name;
-    pdfgen.genPDF(pdfarray,pdfname , "server", (snapshot) => {
-      // This is done so that if the user does not exist, a empty obj is returned
-      //const response = Object.assign({}, snapshot.val());
-      res.send(JSON.stringify({url: req.protocol+'://'+req.get('host') + req.path + '/' + pdfname+'.pdf'}));
-    });
+    pdfgen.genPDF(pdfarray,pdfname , "server");
+    res.send(JSON.stringify({url: req.protocol+'://'+req.get('host') + req.path + '/' + pdfname+'.pdf'}));
   });
 
   // old: await db.ref(`words/${userId}`).once('value');
