@@ -184,7 +184,7 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
 })();
 
 // might need to filter/parse the data returned from this
-router.post('/searchText', async (req, res) => {
+router.post('/searchByText', async (req, res) => {
   const {user_hash, text} = req.body;
 
   if (!(user_hash)) {
@@ -205,6 +205,16 @@ router.post('/searchText', async (req, res) => {
     // Response from Algolia:
     // https://www.algolia.com/doc/api-reference/api-methods/search/#response-format
     res.send(responses.hits);
+    var entryArr = [];
+    var retCount = 0;
+    for (var i = 0; i <responses.hits.length; i++ ) {
+      if (response.hits.data_entires[i].text.indexOf(text) != -1)
+      entryArr[retCount] = response.hits.data_entires[i].entry_hash;
+      retCount++;
+    }
+
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).send(JSON.stringify({user_hash: user_hash, entry_hash: entryArr}));
   });
 });
 
