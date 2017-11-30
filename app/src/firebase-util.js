@@ -219,13 +219,12 @@ module.exports = {
 
   addEntry(user_hash, notebook_hash, entry) {
     return new Promise(((resolve, reject) => {
-      const {type} = entry;
-      const data = entry[type];
+      const {text, image, caption, tags} = entry;
 
-      if (!(type && data)) {
-        reject(new Error('invalid request'));
-        return;
-      }
+      // if (!(type && data)) {
+      //   reject(new Error('invalid request'));
+      //   return;
+      // }
 
       const updateAll = (user_data) => {
         const updates = {};
@@ -236,16 +235,15 @@ module.exports = {
         const now = new Date();
         const entry_hash = now.getTime() + admin.database().ref('NotebookList').push().key;
 
-        const entry_update = {
+        const entry_update = Object.apply({}, entry, {
           entry_hash,
           author: email,
           author_hash: user_hash,
           date_modified: now,
           date_created: now,
-          tags: [],
-          type: entry.type,
-        };
+        });
         entry_update[type] = data;
+        entry_update.tags = entry_update.tags || [];
         updates[`/NotebookList/${notebook_hash}/data_entries/${entry_hash}`] = entry_update;
 
         updates[`/NotebookList/${notebook_hash}/date_modified`] = now;
