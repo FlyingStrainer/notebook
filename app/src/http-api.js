@@ -26,12 +26,12 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
   router.post(path, (req, res) => {
     const {body} = req;
     const args = [];
-    const line = JSON.stringify(body).split('\n')[0].substr(0, 120);
+    const line = JSON.stringify(body).split('\n')[0].substr(0, 60);
 
     for (let i = 0; i < props.length; i++) {
       const prop = props[i];
       if (!(body[prop])) {
-        console.log(`${path} bad:`, line);
+        console.log(`${path} bad:\t\t`, line);
         res.sendStatus(400);
         return;
       }
@@ -49,8 +49,8 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
 
     firebaseUtil[utilFunc].apply(null, args)
       .then((data) => {
-        const dataline = JSON.stringify(data).split('\n')[0].substr(0, 120);
-        console.log(`${path} good:`, dataline);
+        const dataline = JSON.stringify(data).split('\n')[0].substr(0, 60);
+        console.log(`${path} good:\t\t`, dataline);
 
         res.status(200).send(data);
 
