@@ -110,25 +110,23 @@ body:
 api/addEntry POST //Add entry to notebook
 body:
 {
-	"user_hash": "",
-	"notebook_hash": "",
-	"entry":
-	{
-		"entry_hash": "",
-		"type": "",
-		
-		"text": "",
-		
-		"image": "",
-		"caption": "",
-		
-		"cosignatures" :
-		[
-			"user_hash",
-			"user_hash",
-			...
-		]
-	}
+    "user_hash": "-L-9i0Xmynq_Xsao14rd",
+    "notebook_hash": "-L-DVXx7_wXDcqCE1CAb",
+    "entry": {
+    	"type": "text",
+    	"text": "Hello World!"
+    }
+}
+response:
+{
+    "entry_hash": "1512072142972-L-DWT0ZxH_exYZFaelm",
+    "author": "me2@email.com",
+    "author_hash": "-L-9i0Xmynq_Xsao14rd",
+    "date_modified": "2017-11-30T20:02:22.972Z",
+    "date_created": "2017-11-30T20:02:22.972Z",
+    "tags": [],
+    "type": "text",
+    "text": "Hello World!"
 }
 
 include either text or image depending on type of entry
