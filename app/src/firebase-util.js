@@ -67,6 +67,7 @@ module.exports = {
                 update[`login_info/${email64}`] = login_data;
 
                 const user_data = {
+                  email,
                   user_hash,
                   permissions: {
                     role: user_admin ? 'admin' : 'user',
