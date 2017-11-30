@@ -208,11 +208,11 @@ router.post('/searchByText', async (req, res) => {
     let retCount = 0;
     const notebooksArr = [];
     for (let i = 0; i < responses.hits.length; i++) {
-      notebooksArr[i] = response.hits[i].notebook_hash;
+      notebooksArr[i] = responses.hits[i].notebook_hash;
 
       for (const entry_hash in responses.hits[i].data_entires) {
-        if (responses.hits[i].data_entires[entry_hash].text.indexOf(text) != -1) {
-          entryArr[retCount] = response.hits.data_entires[i].entry_hash;
+        if (responses.hits[i].data_entires[entry_hash].text.indexOf(text) !== -1) {
+          entryArr[retCount] = responses.hits.data_entires[i].entry_hash;
           retCount++;
         }
       }
