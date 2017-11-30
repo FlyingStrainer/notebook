@@ -130,14 +130,14 @@ describe('POST /feedback', () => {
   });
 });
 
-describe('POST /setNotebookPermisions', () => {
+describe('POST /setNotebookPermissions', () => {
   it('Set the permissions of the notebook', async () => {
     const req = {
       user_hash: '--user-key-1',
       notebook_hash: '--notebook-key-2',
     };
 
-    await testApi('/setNotebookPermisions', req);
+    await testApi('/setNotebookPermissions', req);
   });
 });
 

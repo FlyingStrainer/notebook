@@ -24,7 +24,7 @@ module.exports = {
   managerView() {},
   // getBackup() {},
   feedback() {},
-  setNotebookPermisions() {},
+  setNotebookPermissions() {},
   getLink() {},
   format() {},
 };

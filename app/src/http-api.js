@@ -372,7 +372,7 @@ router.post('/feedback', async (req, res) => {
   firebaseUtil.feedback(message);
 });
 
-router.post('/setNotebookPermisions', async (req, res) => {
+router.post('/setNotebookPermissions', async (req, res) => {
   const {user_hash, notebook_hash} = req.body;
 
   // TODO check for all options
@@ -388,7 +388,7 @@ router.post('/setNotebookPermisions', async (req, res) => {
   }
 
   // TODO
-  firebaseUtil.setNotebookPermisions(user_hash, notebook_hash);
+  firebaseUtil.setNotebookPermissions(user_hash, notebook_hash);
 });
 
 router.post('/getLink', async (req, res) => {

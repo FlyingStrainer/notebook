@@ -30,12 +30,12 @@ module.exports = {
   pdfgen,
   querydb,
 
-  checkNotebookPermision(user_hash, notebook_hash, action) {
+  checkNotebookPermission(user_hash, notebook_hash, action) {
     const path = `UserList/${user_hash}/notebooks/${notebook_hash}`;
     return admin.database().ref(path).once('value')
       .then((data) => {
-        const permision = data.val();
-        return permision && permision[action];
+        const permission = data.val();
+        return permission && permission[action];
       });
   },
 
@@ -240,9 +240,9 @@ module.exports = {
     return admin.database().ref().update(updates);
   },
 
-  setNotebookPermisions(user_hash, notebook_hash, change_list) {
+  setNotebookPermissions(user_hash, notebook_hash, change_list) {
     const updates = {};
-    updates[`/NotebookList/${notebook_hash}/permisions`] = message;
+    updates[`/NotebookList/${notebook_hash}/permissions`] = message;
 
     for (let i = 0; i < change_list.length; i++) {
       const type = user_list[i].type;
