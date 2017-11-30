@@ -71,7 +71,7 @@ module.exports = {
                   user_hash,
                   permissions: {
                     role: user_admin ? 'admin' : 'user',
-                    create_notebooks: 'true',
+                    create_notebooks: true,
                     notebooks: {},
                   },
                   company_name,
