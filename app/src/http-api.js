@@ -142,37 +142,19 @@ router.post('/getNotebook', async (req, res) => {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
-router.post('/addEntry', (req, res) => {
-  const {user_hash, notebook_hash, entry} = req.body;
-  const {type} = entry;
-  const data = entry[type];
+(() => {
+  // const {user_hash, notebook_hash, entry} = req.body;
+  // const {type} = entry;
+  // const data = entry[type];
 
-  if (!(user_hash && notebook_hash && entry && type && data)) {
-    console.log('/addEntry bad', req.body);
-    // bad request
-    res.sendStatus(400);
-    return;
-  }
+  const path = '/addEntry';
+  const props = ['user_hash', 'notebook_hash', 'entry'];
+  const utilFunc = 'addEntry';
+  const thenHandler = () => {};
+  const allowedErrors = ['invalid request'];
 
-  if (firebaseUtil.isTest) {
-    res.status(204).send();
-    return;
-  }
-
-  // TODO add entry to notebook
-  // NOTE the addEntry function here does not match the true api
-  //
-  // firebaseUtil.addEntry(notebook_uuid, _text, _image,
-  //   _caption, _date_created, _authorID, _tag_arr).then(() => {
-  //   console.log('/addEntry good');
-  //   res.sendStatus(201);
-  // }).catch(() => {
-  //   console.log('/addEntry internal bad');
-  //   res.sendStatus(500);
-  // });
-  console.log('/addEntry internal bad');
-  res.sendStatus(500);
-});
+  addRoute(path, props, utilFunc, thenHandler, allowedErrors);
+})();
 
 router.post('/cosignEntry', (req, res) => {
   const {user_hash, notebook_hash, entry_hash} = req.body;

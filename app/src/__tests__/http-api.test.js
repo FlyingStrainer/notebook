@@ -50,7 +50,7 @@ describe('POST /user', () => {
   it('should return json', async () => {
     // TODO
     const req = {
-       user_hash: '--user-key-1',
+      user_hash: '--user-key-1',
     };
 
     await testApi('/user', req);
@@ -91,7 +91,7 @@ describe('POST /getEntries', () => {
   });
 });
 
-describe.skip('POST /getNotebooks (depreciated)', () => { //depreciated
+describe.skip('POST /getNotebooks (depreciated)', () => { // depreciated
   it('Get the notbooks the user can access', async () => {
     const req = {
       user_hash: '--user-key-1',

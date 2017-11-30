@@ -218,36 +218,65 @@ module.exports = {
     }));
   },
 
-  addEntry(user_hash, notebook_uuid, _text, _image, _caption, _date_created, _authorID, _tagArr) {
-    admin.database().child('UserList').child('user_hash').once('value', (fbdatasnap) => {
-      const exists = (fbdatasnap.val() !== null);
-      addEntryCB(
-        user_hash, notebook_uuid, _text, _image,
-        _caption, _dateCreated, _authorID, _tagArr, exists,
-      );
-    });
-  },
+  addEntry(user_hash, notebook_hash, entry) {
+    return new Promise(((resolve, reject) => {
+      const {type} = entry;
+      const data = entry[type];
 
-  addEntryCB(
-    user_hash, notebook_uuid, _text, _image,
-    _caption, _date_created, _authorID, _tag_arr, exists,
-  ) {
-    if (exists === false) return;
-    const new_key = admin.database().ref().child('NotebookList').child(notebook_uuid)
-      .child('Entries')
-      .push().key;
-    const notebookEntry = {
-      uuid: new_key,
-      text: _text,
-      image: _image,
-      caption: _caption,
-      date_created: _date_created,
-      author_id: _authorID,
-      tags: _tagArr,
-    };
-    const updates = {};
-    updates[`/NotebookList/${notebook_uuid}/data_entries/${newKey}`] = notebookEntry;
-    return admin.database().ref().update(updates);
+      if (!(type && data)) {
+        reject(new Error('invalid request'));
+        return;
+      }
+
+      const updateAll = (user_data) => {
+        const updates = {};
+
+        const {email} = user_data;
+
+        // notebook
+        const entry_hash = admin.database().ref('NotebookList').push().key;
+
+        const now = new Date();
+
+        const entry_update = {
+          entry_hash,
+          author: email,
+          author_hash: user_hash,
+          date_modified: now,
+          date_created: now,
+          tags: [],
+          type: entry.type,
+        };
+        entry_update[type] = data;
+        updates[`/NotebookList/${notebook_hash}/data_entries/${entry_hash}`] = entry_update;
+
+        updates[`/NotebookList/${notebook_hash}/dateModified`] = now;
+
+        admin.database().ref().update(updates)
+          .then(() => {
+            resolve(entry_update);
+          })
+          .catch(reject);
+      };
+
+      const checkForPermission = (user_data) => {
+        let check = user_data;
+        check = check.permissions || {};
+        check = check.notebooks || {};
+        check = check[notebook_hash] || {};
+        check = !check.write;
+        if (check) {
+          return Promise.reject(new Error('permission denied'));
+        }
+
+        return user_data;
+      };
+
+      module.exports.checkUser(user_hash)
+        .then(checkForPermission)
+        .then(updateAll)
+        .catch(reject);
+    }));
   },
 
   getEntries(user_hash, _uuid, callback) {
