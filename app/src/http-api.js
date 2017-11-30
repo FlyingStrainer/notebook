@@ -324,7 +324,7 @@ router.get('/notebook/:notebook_hash', async (req, res) => {
 
   firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
     res.setHeader('Content-Type', 'application/json');
-    res.status(200).send(notebook);
+    res.status(200).send(JSON.stringify(notebook, null, 4));
   });
 });
 
