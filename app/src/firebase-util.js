@@ -219,8 +219,6 @@ module.exports = {
 
   addEntry(user_hash, notebook_hash, entry) {
     return new Promise(((resolve, reject) => {
-      const {text, image, caption, tags} = entry;
-
       // if (!(type && data)) {
       //   reject(new Error('invalid request'));
       //   return;
@@ -242,7 +240,6 @@ module.exports = {
           date_modified: now,
           date_created: now,
         });
-        entry_update[type] = data;
         entry_update.tags = entry_update.tags || [];
         updates[`/NotebookList/${notebook_hash}/data_entries/${entry_hash}`] = entry_update;
 
