@@ -36,9 +36,6 @@ module.exports = {
     // Finalize PDF file
     doc.end();
 
-    if (location === 'server') {
-      // copy file to server
-    }
 
     if (location === 'firebase') {
       // copy file to firebase
