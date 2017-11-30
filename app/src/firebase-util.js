@@ -346,7 +346,7 @@ module.exports = {
     return admin.database().ref(`/NotebookList/${notebook_hash}/`).once('value')
       .then((snap) => {
         if (snap.val() !== null) {
-          const link = `http://endor-vm1.cs.purdue.edu/notebook/${notebook_hash}`
+          const link = `http://endor-vm1.cs.purdue.edu/notebook/${notebook_hash}`;
           return {link};
         }
 
