@@ -104,32 +104,15 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
-// NOTE not used in frontend
-// (() => {
-//   const path = '/getNotebooks';
-//   const props = ['user_hash'];
-//   const utilFunc = 'getNotebooks';
-//   const thenHandler = () => {};
-//   const allowedErrors = ['user not found'];
-//
-//   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
-// })();
+(() => {
+  const path = '/getNotebook';
+  const props = ['user_hash', 'notebook_hash'];
+  const utilFunc = ''; // TODO
+  const thenHandler = () => {};
+  const allowedErrors = ['notebook not found'];
 
-router.post('/getNotebook', async (req, res) => {
-  const {user_hash, notebook_hash} = req.body;
-
-  if (!(user_hash && notebook_hash)) {
-    console.log('/getNotebook bad', req.body);
-    res.sendStatus(400);
-    return;
-  }
-
-  if (firebaseUtil.isTest) {
-    res.status(501).send();
-  }
-
-  // TODO
-});
+  addRoute(path, props, utilFunc, thenHandler, allowedErrors);
+})();
 
 // writing
 (() => {
@@ -146,7 +129,7 @@ router.post('/getNotebook', async (req, res) => {
   // const {user_hash, notebook_hash, entry} = req.body;
   // const {type} = entry;
   // const data = entry[type];
-
+  //
   const path = '/addEntry';
   const props = ['user_hash', 'notebook_hash', 'entry'];
   const utilFunc = 'addEntry';
@@ -154,26 +137,30 @@ router.post('/getNotebook', async (req, res) => {
   const allowedErrors = ['invalid request'];
 
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
+  //
+  // TODO add entry to notebook
+  // NOTE the addEntry function here does not match the true api
+  //
+  // firebaseUtil.addEntry(notebook_uuid, _text, _image,
+  //   _caption, _date_created, _authorID, _tag_arr).then(() => {
+  //   console.log('/addEntry good');
+  //   res.sendStatus(201);
+  // }).catch(() => {
+  //   console.log('/addEntry internal bad');
+  //   res.sendStatus(500);
+  // });
 })();
 
-router.post('/cosignEntry', (req, res) => {
-  const {user_hash, notebook_hash, entry_hash} = req.body;
+(() => {
+  const path = '/cosignEntry';
+  const props = ['user_hash', 'notebook_hash', 'entry_hash'];
+  const utilFunc = ''; // TODO
+  const thenHandler = () => {};
+  const allowedErrors = ['Cosign failed'];
 
-  if (!(user_hash && notebook_hash && entry_hash)) {
-    console.log('/cosignEntry bad', req.body);
-    res.sendStatus(400);
-    return;
-  }
+  addRoute(path, props, utilFunc, thenHandler, allowedErrors);
+})();
 
-  if (firebaseUtil.isTest) {
-    res.status(204).send();
-    return;
-  }
-
-  // TODO actuall cosign entry
-  console.log('/cosignEntry good');
-  res.sendStatus(201);
-});
 
 // reading
 (() => {
@@ -181,7 +168,7 @@ router.post('/cosignEntry', (req, res) => {
   const props = ['user_hash', 'notebook_hash'];
   const utilFunc = 'getEntries';
   const thenHandler = () => {};
-  const allowedErrors = ['invalid request'];
+  const allowedErrors = ['Retreval of entries failed'];
 
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
@@ -191,13 +178,13 @@ router.post('/cosignEntry', (req, res) => {
   const props = ['user_hash', 'notebook_hash', 'entry_hash'];
   const utilFunc = 'getEntry';
   const thenHandler = () => {};
-  const allowedErrors = ['invalid request'];
+  const allowedErrors = ['Entry not found'];
 
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
 // might need to filter/parse the data returned from this
-router.post('/searchText', async (req, res) => {
+router.post('/searchByText', async (req, res) => {
   const {user_hash, text} = req.body;
 
   if (!(user_hash)) {
@@ -210,14 +197,29 @@ router.post('/searchText', async (req, res) => {
     res.status(204).send();
   }
 
-  const query = text;
 
   querydb.indexEx.search({
-    query,
+    query: text,
   }).then((responses) => {
     // Response from Algolia:
     // https://www.algolia.com/doc/api-reference/api-methods/search/#response-format
-    res.send(responses.hits);
+    // res.send(responses.hits);
+    const entryArr = [];
+    let retCount = 0;
+    const notebooksArr = [];
+    for (let i = 0; i < responses.hits.length; i++) {
+      notebooksArr[i] = response.hits[i].notebook_hash;
+
+      for (const entry_hash in responses.hits[i].data_entires) {
+        if (responses.hits[i].data_entires[entry_hash].text.indexOf(text) != -1) {
+          entryArr[retCount] = response.hits.data_entires[i].entry_hash;
+          retCount++;
+        }
+      }
+    }
+
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).send(JSON.stringify({user_hash, notebook_hash: notebooksArr, entry_hash: entryArr}));
   });
 });
 
@@ -243,120 +245,66 @@ router.post('/makePDF', async (req, res) => {
   });// old: await db.ref(`words/${userId}`).once('value');
 });
 
-router.post('/managerView', async (req, res) => {
-  const {user_hash} = req.body;
+(() => {
+  const path = '/managerView';
+  const props = ['user_hash'];
+  const utilFunc = 'managerView'; // TODO
+  const thenHandler = () => {};
+  const allowedErrors = ['Esclation to manager view failed. Do you have permission?'];
 
-  // TODO check for all options
-  if (!(user_hash)) {
-    console.log('/getLink bad', req.body);
-    res.sendStatus(400);
-    return;
-  }
+  addRoute(path, props, utilFunc, thenHandler, allowedErrors);
+})();
 
-  if (firebaseUtil.isTest) {
-    res.status(501).send();
-    return;
-  }
+(() => {
+  const path = '/getBackup';
+  const props = ['user_hash', 'notebook_hash'];
+  const utilFunc = 'getNotebook'; // TODO is this the right util function??
+  const thenHandler = () => {};
+  const allowedErrors = ['Backup for this notebook does not exist'];
 
-  // TODO
-  firebaseUtil.managerView(user_hash);
-});
+  addRoute(path, props, utilFunc, thenHandler, allowedErrors);
+})();
 
-router.post('/getBackup', async (req, res) => {
-  const {user_hash, notebook_hash} = req.body;
+(() => {
+  const path = '/feedback';
+  const props = ['message'];
+  const utilFunc = 'feeback'; // TODO
+  const thenHandler = () => {};
+  const allowedErrors = ['Failed to send feedback'];
 
-  // TODO check for all options
-  if (!(user_hash && notebook_hash)) {
-    console.log('/getLink bad', req.body);
-    res.sendStatus(400);
-    return;
-  }
+  addRoute(path, props, utilFunc, thenHandler, allowedErrors);
+})();
 
-  if (firebaseUtil.isTest) {
-    res.status(501).send();
-    return;
-  }
+(() => {
+  const path = '/setNotebookPermissions';
+  const props = ['user_hash', 'notebook_hash']; // I assume we also need what we are changing the permissions to?
+  const utilFunc = 'setNotebookPermissions'; // TODO
+  const thenHandler = () => {};
+  const allowedErrors = ['Failed to change permissions'];
 
-  // TODO
-  firebaseUtil.getNotebook(user_hash);
-});
+  addRoute(path, props, utilFunc, thenHandler, allowedErrors);
+})();
 
-router.post('/feedback', async (req, res) => {
-  const {message} = req.body;
+(() => {
+  const path = '/getLink';
+  const props = ['user_hash', 'notebook_hash'];
+  const utilFunc = 'getLink'; // TODO
+  const thenHandler = () => {};
+  const allowedErrors = ['Failed to get Link. It\'s dangerous to go alone. Take this!\n:~{=======>'];
 
-  // TODO check for all options
-  if (!(message)) {
-    console.log('/getLink bad', req.body);
-    res.sendStatus(400);
-    return;
-  }
+  addRoute(path, props, utilFunc, thenHandler, allowedErrors);
+})();
 
-  if (firebaseUtil.isTest) {
-    res.status(501).send();
-    return;
-  }
+(() => {
+  const path = '/format';
+  const props = ['user_hash', 'notebook_hash'];
+  const utilFunc = 'format'; // TODO
+  const thenHandler = () => {};
+  const allowedErrors = ['Failed to format'];
 
-  // TODO
-  // Given that I submit the feedback, it will send a message from the user to our emails
-  firebaseUtil.feedback(message);
-});
+  addRoute(path, props, utilFunc, thenHandler, allowedErrors);
+})();
 
-router.post('/setNotebookPermissions', async (req, res) => {
-  const {user_hash, notebook_hash, change_list} = req.body;
-
-  // TODO check for all options
-  if (!(user_hash && notebook_hash && change_list)) {
-    console.log('/getLink bad', req.body);
-    res.sendStatus(400);
-    return;
-  }
-
-  if (firebaseUtil.isTest) {
-    res.status(501).send();
-    return;
-  }
-
-  // TODO
-  firebaseUtil.setNotebookPermissions(user_hash, notebook_hash);
-});
-
-router.post('/getLink', async (req, res) => {
-  const {user_hash, notebook_hash} = req.body;
-
-  // TODO check for all options
-  if (!(user_hash && notebook_hash)) {
-    console.log('/getLink bad', req.body);
-    res.sendStatus(400);
-    return;
-  }
-
-  if (firebaseUtil.isTest) {
-    res.status(501).send();
-    return;
-  }
-
-  // TODO
-  firebaseUtil.getLink(user_hash, notebook_hash);
-});
-
-router.post('/format', async (req, res) => {
-  const {user_hash, notebook_hash} = req.body;
-
-  // TODO check for formatting options
-  if (!(user_hash && notebook_hash)) {
-    console.log('/format bad', req.body);
-    res.sendStatus(400);
-    return;
-  }
-
-  if (firebaseUtil.isTest) {
-    res.status(501).send();
-    return;
-  }
-
-  // TODO
-  firebaseUtil.format(user_hash, notebook_hash);
-});
 
 router.get('/notebook/:notebook_hash', async (req, res) => {
   const {notebook_hash} = req.params;
