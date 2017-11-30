@@ -176,63 +176,25 @@ router.post('/cosignEntry', (req, res) => {
 });
 
 // reading
-router.post('/getEntries', async (req, res) => {
-  const {user_hash, notebook_hash} = req.body;
+(() => {
+  const path = '/getEntries';
+  const props = ['user_hash', 'notebook_hash'];
+  const utilFunc = 'getEntries';
+  const thenHandler = () => {};
+  const allowedErrors = ['invalid request'];
 
-  if (!(user_hash && notebook_hash)) {
-    console.log('/getEntries bad', req.body);
-    res.sendStatus(400);
-    return;
-  }
+  addRoute(path, props, utilFunc, thenHandler, allowedErrors);
+})();
 
-  if (firebaseUtil.isTest) {
-    res.status(204).send();
-    return;
-  }
+(() => {
+  const path = '/getEntry';
+  const props = ['user_hash', 'notebook_hash', 'entry_hash'];
+  const utilFunc = 'getEntry';
+  const thenHandler = () => {};
+  const allowedErrors = ['invalid request'];
 
-  res.setHeader('Content-Type', 'application/json');
-
-  // const example = {
-  //   data_entries: [
-  //     '--data-entry-key-1',
-  //     '--data-entry-key-2',
-  //   ],
-  // };
-
-  // TODO verify this works
-
-  firebaseUtil.getEntries(user_hash, notebook_hash, (snapshot) => {
-    // This is done so that if the user does not exist, a empty obj is returned
-    const response = Object.assign({}, snapshot.val());
-
-    console.log('/getEntries good: ', response);
-    res.send(response);
-  });
-});
-
-router.post('/getEntry', async (req, res) => {
-  const {user_hash, notebook_hash, entry_hash} = req.body;
-
-  if (!(user_hash && notebook_hash && entry_hash)) {
-    console.log('/getEntry bad', req.body);
-    res.sendStatus(400);
-    return;
-  }
-
-  if (firebaseUtil.isTest) {
-    res.status(204).send();
-    return;
-  }
-
-  // TODO verify this works
-
-  firebaseUtil.getEntry(user_hash, notebook_hash, entry_hash, (snapshot) => {
-    // This is done so that if the user does not exist, a empty obj is returned
-    const response = Object.assign({}, snapshot.val());
-
-    res.send(response);
-  });// old: await db.ref(`words/${userId}`).once('value');
-});
+  addRoute(path, props, utilFunc, thenHandler, allowedErrors);
+})();
 
 // might need to filter/parse the data returned from this
 router.post('/searchText', async (req, res) => {

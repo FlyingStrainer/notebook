@@ -234,9 +234,8 @@ module.exports = {
         const {email} = user_data;
 
         // notebook
-        const entry_hash = admin.database().ref('NotebookList').push().key;
-
         const now = new Date();
+        const entry_hash = now.getTime() + admin.database().ref('NotebookList').push().key;
 
         const entry_update = {
           entry_hash,
@@ -279,15 +278,26 @@ module.exports = {
     }));
   },
 
-  getEntries(user_hash, _uuid, callback) {
-    admin.database().ref(`/NotebookList/${_uuid}/data_entries/`).once('value').then((fbdatasnap) => {
-      callback(JSON.stringify(Object.keys(fbdatasnap.val())));
+  getEntries(user_hash, notebook_hash) {
+    return admin.database().ref(`/NotebookList/${notebook_hash}/data_entries/`).once('value').then((snap) => {
+      const data_entries = snap.val();
+      if (!data_entries) {
+        return Promise.reject(new Error('invalid request'));
+      }
+
+      return Object.keys(data_entries);
     });
   },
 
-  getEntry(user_hash, _uuid, entry_id, callback) {
-    admin.database().ref(`/NotebookList/${_uuid}/data_entries/${entry_id}/`).once('value').then((fbdatasnap) => {
-      callback(fbdatasnap.val());
+  getEntry(user_hash, notebook_hash, entry_hash) {
+    const path = `/NotebookList/${notebook_hash}/data_entries/${entry_hash}/`;
+    return admin.database().ref(path).once('value').then((snap) => {
+      const entry = snap.val();
+      if (!entry) {
+        return Promise.reject(new Error('invalid request'));
+      }
+
+      return entry;
     });
   },
 
