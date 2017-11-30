@@ -197,10 +197,9 @@ router.post('/searchByText', async (req, res) => {
     res.status(204).send();
   }
 
-  const query = text;
 
   querydb.indexEx.search({
-    query,
+    query: text,
   }).then((responses) => {
     // Response from Algolia:
     // https://www.algolia.com/doc/api-reference/api-methods/search/#response-format
