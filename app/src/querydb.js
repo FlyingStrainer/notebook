@@ -21,7 +21,7 @@ module.exports = {
     var database = firebaseAdmin.database();
 
 
-    var notebooksRef = database.ref("/Notebooks");
+    var notebooksRef = database.ref("/NotebookList");
     //clear before import
     index.clearIndex(function(err, content) {
       console.log("Cleared");
