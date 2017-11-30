@@ -95,25 +95,3 @@ invalid hash
     {
         "message": "user not found"
     }
-
-/getNotebooks
-
-valid hash
-    POST
-    {
-        "user_hash": "-L-8QoyVT8yTVaYIU3IM"
-    }
-    200 OK
-    {
-        "notebook_list": []
-    }
-
-invalid hash
-    POST
-    {
-        "user_hash": "not a hash"
-    }
-    403 Forbidden
-    {
-        "message": "user not found"
-    }
