@@ -16,13 +16,13 @@ class Notebook {
    *   managerList
    */
   constructor(settings) {
-    const dateCreated = new Date();
+    const date_created = new Date();
 
     Object.assign(this, {
-      dateModified: dateCreated,
-      dateCreated,
-      tagList: [],
-      dataEntries: [],
+      date_modified: date_created,
+      date_created,
+      tags: [],
+      data_entries: [],
     });
     Object.assign(this, settings);
   }

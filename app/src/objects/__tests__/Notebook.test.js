@@ -6,10 +6,10 @@ it('should initialize with a new date', () => {
   const notebook = new Notebook();
   const after = new Date();
 
-  const {dateModified, dateCreated} = notebook;
+  const {date_modified, date_created} = notebook;
 
-  expect(dateModified >= before);
-  expect(dateModified <= after);
-  expect(dateCreated >= before);
-  expect(dateCreated <= after);
+  expect(date_modified >= before);
+  expect(date_modified <= after);
+  expect(date_created >= before);
+  expect(date_created <= after);
 });

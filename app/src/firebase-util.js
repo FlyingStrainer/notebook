@@ -248,7 +248,7 @@ module.exports = {
         entry_update[type] = data;
         updates[`/NotebookList/${notebook_hash}/data_entries/${entry_hash}`] = entry_update;
 
-        updates[`/NotebookList/${notebook_hash}/dateModified`] = now;
+        updates[`/NotebookList/${notebook_hash}/date_modified`] = now;
 
         admin.database().ref().update(updates)
           .then(() => {
