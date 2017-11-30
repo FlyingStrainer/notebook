@@ -303,14 +303,14 @@ module.exports = {
   },
 
   managerView(user_hash) {
-    return admin.database().ref(`/UserList/${userHash}/Notebooks/`).once('value');
+    return admin.database().ref(`/UserList/${user_hash}/Notebooks/`).once('value').then((snap) => { snap.val(); });
   },
 
   getNotebook(user_hash, notebook_hash) {
     return admin.database().ref(`/NotebookList/${notebook_hash}/`).once('value')
       .then((snap) => {
-        if (fbdatasnap.val() !== null) {
-          return fbdatasnap.val();
+        if (snap.val() !== null) {
+          return snap.val();
         }
 
         throw new Error('can\'t find notebook');
@@ -321,24 +321,23 @@ module.exports = {
     const new_key = admin.database().ref('feedback').push().key;
 
     const updates = {};
-    updates[`/feedback/${new_notebook_key}`] = message;
+    updates[`/feedback/${new_key}`] = message;
 
     return admin.database().ref().update(updates);
   },
 
   setNotebookPermissions(user_hash, notebook_hash, change_list) {
     const updates = {};
-    updates[`/NotebookList/${notebook_hash}/permissions`] = message;
 
     for (let i = 0; i < change_list.length; i++) {
-      const type = user_list[i].type;
-      const user_hash = user_list[i].user_hash;
+      const {type} = change_list[i];
+      const other_hash = change_list[i].user_hash;
 
       if (type === 'add') {
         // TODO set true permissions
-        updates[`UserList/${user_hash}/permissions/notebooks/${notebook_hash}`] = true;
+        updates[`UserList/${other_hash}/permissions/notebooks/${notebook_hash}`] = true;
       } else if (type === 'remove') {
-        updates[`UserList/${user_hash}/permissions/notebooks/${notebook_hash}`] = null;
+        updates[`UserList/${other_hash}/permissions/notebooks/${notebook_hash}`] = null;
       }
     }
 
@@ -348,11 +347,11 @@ module.exports = {
   getLink(user_hash, notebook_hash) {
     return admin.database().ref(`/NotebookList/${notebook_hash}/`).once('value')
       .then((snap) => {
-        if (fbdatasnap.val() !== null) {
-          return fbdatasnap.val();
+        if (snap.val() !== null) {
+          return snap.val();
         }
 
-        throw 'can\'t find notebook';
+        throw new Error('can\'t find notebook');
       });
   },
 
