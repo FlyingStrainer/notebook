@@ -280,7 +280,7 @@ router.post('/makePDF', async (req, res) => {
 (() => {
   const path = '/feedback';
   const props = ['message'];
-  const utilFunc = 'feeback'; // TODO
+  const utilFunc = 'feedback'; // TODO
   const thenHandler = () => {};
   const allowedErrors = ['Failed to send feedback'];
 
