@@ -21,14 +21,14 @@ it('tests', () => {
   //const testImagePath = '../test-util/testImage.jpg';
   //const fname = 'pdfgenout.test';
   const entries = [{
-    date: '11-5-2017',
+    date_created: '11-5-2017',
     text: 'text1',
-    imgpath: testImagePath,
+    imgpath: testImage,
     caption: 'cap cap cap',
   }, {
     date: '11-3-2017',
     text: 'text2',
-    imgpath: testImagePath,
+    imgpath: testImage,
     caption: 'cap cap cap',
   }];
   PDFGen.genPDF(entries, fname);
@@ -38,7 +38,7 @@ it('tests', () => {
 });
 
 
-/* var testImage =  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAaQAAAGkCAIA' +
+ var testImage =  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAaQAAAGkCAIA' +
             'AADxLsZiAAAFvklEQVR4nOzXwW2kQBgG0V2LKMiRGBAxkCPnDsEHh+AZGk+9l0B' +
             '/ElLpZxlj/AP4dF+zBwDcQeyABLEDEsQOSBA7IEHsgASxAxLEDkgQOyBB7IAEsQ' +
             'MSxA5IEDsgQeyABLEDEsQOSBA7IEHsgASxAxLEDkgQOyBB7IAEsQMSxA5IEDsgQ' +
@@ -70,4 +70,4 @@ it('tests', () => {
             '2AEJYgckiB2QIHZAgtgBCWIHJIgdkCB2QILYAQliBySIHZDwf4wxewPA27nsgAS' +
             'xAxLEDkgQOyBB7IAEsQMSxA5IEDsgQeyABLEDEsQOSBA7IEHsgASxAxLEDkgQOy' +
             'BB7IAEsQMSxA5IEDsgQeyABLEDEsQOSBA7IEHsgASxAxLEDkgQOyBB7IAEsQMSx' +
-            'A5IEDsgQeyAhO8AAAD//8XtFsSTFUE2AAAAAElFTkSuQmCC' */
+            'A5IEDsgQeyAhO8AAAD//8XtFsSTFUE2AAAAAElFTkSuQmCC' 
