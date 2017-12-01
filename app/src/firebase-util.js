@@ -234,6 +234,8 @@ module.exports = {
         const now = new Date().getTime();
         const entry_hash = admin.database().ref('NotebookList').push().key;
 
+        const tags = entry.tags || [];
+
         const entry_update = {
           entry_hash,
           author: email,
@@ -243,9 +245,8 @@ module.exports = {
           text: entry.text || null,
           image: entry.image || null,
           caption: entry.caption || null,
-          tags: entry.tags || [],
+          tags,
         };
-        entry_update.tags = entry_update.tags || [];
         updates[`/NotebookList/${notebook_hash}/data_entries/${entry_hash}`] = entry_update;
 
         for (let i = 0; i < tags.length; i++) {
