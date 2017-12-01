@@ -189,7 +189,7 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
-/*// might need to filter/parse the data returned from this
+// might need to filter/parse the data returned from this
 router.post('/searchByText', async (req, res) => {
   const {user_hash, text} = req.body;
 
@@ -213,21 +213,27 @@ router.post('/searchByText', async (req, res) => {
     const entryArr = [];
     let retCount = 0;
     const notebooksArr = [];
-    for (let i = 0; i < JSON.parse(responses).hits.length; i++) {
-      notebooksArr[i] = JSON.parse(responses).hits[i].notebook_hash;
-
-      for (const entry_hash in Object.keys(JSON.parse(responses).hits[i].data_entires)) {
-        if (JSON.parse(responses).hits[i].data_entires[entry_hash].text.indexOf(text) !== -1) {
-          entryArr[retCount] = JSON.parse(responses).hits.data_entires[i].entry_hash;
+    console.log(responses.hits);
+    
+    for (let i = 0; i < responses.hits.length; i++) {
+      console.log(Object.values(responses.hits[i].data_entries));
+      notebooksArr[i] = responses.hits[i].notebook_hash;
+     
+      for (let j = 0; j < Object.values(responses.hits[i].data_entries).length; j++) {
+        let dataentry = Object.values(responses.hits[i].data_entries)[j];
+        //console.log("OUT:" + dataentry);
+        if (dataentry.text.indexOf(text) !== -1) {
+          entryArr[retCount] = dataentry.entry_hash;
           retCount++;
         }
       }
     }
 
     res.setHeader('Content-Type', 'application/json');
-    res.status(200).send(JSON.stringify({user_hash, notebook_hash: notebooksArr, entry_hash: entryArr}));
+    res.status(200).send(JSON.stringify(
+      {user_hash:user_hash, notebook_hash: JSON.stringify(notebooksArr), entry_hash: JSON.stringify(entryArr)}));
   });
-});*/
+});
 
 router.post('/makePDF', async (req, res) => {
 
