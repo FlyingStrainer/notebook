@@ -222,6 +222,7 @@ router.post('/searchByText', async (req, res) => {
 
   if (firebaseUtil.isTest) {
     res.status(204).send();
+    return;
   }
 
 
@@ -273,6 +274,7 @@ router.post('/searchNotebooksByDate', async (req, res) => {
 
   if (firebaseUtil.isTest) {
     res.status(204).send();
+    return;
   }
 
 
