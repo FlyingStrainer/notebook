@@ -448,7 +448,7 @@ router.get('/notebook/:notebook_hash', async (req, res) => {
 router.get('/pdfdisp/:pdfname', (req, res) => {
   const {pdfname} = req.params;
   console.log(req.params);
-  
+
   if (firebaseUtil.isTest) {
     res.status(204).send();
     return;
