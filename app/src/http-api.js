@@ -213,13 +213,14 @@ router.post('/searchByText', async (req, res) => {
     return;
   }
 
- /*firebaseUtil.getNotebooks(user_hash).then((responses) => {
-   var retCount = 0;
-   const returnArr = [];
+  /*
+  firebaseUtil.getNotebooks(user_hash).then((responses) => {
+    var retCount = 0;
+    const returnArr = [];
     for (var i in responses.notebook_list) {
     var currNb = responses.notebook_list[i];
-    
-    
+
+
     console.log(currNb);
     firebaseUtil.getNotebook('admin', currNb).then((notebook) => {
       console.log(text);
@@ -238,24 +239,25 @@ router.post('/searchByText', async (req, res) => {
           }
 
           console.log(currResult);
-          
+
         }
       }
 
       if (currResult.notebook !== "null") returnArr.push(currResult);
-      
+
     });
-  }*/
+  }
+  */
 
   querydb.indexEx.search({
     query: text,
-    }).then((responses) => {
+  }).then((responses) => {
     // Response from Algolia:
     // https://www.algolia.com/doc/api-reference/api-methods/search/#response-format
     // res.send(responses.hits);
     const returnArr = [];
-    //console.log(responses.hits);
-    var retCount = 0;
+    // console.log(responses.hits);
+    // var retCount = 0;
     for (let i = 0; i < responses.hits.length; i++) {
       // console.log(Object.values(responses.hits[i].data_entries));
 
@@ -263,16 +265,14 @@ router.post('/searchByText', async (req, res) => {
 
       returnArr[i] = {notebook: responses.hits[i].notebook_hash, entries: []};
 
-      if ((responses.hits[i].data_entries === undefined || responses.hits[i].data_entries === null) )
+      if ((responses.hits[i].data_entries === undefined || responses.hits[i].data_entries === null)) {
         continue;
-
-
-      
+      }
 
       for (let j = 0; j < Object.values(responses.hits[i].data_entries).length; j++) {
         const dataentry = Object.values(responses.hits[i].data_entries)[j];
-         //console.log("OUT:" + JSON.stringify(dataentry));
-        if (dataentry.text.indexOf(text) !== -1 && returnArr[i]!==undefined) {
+        // console.log("OUT:" + JSON.stringify(dataentry));
+        if (dataentry.text.indexOf(text) !== -1 && returnArr[i] !== undefined) {
           returnArr[i].entries.push(dataentry.entry_hash);
         }
       }
@@ -280,22 +280,27 @@ router.post('/searchByText', async (req, res) => {
 
     res.setHeader('Content-Type', 'application/json');
 
-    for (let k = 0; k< returnArr.length; k++) {
-      if (notebook_hash!==undefined) {
-        if (notebook_hash!==returnArr[k].notebook) {
+    for (let k = 0; k < returnArr.length; k++) {
+      if (notebook_hash !== undefined) {
+        if (notebook_hash !== returnArr[k].notebook) {
           returnArr.splice(k, 1);
           k--;
         }
       }
     }
-    
+
     res.status(200).send(JSON.stringify({user_hash, results: returnArr}));
   });
 });
 
 // Automated test: true
 router.post('/searchNotebooksByDate', async (req, res) => {
-  const {user_hash, mindate, maxdate, notebook_hash} = req.body;
+  const {
+    user_hash,
+    mindate,
+    maxdate,
+    notebook_hash,
+  } = req.body;
 
   if (!(user_hash)) {
     console.log('/searchByDate bad', req.body);
@@ -340,9 +345,9 @@ router.post('/searchNotebooksByDate', async (req, res) => {
     }
 
     res.setHeader('Content-Type', 'application/json');
-    for (let k = 0; k< returnArr.length; k++) {
-      if (notebook_hash!==undefined) {
-        if (notebook_hash!==returnArr[k].notebook) {
+    for (let k = 0; k < returnArr.length; k++) {
+      if (notebook_hash !== undefined) {
+        if (notebook_hash !== returnArr[k].notebook) {
           returnArr.splice(k, 1);
           k--;
         }
@@ -374,8 +379,8 @@ router.post('/makePDF', async (req, res) => {
     console.log(`TEST:${notebook.data_entries}`);
     const pdfarray = Object.values(notebook.data_entries);
     const pdfname = notebook.name;
-    var inline = false;
-    if (notebook.format.image === "inline") inline = true;
+    let inline = false;
+    if (notebook.format.image === 'inline') inline = true;
     pdfgen.genPDF(pdfarray, pdfname, 'server', inline);
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify({url: `${req.protocol}://${req.get('host')}/pdfdisp/${pdfname}.pdf`}));
@@ -553,7 +558,7 @@ router.get('/pdfdisp/:pdfname', (req, res) => {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
-// Automated test: false
+// Automated test: true
 (() => {
   const path = '/restoreFromRemote';
   const props = ['notebook_hash', 'backup'];

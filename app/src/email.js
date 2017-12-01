@@ -2,8 +2,8 @@ const nodemailer = require('nodemailer');
 
 module.exports = {
   sendEmail(emailAddTo) {
-    if(emailAddTo.indexOf('@') === -1 || emailAddTo.indexOf('.') === -1){
-	console.error('Warning: possible invalid email detected');
+    if (emailAddTo.indexOf('@') === -1 || emailAddTo.indexOf('.') === -1) {
+      console.error('Warning: possible invalid email detected');
     }
 
     const newUserName = 'John Doe';

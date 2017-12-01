@@ -31,7 +31,12 @@ it('tests', () => {
     imgpath: testImage,
     author: 'John Does',
   }];
-  PDFGen.genPDF(entries, fname);
+  PDFGen.genPDF(entries, fname, "server", true);
+  expect(() => {
+    fs.unlinkSync(`./genPDFs/${fname}.pdf`);
+  }).not.toThrow();
+
+  PDFGen.genPDF(entries, fname, "server", false);
   expect(() => {
     fs.unlinkSync(`./genPDFs/${fname}.pdf`);
   }).not.toThrow();
