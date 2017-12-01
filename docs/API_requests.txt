@@ -198,3 +198,20 @@ response:
 	"results": [{notebook:"xxxxx",entries:[]]
 	//Text location in entry?
 }
+
+api/searchNotebooksByDate POST // Search for entry using text
+
+body:
+{
+
+	"user_hash" : "",
+        "mindate": 123,
+	"maxdate": 432
+}
+
+response: 
+{
+	"user_hash" : "",
+	"results": [{notebook:"xxxxx",entries:[]]
+	//Text location in entry?
+}
