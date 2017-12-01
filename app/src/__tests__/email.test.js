@@ -5,6 +5,7 @@
 // Stetch: Implement some sort of loopback email to see if they are actually recieved
 
 const email = require('../email');
+
 console.error = jest.fn();
 
 it('email smoke test', () => {
