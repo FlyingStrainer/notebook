@@ -219,13 +219,11 @@ router.post('/searchByText', async (req, res) => {
     // Response from Algolia:
     // https://www.algolia.com/doc/api-reference/api-methods/search/#response-format
     // res.send(responses.hits);
-    const entryArr = [];
-    let retCount = 0;
     const returnArr = [];
     console.log(responses.hits);
 
     for (let i = 0; i < responses.hits.length; i++) {
-      console.log(Object.values(responses.hits[i].data_entries));
+      // console.log(Object.values(responses.hits[i].data_entries));
 
 
 
@@ -235,17 +233,65 @@ router.post('/searchByText', async (req, res) => {
       //});
 
       for (let j = 0; j < Object.values(responses.hits[i].data_entries).length; j++) {
-        let dataentry = Object.values(responses.hits[i].data_entries)[j];
-        //console.log("OUT:" + dataentry);
+        const dataentry = Object.values(responses.hits[i].data_entries)[j];
+        // console.log("OUT:" + dataentry);
         if (dataentry.text.indexOf(text) !== -1) {
-          returnArr[i].entries.push(dataentry.entry_hash)
+          returnArr[i].entries.push(dataentry.entry_hash);
         }
       }
     }
 
     res.setHeader('Content-Type', 'application/json');
-    res.status(200).send(JSON.stringify(
-      {user_hash:user_hash, results: returnArr}));
+    res.status(200).send(JSON.stringify({user_hash, results: returnArr}));
+  });
+});
+
+router.post('/searchNotebooksByDate', async (req, res) => {
+  const {user_hash, mindate, maxdate} = req.body;
+
+  if (!(user_hash)) {
+    console.log('/searchByDate bad', req.body);
+    res.sendStatus(400);
+    return;
+  }
+
+  if (firebaseUtil.isTest) {
+    res.status(204).send();
+  }
+
+
+  querydb.indexEx.search({
+    filters: `date_created <=${maxdate} AND date_created >=${mindate}`,
+  }).then((responses) => {
+    // Response from Algolia:
+    // https://www.algolia.com/doc/api-reference/api-methods/search/#response-format
+    // res.send(responses.hits);
+
+    const returnArr = [];
+    console.log(responses.hits);
+
+    for (let i = 0; i < responses.hits.length; i++) {
+      // console.log(Object.values(responses.hits[i].data_entries));
+
+
+      returnArr[i] = {notebook: responses.hits[i].notebook_hash, entries: []};
+
+      // firebaseUtil.checkNotebookPermission(user_hash, notebooksArr[i], "read").then((data) => {
+      // });
+      if (responses.hits[i].data_entries === undefined || responses.hits[i].data_entries === null) {
+        continue;
+      }
+      for (let j = 0; j < Object.values(responses.hits[i].data_entries).length; j++) {
+        const dataentry = Object.values(responses.hits[i].data_entries)[j];
+        // console.log("OUT:" + dataentry);
+        if (dataentry.date_modified <= maxdate && dataentry.date_modified >= mindate) {
+          returnArr[i].entries.push(dataentry.entry_hash);
+        }
+      }
+    }
+
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).send(JSON.stringify({user_hash, results: returnArr}));
   });
 });
 
