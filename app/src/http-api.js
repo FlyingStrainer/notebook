@@ -420,9 +420,9 @@ router.post('/makePDF', async (req, res) => {
 (() => {
   const path = '/formatAll';
   const props = ['user_hash', 'settings'];
-  const utilFunc = 'formatAll'; // TODO
+  const utilFunc = 'formatAll';
   const thenHandler = () => {};
-  const allowedErrors = ['Failed to format'];
+  const allowedErrors = ['User not found', 'Company not found'];
 
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();

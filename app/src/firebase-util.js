@@ -475,10 +475,34 @@ module.exports = {
 
   formatAll(user_hash, format) {
     // NOTE does not check for permission
-    const updates = {};
-    // updates[`/companies/${notebook_hash}/format`] = format;
+    return new Promise((resolve, reject) => {
+      admin.database().ref(`UserList/${user_hash}`).once('value').then((snap1) => {
+        const user = snap1.val();
+        if (!user) {
+          reject(new Error('User not found'));
+          return;
+        }
 
-    return admin.database().ref().update(updates);
+        const {company_name} = user;
+
+        admin.database().ref(`companies/${company_name}`).once('value').then((snap2) => {
+          const company = snap2.val();
+          if (!company) {
+            reject(new Error('Company not found'));
+            return;
+          }
+
+          const updates = {};
+
+          updates[`/companies/${company_name}/format`] = format;
+
+          admin.database().ref().update(updates).then(() => {
+            resolve();
+          })
+            .catch(reject);
+        });
+      });
+    });
   },
 
   cosignEntry(user_hash, notebook_hash, entry_hash) {
