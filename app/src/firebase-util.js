@@ -468,7 +468,9 @@ module.exports = {
       }
     }
 
-    return admin.database().ref().update(updates);
+    return admin.database().ref().update(updates).then(() => {
+      return {};
+    });
   },
 
   getLink(user_hash, notebook_hash) {
