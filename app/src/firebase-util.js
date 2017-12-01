@@ -92,7 +92,7 @@ module.exports = {
 
                   update[`companies/${company_name}`] = company_data;
                 } else {
-                  update[`companies/users/${user_hash}`] = true;
+                  update[`companies/${company_name}/users/${user_hash}`] = true;
                 }
 
                 admin.database().ref().update(update)
