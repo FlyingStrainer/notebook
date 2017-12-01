@@ -6,44 +6,9 @@
 
 const PDFGen = require('../PDFGen');
 const fs = require('fs');
-
 const admin = require('firebase-admin');
 const serviceAccount = require('../../serviceAccountKey.json');
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://vent-91586.firebaseio.com',
-});
-
-PDFGen.init(admin);
-
-it('tests', () => {
-  //const testImagePath = '../test-util/testImage.jpg';
-  const fname = 'pdfgenout.test';
-  const entries = [{
-    date_created: '11-5-2017',
-    text: 'text1',
-    imgpath: testImage,
-    author: 'Jane Doe',
-  }, {
-    date_created: '11-3-2017',
-    text: 'text2',
-    imgpath: testImage,
-    author: 'John Does',
-  }];
-  PDFGen.genPDF(entries, fname, "server", true);
-  expect(() => {
-    fs.unlinkSync(`./genPDFs/${fname}.pdf`);
-  }).not.toThrow();
-
-  PDFGen.genPDF(entries, fname, "server", false);
-  expect(() => {
-    fs.unlinkSync(`./genPDFs/${fname}.pdf`);
-  }).not.toThrow();
-});
-
-
- var testImage =  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAaQAAAGkCAIA' +
+const testImage = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAaQAAAGkCAIA' +
             'AADxLsZiAAAFvklEQVR4nOzXwW2kQBgG0V2LKMiRGBAxkCPnDsEHh+AZGk+9l0B' +
             '/ElLpZxlj/AP4dF+zBwDcQeyABLEDEsQOSBA7IEHsgASxAxLEDkgQOyBB7IAEsQ' +
             'MSxA5IEDsgQeyABLEDEsQOSBA7IEHsgASxAxLEDkgQOyBB7IAEsQMSxA5IEDsgQ' +
@@ -75,4 +40,36 @@ it('tests', () => {
             '2AEJYgckiB2QIHZAgtgBCWIHJIgdkCB2QILYAQliBySIHZDwf4wxewPA27nsgAS' +
             'xAxLEDkgQOyBB7IAEsQMSxA5IEDsgQeyABLEDEsQOSBA7IEHsgASxAxLEDkgQOy' +
             'BB7IAEsQMSxA5IEDsgQeyABLEDEsQOSBA7IEHsgASxAxLEDkgQOyBB7IAEsQMSx' +
-            'A5IEDsgQeyAhO8AAAD//8XtFsSTFUE2AAAAAElFTkSuQmCC'
+            'A5IEDsgQeyAhO8AAAD//8XtFsSTFUE2AAAAAElFTkSuQmCC';
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: 'https://vent-91586.firebaseio.com',
+});
+
+PDFGen.init(admin);
+
+it('tests', () => {
+  // const testImagePath = '../test-util/testImage.jpg';
+  const fname = 'pdfgenout.test';
+  const entries = [{
+    date_created: '11-5-2017',
+    text: 'text1',
+    imgpath: testImage,
+    author: 'Jane Doe',
+  }, {
+    date_created: '11-3-2017',
+    text: 'text2',
+    imgpath: testImage,
+    author: 'John Does',
+  }];
+  PDFGen.genPDF(entries, fname, 'server', true);
+  expect(() => {
+    fs.unlinkSync(`./genPDFs/${fname}.pdf`);
+  }).not.toThrow();
+
+  PDFGen.genPDF(entries, fname, 'server', false);
+  expect(() => {
+    fs.unlinkSync(`./genPDFs/${fname}.pdf`);
+  }).not.toThrow();
+});
