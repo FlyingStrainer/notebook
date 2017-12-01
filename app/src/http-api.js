@@ -553,7 +553,7 @@ router.get('/pdfdisp/:pdfname', (req, res) => {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
-// Automated test: false
+// Automated test: true
 (() => {
   const path = '/restoreFromRemote';
   const props = ['notebook_hash', 'backup'];

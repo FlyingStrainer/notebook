@@ -302,6 +302,7 @@ describe('POST /getCompanyUsersPermission', () => {
     await testApi('/getCompanyUsersPermission', req);
   });
 });
+
 describe('POST /restoreFromLocal', () => {
   it('Get the permissions for a user and notebook hash', async () => {
     const req = {
@@ -309,5 +310,16 @@ describe('POST /restoreFromLocal', () => {
     };
 
     await testApi('/restoreFromLocal', req);
+  });
+});
+
+describe('POST /restoreFromRemote', () => {
+  it('Get the permissions for a user and notebook hash', async () => {
+    const req = {
+      notebook_hash: '--notebook-key-2',
+      backup: {},
+    };
+
+    await testApi('/restoreFromRemote', req);
   });
 });
