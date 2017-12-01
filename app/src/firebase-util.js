@@ -167,13 +167,13 @@ module.exports = {
         managers[user_hash] = true;
         managers[admin_hash] = true;
 
-	const isPublic = false;
+        const isPublic = false;
 
         const notebook_update = new Notebook({
           notebook_hash,
           name: notebook_name,
           managers,
-	  isPublic,
+          isPublic,
         });
         updates[`/NotebookList/${notebook_hash}`] = notebook_update;
 
