@@ -80,6 +80,19 @@ describe('POST /addEntry', () => {
   });
 });
 
+describe('POST /cosignEntry', () => {
+  it('cosign a notebook', async () => {
+    const req = {
+      user_hash: '--user-key-2',
+      notebook_hash: '--notebook-key-2',
+      entry_hash: '--entry-hash-1',
+    };
+
+    await testApi('/cosignEntry', req);
+  });
+});
+
+
 describe('POST /getEntries', () => {
   it('get the entries for a notebook', async () => {
     const req = {
@@ -90,6 +103,41 @@ describe('POST /getEntries', () => {
     await testApi('/getEntries', req);
   });
 });
+
+describe('POST /getEntry', () => {
+  it('get a specific for a notebook', async () => {
+    const req = {
+      user_hash: '--user-key-1',
+      notebook_hash: '--notebook-key-2',
+      entry_hash: '--entry-hash-1',
+    };
+
+    await testApi('/getEntry', req);
+  });
+});
+
+describe('POST /searchByText', () => {
+  it('search for text in all accessable notebooks', async () => {
+    const req = {
+      user_hash: '--user-key-1',
+      text: 'search text',
+    };
+
+    await testApi('/searchByText', req);
+  });
+});
+
+describe('POST /searchNotebooksByDate', () => {
+  it('display all notebooks in a given date range', async () => {
+    const req = {
+      user_hash: '--user-key-1',
+      mindate: '2017-12-01T02:02:26.994Z',
+      maxdate: '2017-12-01T02:02:26.994Z',
+    };
+
+    await testApi('/searchNotebooksByDate', req);
+  });
+});i
 
 describe.skip('POST /getNotebooks (depreciated)', () => { // depreciated
   it('Get the notbooks the user can access', async () => {
@@ -133,6 +181,16 @@ describe('POST /getBackup', () => {
   });
 });
 
+describe('POST /makePDF', () => {
+  it('create pdf of given notebook key', async () => {
+    const req = {
+      notebook_hash: '--notebook-key-2',
+    };
+
+    await testApi('/makePDF', req);
+  });
+});
+
 describe('POST /feedback', () => {
   it('Send feedback to the devs', async () => {
     const req = {
@@ -148,9 +206,6 @@ describe('POST /setNotebookPermissions', () => {
     const req = {
       user_hash: '--user-key-1',
       notebook_hash: '--notebook-key-2',
-      changes: {
-        placeholder: 'changes',
-      },
     };
 
     await testApi('/setNotebookPermissions', req);
@@ -186,5 +241,26 @@ describe('GET /notebook/:notebook_hash', () => {
     };
 
     await testApi('/notebook/:notebook_hash', req);
+  });
+});i
+
+describe('POST /getCompanyUsers', () => {
+  it('Get get compay that the user belongs to', async () => {
+    const req = {
+      user_hash: '--user-key-1',
+    };
+
+    await testApi('/getCompanyUsers', req);
+  });
+});
+
+describe('POST /getCompanyUsersPermission', () => {
+  it('Get the permissions for a user and notebook hash', async () => {
+    const req = {
+      user_hash: '--user-key-1',
+      notebook_hash: '--notebook-key-2',
+    };
+
+    await testApi('/getCompanyUsersPermission', req);
   });
 });

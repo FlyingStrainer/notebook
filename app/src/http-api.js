@@ -173,7 +173,7 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
   // });
 })();
 
-//Automated test: false
+//Automated test: true
 (() => {
   const path = '/cosignEntry';
   const props = ['user_hash', 'notebook_hash', 'entry_hash'];
@@ -209,6 +209,7 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
+//Automated test: false
 // might need to filter/parse the data returned from this
 router.post('/searchByText', async (req, res) => {
   const {user_hash, text} = req.body;
@@ -256,7 +257,7 @@ router.post('/searchByText', async (req, res) => {
   });
 });
 
-//Automated test: false
+//Automated test: true
 router.post('/searchNotebooksByDate', async (req, res) => {
   const {user_hash, mindate, maxdate} = req.body;
 
@@ -306,7 +307,7 @@ router.post('/searchNotebooksByDate', async (req, res) => {
   });
 });
 
-//Automated test: false
+//Automated test: true
 router.post('/makePDF', async (req, res) => {
   const {notebook_hash} = req.body;
 
