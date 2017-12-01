@@ -439,14 +439,21 @@ router.get('/notebook/:notebook_hash', async (req, res) => {
   });
 });
 
+// Automated test: true, needs work
 router.get('/pdfdisp/:pdfname', (req, res) => {
   const {pdfname} = req.params;
   console.log(req.params);
+  
+  if (firebaseUtil.isTest) {
+    res.status(204).send();
+    return;
+  }
+
   const file = `./genPDFs/${pdfname}`;
   res.download(file); // Set disposition and send it.
 });
 
-// Automated test: false
+// Automated test: true
 (() => {
   const path = '/getCompanyUsers';
   const props = ['user_hash'];
@@ -457,7 +464,7 @@ router.get('/pdfdisp/:pdfname', (req, res) => {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
-// Automated test: false
+// Automated test: true
 (() => {
   const path = '/getCompanyUsersPermission';
   const props = ['user_hash', 'notebook_hash'];

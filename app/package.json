@@ -21,7 +21,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "test": "react-scripts test --env=jsdom --coverage",
     "lint": "eslint src || exit 0",
     "lint-fix": "eslint src --fix || exit 0",
     "eslint": "eslint",

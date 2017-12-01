@@ -245,6 +245,16 @@ describe('GET /notebook/:notebook_hash', () => {
   });
 });
 
+describe('POST /pdfdisp:pdfname', () => {
+  it('Display given pdf', async () => {
+    const req = {
+      pdfname: '--pdf-key-1',
+    };
+
+    await testApi('/pdfdisp:pdfname', req);
+  });
+});
+
 describe('POST /getCompanyUsers', () => {
   it('Get get compay that the user belongs to', async () => {
     const req = {
