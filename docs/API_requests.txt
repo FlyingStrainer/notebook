@@ -114,10 +114,10 @@ body:
     "notebook_hash": "-L-9iDACSg1i79u3QJF7",
     "entry": {
     	"text": "Hello World!",
-	
+
 	"image": null,
 	"caption": null,
-	
+
 	"tags": []
     }
 }
@@ -178,7 +178,9 @@ body:
 	"notebook_hash": "",
 	"entry_hash": ""	// Unique id of entry being cosigned
 }
+no response
 
+errors: ['Entry not found', 'Entry already cosigned', 'User not found', 'Permission denied'];
 
 
 api/searchByTimestamp POST // Search for entry using timestamp
@@ -191,7 +193,7 @@ body:
 	"date": Date()
 }
 
-response: 
+response:
 {
 	"user_hash" : "",
 	"notebook_hash" : "",
@@ -211,7 +213,7 @@ body:
 	"text" : ""
 }
 
-response: 
+response:
 {
 	"user_hash" : "",
 	"notebook_hash" : "",
