@@ -1,6 +1,18 @@
 
 const request = require('supertest');
+const firebaseUtil = require('../firebase-util');
 const api = require('../http-api');
+
+const {firebaseAdmin} = firebaseUtil;
+
+beforeAll(() => {
+  const updates = {};
+  updates['/NotebookList/--notebook-hash-1'] = null;
+  updates['/UserList/--user-hash-1'] = null;
+  updates['/companies/--company_name'] = null;
+
+  return firebaseAdmin.database().ref().update();
+});
 
 async function testApi(path, req, res) {
   let response;
@@ -15,8 +27,7 @@ async function testApi(path, req, res) {
 
   if (res.statusCode) {
     expect(response.statusCode).toBe(res.statusCode);
-  }
-  else {
+  } else {
     expect(response.statusCode).toBeGreaterThanOrEqual(200);
     expect(response.statusCode).toBeLessThan(300);
   }

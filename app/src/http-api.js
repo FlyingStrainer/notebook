@@ -478,60 +478,6 @@ router.get('/notebook/:notebook_hash', async (req, res) => {
   });
 });
 
-
-
-
-router.post('/backup', async (req, res) => {
-  const {notebook_hash} = req.body;
-
-  // TODO determine error conditions for PDF generation
-  /* if (!(user_hash)) {
-    console.log('/getNotebooks bad', req.body);
-    res.sendStatus(400);
-    return;
-  } */
-
-  if (firebaseUtil.isTest) {
-    res.status(204).send();
-    return;
-  }
-  // `${req.protocol}://${req.get('host')}${req.path}/${pdfname}.pdf`}
-  // res.status(200).send(JSON.stringify({url: req.protocol}));
-  // console.log(notebook_hash);
-
-  firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
-    console.log(`TEST:${notebook.data_entries}`);
-
-
-    const fs = require('fs');
-    const dir = './backups';
-    
-    if (!fs.existsSync(dir)) {
-          fs.mkdirSync(dir);
-    }
-
-    var lzwCompress = require('lzwcompress');
-
-    var compressed = lzwCompress.pack(notebook);
-
-    fs.writeFile("./backups/" + notebook.notebook_hash, compressed, function(err) {
-        if(err) {
-            return console.log(err);
-        }
-    
-        console.log("The file was saved!");
-    }); 
-
-
-    res.setHeader('Content-Type', 'application/json');
-    res.status(200).send();
-  });
-  // var pdfname = "fsda";
-
-
-  // old: await db.ref(`words/${userId}`).once('value');
-});
-
 // Automated test: true, needs work
 router.get('/pdfdisp/:pdfname', (req, res) => {
   const {pdfname} = req.params;
@@ -568,14 +514,14 @@ router.get('/pdfdisp/:pdfname', (req, res) => {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
-(() => {
-  const path = '/deleteCompany';
-  const props = ['company_name'];
-  const utilFunc = 'deleteCompany';
-  const thenHandler = () => {};
-  const allowedErrors = [];
-
-  // addRoute(path, props, utilFunc, thenHandler, allowedErrors);
-})();
+// (() => {
+//   const path = '/deleteCompany';
+//   const props = ['company_name'];
+//   const utilFunc = 'deleteCompany';
+//   const thenHandler = () => {};
+//   const allowedErrors = [];
+//
+//   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
+// })();
 
 module.exports = router;

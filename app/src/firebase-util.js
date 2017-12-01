@@ -349,8 +349,8 @@ module.exports = {
 
       const backup = CJSON.stringify(notebook);
 
-      fs.writeFile(`/backups/${notebook_hash}`, backup, function(err) {
-        if(err) {
+      fs.writeFile(`/backups/${notebook_hash}`, backup, (err) => {
+        if (err) {
           console.log(err);
           return;
         }
