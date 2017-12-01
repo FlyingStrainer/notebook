@@ -380,7 +380,7 @@ module.exports = {
         const p = admin.database().ref().update(updates).then(() => {
           const url = `http://endor-vm1.cs.purdue.edu/notebook/${notebook_hash}`;
           return {url};
-        })
+        });
 
         return Promise.resolve(p);
       });

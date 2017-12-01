@@ -226,11 +226,10 @@ router.post('/searchByText', async (req, res) => {
       // console.log(Object.values(responses.hits[i].data_entries));
 
 
-
       returnArr[i] = {notebook: responses.hits[i].notebook_hash, entries: []};
 
-      //firebaseUtil.checkNotebookPermission(user_hash, notebooksArr[i], "read").then((data) => {
-      //});
+      // firebaseUtil.checkNotebookPermission(user_hash, notebooksArr[i], "read").then((data) => {
+      // });
 
       for (let j = 0; j < Object.values(responses.hits[i].data_entries).length; j++) {
         const dataentry = Object.values(responses.hits[i].data_entries)[j];
