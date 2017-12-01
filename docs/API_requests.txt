@@ -237,9 +237,22 @@ response:
     ]
 }
 
-api/feedback
+api/feedback POST
 body:
 {
     "message": "Best thing ever"
 }
 no response
+
+reject empty messages
+
+api/getLink POST
+body:
+{
+    "user_hash": "",
+    "notebook_hash": ""
+}
+response:
+{
+    "url": ""
+}
