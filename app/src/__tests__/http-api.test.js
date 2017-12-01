@@ -253,13 +253,20 @@ describe('GET /notebook/:notebook_hash', () => {
   });
 });
 
-describe('POST /pdfdisp:pdfname', () => {
+describe('GET /pdfdisp:pdfname', () => {
   it('Display given pdf', async () => {
-    const req = {
-      pdfname: '--pdf-key-1',
-    };
+    const path = '/pdfdisp/--pef-key-1';
+    let response;
 
-    await testApi('/pdfdisp:pdfname', req);
+     try {
+      response = await request(api)
+        .get(path);
+    } catch (e) {
+      expect(e.message).toEqual('good');
+    }
+
+    expect(response.statusCode).toBeGreaterThanOrEqual(200);
+    expect(response.statusCode).toBeLessThan(300);
   });
 });
 
