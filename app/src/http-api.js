@@ -420,7 +420,7 @@ router.get('/notebook/:notebook_hash', async (req, res) => {
   const allowedErrors = ['notebook not found', 'Notebook not public'];
 
   firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
-    if (!notebook.public) {
+    if (!notebook.isPublic) {
       return Promise.reject(new Error('Notebook not public'));
     }
 
