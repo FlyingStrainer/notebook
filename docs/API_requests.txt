@@ -194,7 +194,7 @@ body:
 
 response:
 {
-	"user_hash": "-L-DuZxPXbzHWau5Fh8B",
+    "user_hash": "-L-DuZxPXbzHWau5Fh8B",
     "results": [
         {
             "notebook": "-L-DvOL5t4i8u7ErdmES",
@@ -288,4 +288,22 @@ response:
         "write": true
     },
     "-L-DumeR9RJDDPpZQcnz": false
+}
+
+api/setNotebookPermissions POST
+{
+    "user_hash": "-L-DuZxPXbzHWau5Fh8B",
+    "notebook_hash": "-L-Dv9UDBRJaToBQOiwT",
+    "changes": {
+        "-L-DuZxPXbzHWau5Fh8B": {
+            "manager": true,
+            "read": true,
+            "write": true
+        },
+        "-L-DumeR9RJDDPpZQcnz": {
+            "manager": false,
+            "read": true,
+            "write": true
+        }
+    }
 }
