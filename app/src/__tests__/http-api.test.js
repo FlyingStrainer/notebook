@@ -218,9 +218,21 @@ describe('POST /format', () => {
     const req = {
       user_hash: '--user-key-1',
       notebook_hash: '--notebook-key-2',
+      settings: {},
     };
 
     await testApi('/format', req);
+  });
+});
+
+describe('POST /formatAll', () => {
+  it('Set the format of everything', async () => {
+    const req = {
+      user_hash: '--user-key-1',
+      settings: {},
+    };
+
+    await testApi('/formatAll', req);
   });
 });
 
@@ -288,5 +300,14 @@ describe('POST /getCompanyUsersPermission', () => {
     };
 
     await testApi('/getCompanyUsersPermission', req);
+  });
+});
+describe('POST /restoreFromLocal', () => {
+  it('Get the permissions for a user and notebook hash', async () => {
+    const req = {
+      notebook_hash: '--notebook-key-2',
+    };
+
+    await testApi('/restoreFromLocal', req);
   });
 });
