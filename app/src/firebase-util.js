@@ -32,6 +32,7 @@ pdfgen.init(admin);
 querydb.init(admin);
 
 module.exports = {
+  firebaseAdmin: admin,
   pdfgen,
   querydb,
 
@@ -88,9 +89,13 @@ module.exports = {
                   const company_users = {};
                   company_users[user_hash] = true;
 
+                  const company_emails64 = {};
+                  company_emails64[email64] = true;
+
                   const company_data = {
                     company_name,
                     admin_hash: user_hash,
+                    emails64: company_emails64,
                     users: company_users,
                     notebooks: {},
                   };
@@ -98,6 +103,7 @@ module.exports = {
                   update[`companies/${company_name}`] = company_data;
                 } else {
                   update[`companies/${company_name}/users/${user_hash}`] = true;
+                  update[`companies/${company_name}/emails64/${email64}`] = true;
                 }
 
                 admin.database().ref().update(update)
@@ -561,5 +567,44 @@ module.exports = {
         .then(getUsers)
         .catch(reject);
     });
+  },
+
+  deleteCompany(company_name) {
+    return admin.database().ref(`companies/${company_name}`).once('value').then((snap) => {
+      const company = snap.val();
+      if (!company) {
+        return Promise.resolve();
+      }
+
+      let i;
+
+      const updates = {};
+      updates[`companies/${company_name}`] = null;
+
+      const emails64 = company.emails64 || {};
+      const users = company.users || {};
+      const notebooks = company.notebooks || {};
+
+      for (i = 0; i < emails64.length; i++) {
+        const email64 = emails64[i];
+
+        updates[`login_info/${email64}`] = null;
+      }
+
+      for (i = 0; i < users.length; i++) {
+        const user = users[i];
+
+        updates[`UserList/${user}`] = null;
+      }
+
+      for (i = 0; i < notebooks.length; i++) {
+        const notebook = notebooks[i];
+
+        updates[`NotebookList/${notebook}`] = null;
+      }
+
+      return admin.database().ref().update(updates).catch(() => {});
+    })
+      .catch(() => {});
   },
 };
