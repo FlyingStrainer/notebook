@@ -16,6 +16,7 @@ module.exports = {
   loginUser() {},
   checkUser() {},
   getNotebooks() {},
+  getNotebook() {},
 
   saveNotebook() {},
   addEntry() {},

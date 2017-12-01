@@ -18,6 +18,10 @@ const Notebook = require('./objects/Notebook');
 const pdfgen = require('./PDFGen.js');
 const querydb = require('./querydb.js');
 const CJSON = require('./objects/CJSON.js');
+const nodemailer = require('nodemailer');
+
+const sessionEmailLimit = process.env.EMAIL_LIMIT || 5;
+let sessionEmailCount = 0;
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -346,6 +350,27 @@ module.exports = {
 
     const updates = {};
     updates[`/feedback/${new_key}`] = message;
+
+    if (sessionEmailCount < sessionEmailLimit) {
+      const transport = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: 'VENoteApp@gmail.com', // TODO replace personal gmail account
+          pass: 'VENote2017',
+        },
+      });
+
+      const mailOptions = {
+        from: 'VENoteApp',
+        to: 'jarett.lee.pi+response@gmail.com',
+        subject: 'VENote feedback',
+        text: message,
+      };
+
+      transport.sendMail(mailOptions, () => {});
+
+      sessionEmailCount += 1;
+    }
 
     return admin.database().ref().update(updates);
   },

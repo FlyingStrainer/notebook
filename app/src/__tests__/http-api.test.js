@@ -206,7 +206,7 @@ describe('POST /setNotebookPermissions', () => {
     const req = {
       user_hash: '--user-key-1',
       notebook_hash: '--notebook-key-2',
-      changes: '',
+      changes: {},
     };
 
     await testApi('/setNotebookPermissions', req);
@@ -236,12 +236,20 @@ describe('POST /getLink', () => {
 });
 
 describe('GET /notebook/:notebook_hash', () => {
-  it('undetermined', async () => {
-    const req = {
-      notebook_hash: '--notebook-key-2',
-    };
+  it('Get a notebook without being a user', async () => {
+    const path = '/notebook/-notebook-key-2';
 
-    await testApi('/notebook/:notebook_hash', req);
+    let response;
+
+    try {
+      response = await request(api)
+        .get(path);
+    } catch (e) {
+      expect(e.message).toEqual('good');
+    }
+
+    expect(response.statusCode).toBeGreaterThanOrEqual(200);
+    expect(response.statusCode).toBeLessThan(300);
   });
 });
 
@@ -256,7 +264,7 @@ describe('POST /pdfdisp:pdfname', () => {
 });
 
 describe('POST /getCompanyUsers', () => {
-  it('Get get compay that the user belongs to', async () => {
+  it('Get company that the user belongs to', async () => {
     const req = {
       user_hash: '--user-key-1',
     };

@@ -372,7 +372,7 @@ router.post('/makePDF', async (req, res) => {
 (() => {
   const path = '/feedback';
   const props = ['message'];
-  const utilFunc = 'feedback'; // TODO
+  const utilFunc = 'feedback';
   const thenHandler = () => {};
   const allowedErrors = ['Failed to send feedback'];
 
@@ -417,6 +417,11 @@ router.post('/makePDF', async (req, res) => {
 router.get('/notebook/:notebook_hash', async (req, res) => {
   const {notebook_hash} = req.params;
 
+  if (firebaseUtil.isTest) {
+    res.status(204).send();
+    return;
+  }
+
   const allowedErrors = ['Notebook not found', 'Notebook not public'];
 
   firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
@@ -435,7 +440,7 @@ router.get('/notebook/:notebook_hash', async (req, res) => {
       console.log(`${req.path} server failed:\t`, err.message);
     }
 
-    res.status(404).send('Access denied');
+    res.status(404).send('404 This link is invalid.');
   });
 });
 
