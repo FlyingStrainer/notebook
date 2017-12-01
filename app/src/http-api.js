@@ -223,17 +223,17 @@ router.post('/searchByText', async (req, res) => {
     let retCount = 0;
     const returnArr = [];
     console.log(responses.hits);
-    
+
     for (let i = 0; i < responses.hits.length; i++) {
       console.log(Object.values(responses.hits[i].data_entries));
 
-      
+
 
       returnArr[i] = {notebook: responses.hits[i].notebook_hash, entries: []};
 
       //firebaseUtil.checkNotebookPermission(user_hash, notebooksArr[i], "read").then((data) => {
       //});
-     
+
       for (let j = 0; j < Object.values(responses.hits[i].data_entries).length; j++) {
         let dataentry = Object.values(responses.hits[i].data_entries)[j];
         //console.log("OUT:" + dataentry);
@@ -345,9 +345,25 @@ router.post('/makePDF', async (req, res) => {
 router.get('/notebook/:notebook_hash', async (req, res) => {
   const {notebook_hash} = req.params;
 
+  const allowedErrors = ['notebook not found', 'Notebook not public'];
+
   firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
+    if (!notebook.public) {
+      return Promise.reject(new Error('Notebook not public'));
+    }
+
     res.setHeader('Content-Type', 'application/json');
     res.status(200).send(JSON.stringify(notebook, null, 4));
+
+    return Promise.resolve();
+  }).catch((err) => {
+    if (allowedErrors.includes(err.message)) {
+      console.log(`${req.path} bad:\t\t\t`, err.message);
+    } else {
+      console.log(`${req.path} server failed:\t`, err.message);
+    }
+
+    res.status(404).send('Access denied');
   });
 });
 
