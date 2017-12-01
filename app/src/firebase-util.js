@@ -18,6 +18,7 @@ const Notebook = require('./objects/Notebook');
 const pdfgen = require('./PDFGen.js');
 const querydb = require('./querydb.js');
 const CJSON = require('./objects/CJSON.js');
+const nodemailer = require('nodemailer');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -346,6 +347,24 @@ module.exports = {
 
     const updates = {};
     updates[`/feedback/${new_key}`] = message;
+
+    // send email
+    const transport = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'VENoteApp@gmail.com', // TODO replace personal gmail account
+        pass: 'VENote2017',
+      },
+    });
+
+    const mailOptions = {
+      from: 'VENoteApp',
+      to: 'jarett.lee.pi+response@gmail.com',
+      subject: 'VENote feedback',
+      text: message,
+    };
+
+    transport.sendMail(mailOptions, () => {});
 
     return admin.database().ref().update(updates);
   },
