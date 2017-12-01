@@ -200,7 +200,7 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
 // Automated test: true
 // might need to filter/parse the data returned from this
 router.post('/searchByText', async (req, res) => {
-  const {user_hash, text} = req.body;
+  const {user_hash, text, notebook_hash} = req.body;
 
   if (!(user_hash)) {
     console.log('/searchText bad', req.body);
@@ -213,43 +213,82 @@ router.post('/searchByText', async (req, res) => {
     return;
   }
 
-  if (!querydb.isWorking) {
-    res.status(500).send({ message: 'Algolia not working' });
-    return;
-  }
+ /*firebaseUtil.getNotebooks(user_hash).then((responses) => {
+   var retCount = 0;
+   const returnArr = [];
+    for (var i in responses.notebook_list) {
+    var currNb = responses.notebook_list[i];
+    
+    
+    console.log(currNb);
+    firebaseUtil.getNotebook('admin', currNb).then((notebook) => {
+      console.log(text);
+      //console.log(`TEST:${notebook.data_entries}`);
+      var currResult = {notebook: "null", entries: []};
+      console.log(notebook.data_entries === undefined);
+      if (notebook.data_entries === undefined) {} else{
+        console.log(Object.keys(notebook.data_entries).length);
+        for (var j = 0; j<Object.keys(notebook.data_entries).length; j++ ){
+          const dataentry = notebook.data_entries[j];
+          console.log("OUT:" + dataentry);
+          if (dataentry.text.indexOf(text) != -1) {
+            if (currResult.notebook === "null")
+              currResult.notebook = notebook.notebook_hash;
+            currResult.entries.push(dataentry.entry_hash);
+          }
+
+          console.log(currResult);
+          
+        }
+      }
+
+      if (currResult.notebook !== "null") returnArr.push(currResult);
+      
+    });
+  }*/
 
   querydb.indexEx.search({
     query: text,
-  }).then((responses) => {
+    }).then((responses) => {
     // Response from Algolia:
     // https://www.algolia.com/doc/api-reference/api-methods/search/#response-format
     // res.send(responses.hits);
     const returnArr = [];
-    console.log(responses.hits);
-
+    //console.log(responses.hits);
+    var retCount = 0;
     for (let i = 0; i < responses.hits.length; i++) {
       // console.log(Object.values(responses.hits[i].data_entries));
 
+      console.log(notebook_hash);
 
       returnArr[i] = {notebook: responses.hits[i].notebook_hash, entries: []};
 
-      // firebaseUtil.checkNotebookPermission(user_hash, notebooksArr[i], "read").then((data) => {
-      // });
-
-      if (responses.hits[i].data_entries === undefined || responses.hits[i].data_entries === null) {
+      if ((responses.hits[i].data_entries === undefined || responses.hits[i].data_entries === null) )
         continue;
-      }
+
+
+      
 
       for (let j = 0; j < Object.values(responses.hits[i].data_entries).length; j++) {
         const dataentry = Object.values(responses.hits[i].data_entries)[j];
-        // console.log("OUT:" + dataentry);
-        if (dataentry.text.indexOf(text) !== -1) {
+         //console.log("OUT:" + JSON.stringify(dataentry));
+        if (dataentry.text.indexOf(text) !== -1 && returnArr[i]!==undefined) {
           returnArr[i].entries.push(dataentry.entry_hash);
         }
       }
     }
 
     res.setHeader('Content-Type', 'application/json');
+
+    for (let k = 0; k< returnArr.length; k++) {
+      if (notebook_hash!==undefined) {
+        if (notebook_hash!==returnArr[k].notebook) {
+          returnArr.splice(k, 1);
+          k--;
+        }
+      }
+    }
+    
     res.status(200).send(JSON.stringify({user_hash, results: returnArr}));
   });
 });
