@@ -343,8 +343,8 @@ module.exports = {
     });
   },
 
-  restoreFromLocal(notebook_hash) {
-    return new Promise(((resolve, reject) => {
+  getLocalBackup(notebook_hash) {
+    return new Promise((resolve, reject) => {
       let backup;
       try {
         backup = fs.readFileSync(`${__dirname}/../backups/${notebook_hash}`);
@@ -353,9 +353,32 @@ module.exports = {
         return;
       }
 
-      console.log(backup);
-      resolve(backup);
-    }));
+      const notebook = CJSON.parse(backup);
+
+      resolve(notebook);
+    });
+  },
+
+  restoreFromLocal(notebook_hash) {
+    return new Promise((resolve, reject) => {
+      module.exports.getLocalBackup(notebook_hash).then((notebook) => {
+        const updates = {};
+        updates[`/NotebookList/${notebook.notebook_hash}`] = notebook;
+
+        admin.database().ref().update(updates).then(() => {
+          resolve(notebook);
+        }).catch(reject);
+      }).catch(reject);
+    });
+  },
+
+  restoreFromRemote(notebook_hash, backup) {
+    const notebook = CJSON.parse(backup);
+
+    const updates = {};
+    updates[`/NotebookList/${notebook.notebook_hash}`] = notebook;
+
+    return admin.database().ref().update(updates);
   },
 
   makeLocalBackup(notebook_hash) {
@@ -473,7 +496,9 @@ module.exports = {
     const updates = {};
     updates[`/NotebookList/${notebook_hash}/format`] = format;
 
-    return admin.database().ref().update(updates);
+    return admin.database().ref().update(updates).then(() => {
+      return {};
+    });
   },
 
   formatAll(user_hash, format) {
