@@ -47,6 +47,15 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
 
     res.setHeader('Content-Type', 'application/json');
 
+    if (!firebaseUtil[utilFunc]) {
+      const message = 'not yet implemented';
+      res.status(500).send({message});
+
+      console.log(`${path} server failed:\t`, message);
+
+      return;
+    }
+
     firebaseUtil[utilFunc].apply(null, args)
       .then((data) => {
         if (data) {
@@ -160,9 +169,9 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
 (() => {
   const path = '/cosignEntry';
   const props = ['user_hash', 'notebook_hash', 'entry_hash'];
-  const utilFunc = ''; // TODO
+  const utilFunc = 'cosignEntry';
   const thenHandler = () => {};
-  const allowedErrors = ['Cosign failed'];
+  const allowedErrors = ['Entry not found', 'Entry already cosigned', 'User not found', 'Permission denied'];
 
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
@@ -214,14 +223,14 @@ router.post('/searchByText', async (req, res) => {
     let retCount = 0;
     const notebooksArr = [];
     console.log(responses.hits);
-    
+
     for (let i = 0; i < responses.hits.length; i++) {
       console.log(Object.values(responses.hits[i].data_entries));
       notebooksArr[i] = responses.hits[i].notebook_hash;
-     
+
       for (let j = 0; j < Object.values(responses.hits[i].data_entries).length; j++) {
-        let dataentry = Object.values(responses.hits[i].data_entries)[j];
-        //console.log("OUT:" + dataentry);
+        const dataentry = Object.values(responses.hits[i].data_entries)[j];
+        // console.log("OUT:" + dataentry);
         if (dataentry.text.indexOf(text) !== -1) {
           entryArr[retCount] = dataentry.entry_hash;
           retCount++;
@@ -230,14 +239,15 @@ router.post('/searchByText', async (req, res) => {
     }
 
     res.setHeader('Content-Type', 'application/json');
-    res.status(200).send(JSON.stringify(
-      {user_hash:user_hash, notebook_hash: JSON.stringify(notebooksArr), entry_hash: JSON.stringify(entryArr)}));
+    res.status(200).send(JSON.stringify({
+      user_hash,
+      notebook_hash: JSON.stringify(notebooksArr),
+      entry_hash: JSON.stringify(entryArr),
+    }));
   });
 });
 
 router.post('/makePDF', async (req, res) => {
-
-  
   const {notebook_hash} = req.body;
 
   // TODO determine error conditions for PDF generation
@@ -251,21 +261,20 @@ router.post('/makePDF', async (req, res) => {
     res.status(204).send();
     return;
   }
-  //`${req.protocol}://${req.get('host')}${req.path}/${pdfname}.pdf`}
-  //res.status(200).send(JSON.stringify({url: req.protocol}));
-  //console.log(notebook_hash);
-  
- firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
-   console.log("TEST:" + notebook.data_entries);
+  // `${req.protocol}://${req.get('host')}${req.path}/${pdfname}.pdf`}
+  // res.status(200).send(JSON.stringify({url: req.protocol}));
+  // console.log(notebook_hash);
+
+  firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
+    console.log(`TEST:${notebook.data_entries}`);
     const pdfarray = Object.values(notebook.data_entries);
     const pdfname = notebook.name;
     pdfgen.genPDF(pdfarray, pdfname, 'server');
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify({url: `${req.protocol}://${req.get('host')}/pdfdisp/${pdfname}.pdf`}));
-
   });
-  //var pdfname = "fsda";
-  
+  // var pdfname = "fsda";
+
 
   // old: await db.ref(`words/${userId}`).once('value');
 });
@@ -340,10 +349,10 @@ router.get('/notebook/:notebook_hash', async (req, res) => {
   });
 });
 
-router.get('/pdfdisp/:pdfname', function(req, res){
+router.get('/pdfdisp/:pdfname', (req, res) => {
   const {pdfname} = req.params;
   console.log(req.params);
-  var file = './genPDFs/' + pdfname;
+  const file = `./genPDFs/${pdfname}`;
   res.download(file); // Set disposition and send it.
 });
 

@@ -196,7 +196,7 @@ module.exports = {
 
       const checkForPermission = (user_data) => {
         if (!user_data.permissions.create_notebooks) {
-          return Promise.reject(new Error('permission denied'));
+          return Promise.reject(new Error('Permission denied'));
         }
 
         return user_data;
@@ -245,7 +245,6 @@ module.exports = {
           caption: entry.caption || null,
           tags: entry.tags || [],
         };
-        console.log(entry_update);
         entry_update.tags = entry_update.tags || [];
         updates[`/NotebookList/${notebook_hash}/data_entries/${entry_hash}`] = entry_update;
 
@@ -265,7 +264,7 @@ module.exports = {
         check = check[notebook_hash] || {};
         check = !check.write;
         if (check) {
-          return Promise.reject(new Error('permission denied'));
+          return Promise.reject(new Error('Permission denied'));
         }
 
         return user_data;
@@ -361,6 +360,56 @@ module.exports = {
     updates[`/NotebookList/${notebook_hash}/format`] = format;
 
     return admin.database().ref().update(updates);
+  },
+
+  cosignEntry(user_hash, notebook_hash, entry_hash) {
+    return new Promise(((resolve, reject) => {
+      let path = `/NotebookList/${notebook_hash}/data_entries/${entry_hash}/`;
+      admin.database().ref(path).once('value').then((snap) => {
+        const entry = snap.val();
+        if (!entry) {
+          reject(new Error('Entry not found'));
+          return;
+        }
+
+        if (entry.cosign_hash) {
+          reject(new Error('Entry already cosigned'));
+          return;
+        }
+
+        path = `/UserList/${user_hash}`;
+        admin.database().ref(`UserList/${user_hash}`).once('value').then((snap2) => {
+          const user = snap2.val();
+          if (!user) {
+            reject(new Error('User not found'));
+            return;
+          }
+
+          let next = user;
+          next = next.permissions || {};
+          next = next.notebooks || {};
+          next = next[notebook_hash] || {};
+          next = next.manager || false;
+          const isManager = next;
+          if (!isManager) {
+            reject(new Error('Permission denied'));
+            return;
+          }
+
+          const {email} = user;
+
+          const updates = {};
+          updates[`/NotebookList/${notebook_hash}/data_entries/${entry_hash}/cosign_email`] = email;
+          updates[`/NotebookList/${notebook_hash}/data_entries/${entry_hash}/cosign_hash`] = user_hash;
+
+          admin.database().ref().update(updates)
+            .then(() => {
+              resolve();
+            })
+            .catch(reject);
+        });
+      });
+    }));
   },
 
   getCompanyUsers(user_hash) {
