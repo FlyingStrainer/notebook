@@ -350,12 +350,20 @@ module.exports = {
   getLink(user_hash, notebook_hash) {
     return admin.database().ref(`/NotebookList/${notebook_hash}/`).once('value')
       .then((snap) => {
-        if (snap.val() !== null) {
-          const url = `http://endor-vm1.cs.purdue.edu/notebook/${notebook_hash}`;
-          return {url};
+        const notebook = snap.val();
+        if (!notebook) {
+          return Promise.reject(new Error('can\'t find notebook'));
         }
 
-        throw new Error('can\'t find notebook');
+        const updates = {};
+        updates[`/NotebookList/${notebook_hash}/public`] = true;
+
+        const p = admin.database().ref().update(updates).then(() => {
+          const url = `http://endor-vm1.cs.purdue.edu/notebook/${notebook_hash}`;
+          return {url};
+        })
+
+        return Promise.resolve(p);
       });
   },
 
