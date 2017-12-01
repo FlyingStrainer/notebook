@@ -19,6 +19,7 @@ const pdfgen = require('./PDFGen.js');
 const querydb = require('./querydb.js');
 const CJSON = require('./objects/CJSON.js');
 const nodemailer = require('nodemailer');
+const fs = require('fs');
 
 const sessionEmailLimit = process.env.EMAIL_LIMIT || 5;
 let sessionEmailCount = 0;
@@ -32,6 +33,7 @@ pdfgen.init(admin);
 querydb.init(admin);
 
 module.exports = {
+  firebaseAdmin: admin,
   pdfgen,
   querydb,
 
@@ -88,9 +90,13 @@ module.exports = {
                   const company_users = {};
                   company_users[user_hash] = true;
 
+                  const company_emails64 = {};
+                  company_emails64[email64] = true;
+
                   const company_data = {
                     company_name,
                     admin_hash: user_hash,
+                    emails64: company_emails64,
                     users: company_users,
                     notebooks: {},
                   };
@@ -98,6 +104,7 @@ module.exports = {
                   update[`companies/${company_name}`] = company_data;
                 } else {
                   update[`companies/${company_name}/users/${user_hash}`] = true;
+                  update[`companies/${company_name}/emails64/${email64}`] = true;
                 }
 
                 admin.database().ref().update(update)
@@ -333,15 +340,46 @@ module.exports = {
     });
   },
 
-  getBackup(user_hash, notebook_hash) {
-    // NOTE does not check for permission
+  restoreFromLocal(notebook_hash) {
+    return new Promise(function(resolve, reject) {
+      let backup;
+      try {
+        backup = fs.readFileSync(`${__dirname}/../backups/${notebook_hash}`);
+      } catch (e) {
+        reject(e);
+        return;
+      }
+
+      console.log(backup);
+      resolve(backup);
+    });
+  },
+
+  makeLocalBackup(notebook_hash) {
+    return module.exports.getBackup(notebook_hash).then((backup) => {
+      fs.writeFile(`${__dirname}/../backups/${notebook_hash}`, backup, (err) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+
+        console.log(`The backup for ${notebook_hash} was saved!`);
+      });
+
+      return backup;
+    });
+  },
+
+  getBackup(notebook_hash) {
     return admin.database().ref(`/NotebookList/${notebook_hash}/`).once('value').then((snap) => {
       const notebook = snap.val();
       if (!notebook) {
         return Promise.reject(new Error('Notebook not found'));
       }
 
-      return CJSON.stringify(notebook);
+      const backup = CJSON.stringify(notebook);
+
+      return backup;
     });
   },
 
@@ -431,6 +469,14 @@ module.exports = {
     // NOTE does not check for permission
     const updates = {};
     updates[`/NotebookList/${notebook_hash}/format`] = format;
+
+    return admin.database().ref().update(updates);
+  },
+
+  formatAll(user_hash, format) {
+    // NOTE does not check for permission
+    const updates = {};
+    // updates[`/companies/${notebook_hash}/format`] = format;
 
     return admin.database().ref().update(updates);
   },
@@ -561,5 +607,48 @@ module.exports = {
         .then(getUsers)
         .catch(reject);
     });
+  },
+
+  deleteCompany(company_name) {
+    return admin.database().ref(`companies/${company_name}`).once('value').then((snap) => {
+      const company = snap.val();
+      if (!company) {
+        return Promise.resolve();
+      }
+
+      let i;
+
+      const updates = {};
+      updates[`companies/${company_name}`] = null;
+
+      const emails64 = company.emails64 || {};
+      const users = company.users || {};
+      const notebooks = company.notebooks || {};
+
+      const emails64Keys = Object.keys(emails64);
+      const usersKeys = Object.keys(users);
+      const notebooksKeys = Object.keys(notebooks);
+
+      for (i = 0; i < emails64Keys.length; i++) {
+        const key = emails64Keys[i];
+
+        updates[`login_info/${key}`] = null;
+      }
+
+      for (i = 0; i < usersKeys.length; i++) {
+        const key = usersKeys[i];
+
+        updates[`UserList/${key}`] = null;
+      }
+
+      for (i = 0; i < notebooksKeys.length; i++) {
+        const key = notebooksKeys[i];
+
+        updates[`NotebookList/${key}`] = null;
+      }
+
+      return admin.database().ref().update(updates).catch(() => {});
+    })
+      .catch(() => {});
   },
 };

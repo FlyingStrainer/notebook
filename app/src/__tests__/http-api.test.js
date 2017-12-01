@@ -258,7 +258,7 @@ describe('GET /pdfdisp:pdfname', () => {
     const path = '/pdfdisp/--pef-key-1';
     let response;
 
-     try {
+    try {
       response = await request(api)
         .get(path);
     } catch (e) {
