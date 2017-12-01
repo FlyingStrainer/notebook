@@ -19,6 +19,7 @@ const pdfgen = require('./PDFGen.js');
 const querydb = require('./querydb.js');
 const CJSON = require('./objects/CJSON.js');
 const nodemailer = require('nodemailer');
+const fs = require('fs');
 
 const sessionEmailLimit = process.env.EMAIL_LIMIT || 5;
 let sessionEmailCount = 0;
@@ -339,15 +340,25 @@ module.exports = {
     });
   },
 
-  getBackup(user_hash, notebook_hash) {
-    // NOTE does not check for permission
+  getBackup(notebook_hash) {
     return admin.database().ref(`/NotebookList/${notebook_hash}/`).once('value').then((snap) => {
       const notebook = snap.val();
       if (!notebook) {
         return Promise.reject(new Error('Notebook not found'));
       }
 
-      return CJSON.stringify(notebook);
+      const backup = CJSON.stringify(notebook);
+
+      fs.writeFile(`/backups/${notebook_hash}`, backup, function(err) {
+        if(err) {
+          console.log(err);
+          return;
+        }
+
+        console.log(`The backup for ${notebook_hash} was saved!`);
+      });
+
+      return backup;
     });
   },
 
