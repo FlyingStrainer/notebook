@@ -236,7 +236,7 @@ describe('POST /getLink', () => {
 });
 
 describe('GET /notebook/:notebook_hash', () => {
-  it('undetermined', async () => {
+  it('Get a notebook without being a user', async () => {
     const path = '/notebook/-notebook-key-2';
 
     let response;
@@ -254,7 +254,7 @@ describe('GET /notebook/:notebook_hash', () => {
 });
 
 describe('POST /getCompanyUsers', () => {
-  it('Get get compay that the user belongs to', async () => {
+  it('Get company that the user belongs to', async () => {
     const req = {
       user_hash: '--user-key-1',
     };
