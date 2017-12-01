@@ -5,24 +5,52 @@ uuids are implied
 '+' indicates that more than one can exist in a given sub area(?)
 
 |- NotebookList
-|	|- NotebookUUID+
-|		|-EntryList
-|		|	|-Entry
+|	|- notebook_hash+
+|		|-data_entries
+|		|	|-entry_hash+
 |		|		|- Text
 |		|		|- Date modified
 |		|		|- Date created
 |		|		|- author
-|		|		|- signatures
-|		|			|- user uuid+
-|		|		|- tagsList
-|		|			|-tag string+
-|		|- ManagersList
-|		|	|- user uuid+
-|		|- Date created
-|		|- Date modified
+|		|		|- author_hash
+|		|		|- cosign_email
+|		|		|- cosign_hash
+|		|		|- tags
+|		|			|-tagString+
+|		|- date_created
+|		|- date_modified
 |		|- isPublic (1: Public, 0: Private)
+|		|- managers
+|		|	|- user_hash+
+|		|- name
+|		|- notebook_hash
 |- UserList
-	|- User (type: firebase.user)+
-		|- notebook uuid that they have access too+
-		|- Role
-		|- other json properties inlcuded in firebase.user
+|	|- user_hash+
+|		|- company_name
+|		|- email
+|		|- permissions
+|		|	|- create_notebooks (true/false)
+|		|	|- notebooks
+|		|	|	|- notebook_hash+
+|		|	|		|- manager (true/false)
+|		|	|		|- read (true/false)
+|		|	|		|- write (true/false)
+|		|	|- role
+|		|- user_hash
+|- companies
+|	|- company_name+
+|		|- admin_hash
+|		|- company_name
+|		|- notebooks
+|		|	|- notebook_hash+
+|		|- users
+|		|	|- user_hash+
+|- feedback
+|	|- string_hash+
+|		|- content
+|- login_info
+|	|- user_hash+
+		|- company_name
+		|- email
+		|- password
+		|- user_hash
