@@ -74,7 +74,7 @@ module.exports = {
     }).then((responses) => {
       // Response from Algolia:
       // https://www.algolia.com/doc/api-reference/api-methods/search/#response-format
-      console.log(responses.hits);
+      // console.log(responses.hits);
       return responses.hits;
     });
   },
