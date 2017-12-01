@@ -524,6 +524,18 @@ router.get('/pdfdisp/:pdfname', (req, res) => {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
+// Automated test: false
+(() => {
+  const path = '/restoreFromLocal';
+  const props = ['notebook_hash'];
+  const utilFunc = 'restoreFromLocal';
+  const thenHandler = () => {};
+  const allowedErrors = [];
+
+  addRoute(path, props, utilFunc, thenHandler, allowedErrors);
+})();
+
+// Automated test: N/A
 // (() => {
 //   const path = '/deleteCompany';
 //   const props = ['company_name'];

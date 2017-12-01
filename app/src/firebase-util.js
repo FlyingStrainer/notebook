@@ -340,6 +340,21 @@ module.exports = {
     });
   },
 
+  restoreFromLocal(notebook_hash) {
+    return new Promise(function(resolve, reject) {
+      let backup;
+      try {
+        backup = fs.readFileSync(`${__dirname}/../backups/${notebook_hash}`);
+      } catch (e) {
+        reject(e);
+        return;
+      }
+
+      console.log(backup);
+      resolve(backup);
+    });
+  },
+
   makeLocalBackup(notebook_hash) {
     return module.exports.getBackup(notebook_hash).then((backup) => {
       fs.writeFile(`${__dirname}/../backups/${notebook_hash}`, backup, (err) => {
