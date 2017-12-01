@@ -237,11 +237,10 @@ router.post('/searchByText', async (req, res) => {
       // console.log(Object.values(responses.hits[i].data_entries));
 
 
-
       returnArr[i] = {notebook: responses.hits[i].notebook_hash, entries: []};
 
-      //firebaseUtil.checkNotebookPermission(user_hash, notebooksArr[i], "read").then((data) => {
-      //});
+      // firebaseUtil.checkNotebookPermission(user_hash, notebooksArr[i], "read").then((data) => {
+      // });
 
       for (let j = 0; j < Object.values(responses.hits[i].data_entries).length; j++) {
         const dataentry = Object.values(responses.hits[i].data_entries)[j];
@@ -376,8 +375,8 @@ router.post('/makePDF', async (req, res) => {
 //Automated test: true
 (() => {
   const path = '/setNotebookPermissions';
-  const props = ['user_hash', 'notebook_hash']; // I assume we also need what we are changing the permissions to?
-  const utilFunc = 'setNotebookPermissions'; // TODO
+  const props = ['user_hash', 'notebook_hash', 'changes'];
+  const utilFunc = 'setNotebookPermissions';
   const thenHandler = () => {};
   const allowedErrors = ['Failed to change permissions'];
 

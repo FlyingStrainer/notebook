@@ -92,7 +92,7 @@ module.exports = {
 
                   update[`companies/${company_name}`] = company_data;
                 } else {
-                  update[`companies/users/${user_hash}`] = true;
+                  update[`companies/${company_name}/users/${user_hash}`] = true;
                 }
 
                 admin.database().ref().update(update)
@@ -237,6 +237,8 @@ module.exports = {
         const now = new Date().getTime();
         const entry_hash = admin.database().ref('NotebookList').push().key;
 
+        const tags = entry.tags || [];
+
         const entry_update = {
           entry_hash,
           author: email,
@@ -246,9 +248,8 @@ module.exports = {
           text: entry.text || null,
           image: entry.image || null,
           caption: entry.caption || null,
-          tags: entry.tags || [],
+          tags,
         };
-        entry_update.tags = entry_update.tags || [];
         updates[`/NotebookList/${notebook_hash}/data_entries/${entry_hash}`] = entry_update;
 
         for (let i = 0; i < tags.length; i++) {
@@ -336,15 +337,33 @@ module.exports = {
     return admin.database().ref().update(updates);
   },
 
-  setNotebookPermissions(user_hash, notebook_hash, change_list) {
+  setNotebookPermissions(user_hash, notebook_hash, changes) {
     // NOTE does not check for permission
     const updates = {};
 
-    for (let i = 0; i < change_list.length; i++) {
-      const {change} = change_list[i];
-      const other_hash = change_list[i].user_hash;
+    const change_keys = Object.keys(changes);
 
-      updates[`UserList/${other_hash}/permissions/notebooks/${notebook_hash}`] = change;
+    for (let i = 0; i < change_keys.length; i++) {
+      const other_hash = change_keys[i];
+      const change = changes[other_hash];
+
+      console.log(other_hash, change);
+
+      const path = `UserList/${other_hash}/permissions/notebooks/${notebook_hash}`;
+      if (change) {
+        updates[`${path}/read`] = change.read || false;
+        updates[`${path}/write`] = change.write || false;
+        updates[`${path}/manager`] = change.manager || false;
+
+        if (change.manager) {
+          updates[`/NotebookList/${notebook_hash}/managers/${other_hash}`] = true;
+        } else {
+          updates[`/NotebookList/${notebook_hash}/managers/${other_hash}`] = null;
+        }
+      } else {
+        updates[`${path}`] = null;
+        updates[`/NotebookList/${notebook_hash}/managers/${other_hash}`] = null;
+      }
     }
 
     return admin.database().ref().update(updates);
@@ -364,7 +383,7 @@ module.exports = {
         const p = admin.database().ref().update(updates).then(() => {
           const url = `http://endor-vm1.cs.purdue.edu/notebook/${notebook_hash}`;
           return {url};
-        })
+        });
 
         return Promise.resolve(p);
       });
