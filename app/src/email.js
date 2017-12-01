@@ -5,6 +5,7 @@ module.exports = {
     if(emailAddTo.indexOf('@') === -1 || emailAddTo.indexOf('.') === -1){
 	console.error('Warning: possible invalid email detected');
     }
+
     const newUserName = 'John Doe';
     const transport = nodemailer.createTransport({
       service: 'gmail',
@@ -21,8 +22,6 @@ module.exports = {
       text: `Hi, ${newUserName} has signed up.` +
       'If you did not approve this, please....',
     };
-
-
     transport.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.error(error);
