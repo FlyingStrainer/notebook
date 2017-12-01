@@ -585,22 +585,26 @@ module.exports = {
       const users = company.users || {};
       const notebooks = company.notebooks || {};
 
-      for (i = 0; i < emails64.length; i++) {
-        const email64 = emails64[i];
+      const emails64Keys = Object.keys(emails64);
+      const usersKeys = Object.keys(users);
+      const notebooksKeys = Object.keys(notebooks);
 
-        updates[`login_info/${email64}`] = null;
+      for (i = 0; i < emails64Keys.length; i++) {
+        const key = emails64Keys[i];
+
+        updates[`login_info/${key}`] = null;
       }
 
-      for (i = 0; i < users.length; i++) {
-        const user = users[i];
+      for (i = 0; i < usersKeys.length; i++) {
+        const key = usersKeys[i];
 
-        updates[`UserList/${user}`] = null;
+        updates[`UserList/${key}`] = null;
       }
 
-      for (i = 0; i < notebooks.length; i++) {
-        const notebook = notebooks[i];
+      for (i = 0; i < notebooksKeys.length; i++) {
+        const key = notebooksKeys[i];
 
-        updates[`NotebookList/${notebook}`] = null;
+        updates[`NotebookList/${key}`] = null;
       }
 
       return admin.database().ref().update(updates).catch(() => {});

@@ -480,4 +480,14 @@ router.get('/pdfdisp/:pdfname', (req, res) => {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
+(() => {
+  const path = '/deleteCompany';
+  const props = ['company_name'];
+  const utilFunc = 'deleteCompany';
+  const thenHandler = () => {};
+  const allowedErrors = [];
+
+  // addRoute(path, props, utilFunc, thenHandler, allowedErrors);
+})();
+
 module.exports = router;
