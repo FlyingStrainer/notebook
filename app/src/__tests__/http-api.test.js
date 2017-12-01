@@ -237,11 +237,19 @@ describe('POST /getLink', () => {
 
 describe('GET /notebook/:notebook_hash', () => {
   it('undetermined', async () => {
-    const req = {
-      notebook_hash: '--notebook-key-2',
-    };
+    const path = '/notebook/-notebook-key-2';
 
-    await testApi('/notebook/:notebook_hash', req);
+    let response;
+
+    try {
+      response = await request(api)
+        .get(path);
+    } catch (e) {
+      expect(e.message).toEqual('good');
+    }
+
+    expect(response.statusCode).toBeGreaterThanOrEqual(200);
+    expect(response.statusCode).toBeLessThan(300);
   });
 });
 

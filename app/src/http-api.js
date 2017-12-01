@@ -417,6 +417,11 @@ router.post('/makePDF', async (req, res) => {
 router.get('/notebook/:notebook_hash', async (req, res) => {
   const {notebook_hash} = req.params;
 
+  if (firebaseUtil.isTest) {
+    res.status(204).send();
+    return;
+  }
+
   const allowedErrors = ['Notebook not found', 'Notebook not public'];
 
   firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
