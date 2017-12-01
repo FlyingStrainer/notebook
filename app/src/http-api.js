@@ -225,6 +225,10 @@ router.post('/searchByText', async (req, res) => {
     return;
   }
 
+  if (!querydb.isWorking) {
+    res.status(500).send({ message: 'Algolia not working' });
+    return;
+  }
 
   querydb.indexEx.search({
     query: text,

@@ -10,6 +10,7 @@ const index = algolia.initIndex(process.env.ALGOLIA_INDEX_NAME);
 let firebaseAdmin = null;
 
 module.exports = {
+  isWorking: false,
   algolia,
   indexEx: index,
 
@@ -49,8 +50,14 @@ module.exports = {
     // Add or update new objects
     index.saveObjects(objectsToIndex, (err, content) => {
       if (err) {
-        throw err;
+        console.log('Firebase<>Algolia import failed');
+        console.log(err.message);
+
+        module.exports.isWorking = false;
+        return;
       }
+
+      module.exports.isWorking = true;
       console.log('Firebase<>Algolia import done');
       // process.exit(0);
     });
