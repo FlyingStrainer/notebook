@@ -30,6 +30,7 @@ module.exports = {
   pdfgen,
   querydb,
 
+  // action: read, write, manager
   checkNotebookPermission(user_hash, notebook_hash, action) {
     const path = `UserList/${user_hash}/permissions/notebooks/${notebook_hash}`;
     return admin.database().ref(path).once('value')
