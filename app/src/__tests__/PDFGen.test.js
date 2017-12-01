@@ -24,12 +24,12 @@ it('tests', () => {
     date_created: '11-5-2017',
     text: 'text1',
     imgpath: testImage,
-    caption: 'cap cap cap',
+    author: 'Jane Doe',
   }, {
-    date: '11-3-2017',
+    date_created: '11-3-2017',
     text: 'text2',
     imgpath: testImage,
-    caption: 'cap cap cap',
+    author: 'John Does',
   }];
   PDFGen.genPDF(entries, fname);
   expect(() => {
