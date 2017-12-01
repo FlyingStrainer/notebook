@@ -458,6 +458,14 @@ module.exports = {
     return admin.database().ref().update(updates);
   },
 
+  formatAll(user_hash, format) {
+    // NOTE does not check for permission
+    const updates = {};
+    // updates[`/companies/${notebook_hash}/format`] = format;
+
+    return admin.database().ref().update(updates);
+  },
+
   cosignEntry(user_hash, notebook_hash, entry_hash) {
     return new Promise(((resolve, reject) => {
       let path = `/NotebookList/${notebook_hash}/data_entries/${entry_hash}/`;
