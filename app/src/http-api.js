@@ -374,7 +374,9 @@ router.post('/makePDF', async (req, res) => {
     console.log(`TEST:${notebook.data_entries}`);
     const pdfarray = Object.values(notebook.data_entries);
     const pdfname = notebook.name;
-    pdfgen.genPDF(pdfarray, pdfname, 'server');
+    var inline = false;
+    if (notebook.format.image === "inline") inline = true;
+    pdfgen.genPDF(pdfarray, pdfname, 'server', inline);
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify({url: `${req.protocol}://${req.get('host')}/pdfdisp/${pdfname}.pdf`}));
   });
