@@ -159,18 +159,6 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
   const allowedErrors = ['invalid request'];
 
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
-  //
-  // TODO add entry to notebook
-  // NOTE the addEntry function here does not match the true api
-  //
-  // firebaseUtil.addEntry(notebook_uuid, _text, _image,
-  //   _caption, _date_created, _authorID, _tag_arr).then(() => {
-  //   console.log('/addEntry good');
-  //   res.sendStatus(201);
-  // }).catch(() => {
-  //   console.log('/addEntry internal bad');
-  //   res.sendStatus(500);
-  // });
 })();
 
 // Automated test: true
@@ -321,12 +309,11 @@ router.post('/searchNotebooksByDate', async (req, res) => {
 router.post('/makePDF', async (req, res) => {
   const {notebook_hash} = req.body;
 
-  // TODO determine error conditions for PDF generation
-  /* if (!(user_hash)) {
+   if (!(notebook_hash)) {
     console.log('/getNotebooks bad', req.body);
     res.sendStatus(400);
     return;
-  } */
+  }
 
   if (firebaseUtil.isTest) {
     res.status(204).send();
@@ -398,7 +385,7 @@ router.post('/makePDF', async (req, res) => {
 (() => {
   const path = '/getLink';
   const props = ['user_hash', 'notebook_hash'];
-  const utilFunc = 'getLink'; // TODO
+  const utilFunc = 'getLink';
   const thenHandler = () => {};
   const allowedErrors = ['Failed to get Link. It\'s dangerous to go alone. Take this!\n:~{=======>'];
 
@@ -409,7 +396,7 @@ router.post('/makePDF', async (req, res) => {
 (() => {
   const path = '/format';
   const props = ['user_hash', 'notebook_hash', 'settings'];
-  const utilFunc = 'format'; // TODO
+  const utilFunc = 'format';
   const thenHandler = () => {};
   const allowedErrors = ['Failed to format'];
 
