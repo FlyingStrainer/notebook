@@ -309,7 +309,7 @@ router.post('/searchNotebooksByDate', async (req, res) => {
 router.post('/makePDF', async (req, res) => {
   const {notebook_hash} = req.body;
 
-   if (!(notebook_hash)) {
+  if (!(notebook_hash)) {
     console.log('/getNotebooks bad', req.body);
     res.sendStatus(400);
     return;
@@ -358,6 +358,18 @@ router.post('/makePDF', async (req, res) => {
 
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
+
+// Automated test: N/A
+(() => {
+  const path = '/backup';
+  const props = ['notebook_hash'];
+  const utilFunc = 'makeLocalBackup';
+  const thenHandler = () => {};
+  const allowedErrors = ['Backup for this notebook does not exist'];
+
+  addRoute(path, props, utilFunc, thenHandler, allowedErrors);
+})();
+
 
 // Automated test: true
 (() => {
@@ -445,36 +457,6 @@ router.get('/notebook/:notebook_hash', async (req, res) => {
   });
 });
 
-router.get('/notebook/:notebook_hash', async (req, res) => {
-  const {notebook_hash} = req.params;
-
-  if (firebaseUtil.isTest) {
-    res.status(204).send();
-    return;
-  }
-
-  const allowedErrors = ['Notebook not found', 'Notebook not public'];
-
-  firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
-    if (!notebook.isPublic) {
-      return Promise.reject(new Error('Notebook not public'));
-    }
-
-    res.setHeader('Content-Type', 'application/json');
-    res.status(200).send(JSON.stringify(notebook, null, 4));
-
-    return Promise.resolve();
-  }).catch((err) => {
-    if (allowedErrors.includes(err.message)) {
-      console.log(`${req.path} bad:\t\t\t`, err.message);
-    } else {
-      console.log(`${req.path} server failed:\t`, err.message);
-    }
-
-    res.status(404).send('404 This link is invalid.');
-  });
-});
-
 // Automated test: true, needs work
 router.get('/pdfdisp/:pdfname', (req, res) => {
   const {pdfname} = req.params;
@@ -516,6 +498,17 @@ router.get('/pdfdisp/:pdfname', (req, res) => {
   const path = '/restoreFromLocal';
   const props = ['notebook_hash'];
   const utilFunc = 'restoreFromLocal';
+  const thenHandler = () => {};
+  const allowedErrors = [];
+
+  addRoute(path, props, utilFunc, thenHandler, allowedErrors);
+})();
+
+// Automated test: false
+(() => {
+  const path = '/restoreFromRemote';
+  const props = ['notebook_hash', 'backup'];
+  const utilFunc = 'restoreFromRemote';
   const thenHandler = () => {};
   const allowedErrors = [];
 
