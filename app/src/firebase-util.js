@@ -496,7 +496,9 @@ module.exports = {
     const updates = {};
     updates[`/NotebookList/${notebook_hash}/format`] = format;
 
-    return admin.database().ref().update(updates);
+    return admin.database().ref().update(updates).then(() => {
+      return {};
+    });
   },
 
   formatAll(user_hash, format) {
