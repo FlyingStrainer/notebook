@@ -221,29 +221,31 @@ router.post('/searchByText', async (req, res) => {
     // res.send(responses.hits);
     const entryArr = [];
     let retCount = 0;
-    const notebooksArr = [];
+    const returnArr = [];
     console.log(responses.hits);
-
+    
     for (let i = 0; i < responses.hits.length; i++) {
       console.log(Object.values(responses.hits[i].data_entries));
-      notebooksArr[i] = responses.hits[i].notebook_hash;
 
+      
+
+      returnArr[i] = {notebook: responses.hits[i].notebook_hash, entries: []};
+
+      //firebaseUtil.checkNotebookPermission(user_hash, notebooksArr[i], "read").then((data) => {
+      //});
+     
       for (let j = 0; j < Object.values(responses.hits[i].data_entries).length; j++) {
-        const dataentry = Object.values(responses.hits[i].data_entries)[j];
-        // console.log("OUT:" + dataentry);
+        let dataentry = Object.values(responses.hits[i].data_entries)[j];
+        //console.log("OUT:" + dataentry);
         if (dataentry.text.indexOf(text) !== -1) {
-          entryArr[retCount] = dataentry.entry_hash;
-          retCount++;
+          returnArr[i].entries.push(dataentry.entry_hash)
         }
       }
     }
 
     res.setHeader('Content-Type', 'application/json');
-    res.status(200).send(JSON.stringify({
-      user_hash,
-      notebook_hash: JSON.stringify(notebooksArr),
-      entry_hash: JSON.stringify(entryArr),
-    }));
+    res.status(200).send(JSON.stringify(
+      {user_hash:user_hash, results: returnArr}));
   });
 });
 
