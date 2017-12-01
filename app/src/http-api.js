@@ -359,8 +359,8 @@ router.post('/makePDF', async (req, res) => {
 
 (() => {
   const path = '/setNotebookPermissions';
-  const props = ['user_hash', 'notebook_hash']; // I assume we also need what we are changing the permissions to?
-  const utilFunc = 'setNotebookPermissions'; // TODO
+  const props = ['user_hash', 'notebook_hash', 'changes'];
+  const utilFunc = 'setNotebookPermissions';
   const thenHandler = () => {};
   const allowedErrors = ['Failed to change permissions'];
 
