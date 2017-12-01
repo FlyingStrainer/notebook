@@ -206,7 +206,7 @@ describe('POST /setNotebookPermissions', () => {
     const req = {
       user_hash: '--user-key-1',
       notebook_hash: '--notebook-key-2',
-      changes: '',
+      changes: {},
     };
 
     await testApi('/setNotebookPermissions', req);
