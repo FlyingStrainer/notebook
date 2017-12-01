@@ -89,6 +89,7 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
   });
 }
 
+//Automated test: true
 (() => {
   const path = '/register';
   const props = ['email', 'password', 'company_name'];
@@ -99,6 +100,7 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
+//Automated test: true
 (() => {
   const path = '/login';
   const props = ['email', 'password'];
@@ -109,6 +111,7 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
+//Automated test: true
 (() => {
   const path = '/user';
   const props = ['user_hash'];
@@ -119,6 +122,7 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
+//Automated test: true
 (() => {
   const path = '/getNotebook';
   const props = ['user_hash', 'notebook_hash'];
@@ -130,6 +134,8 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
 })();
 
 // writing
+
+//Automated test: true
 (() => {
   const path = '/addNotebook';
   const props = ['user_hash', 'name'];
@@ -140,6 +146,7 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
+//Automated test: true
 (() => {
   // const {user_hash, notebook_hash, entry} = req.body;
   // const {type} = entry;
@@ -166,6 +173,7 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
   // });
 })();
 
+//Automated test: false
 (() => {
   const path = '/cosignEntry';
   const props = ['user_hash', 'notebook_hash', 'entry_hash'];
@@ -178,6 +186,8 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
 
 
 // reading
+
+//Automated test: true
 (() => {
   const path = '/getEntries';
   const props = ['user_hash', 'notebook_hash'];
@@ -188,6 +198,7 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
+//Automated test: true
 (() => {
   const path = '/getEntry';
   const props = ['user_hash', 'notebook_hash', 'entry_hash'];
@@ -246,6 +257,7 @@ router.post('/searchByText', async (req, res) => {
   });
 });
 
+//Automated test: false
 router.post('/searchNotebooksByDate', async (req, res) => {
   const {user_hash, mindate, maxdate} = req.body;
 
@@ -295,6 +307,7 @@ router.post('/searchNotebooksByDate', async (req, res) => {
   });
 });
 
+//Automated test: false
 router.post('/makePDF', async (req, res) => {
   const {notebook_hash} = req.body;
 
@@ -327,6 +340,7 @@ router.post('/makePDF', async (req, res) => {
   // old: await db.ref(`words/${userId}`).once('value');
 });
 
+//Automated test: true
 (() => {
   const path = '/managerView';
   const props = ['user_hash'];
@@ -337,6 +351,7 @@ router.post('/makePDF', async (req, res) => {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
+//Automated test: true
 (() => {
   const path = '/getBackup';
   const props = ['user_hash', 'notebook_hash'];
@@ -347,6 +362,7 @@ router.post('/makePDF', async (req, res) => {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
+//Automated test: true
 (() => {
   const path = '/feedback';
   const props = ['message'];
@@ -357,6 +373,7 @@ router.post('/makePDF', async (req, res) => {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
+//Automated test: true
 (() => {
   const path = '/setNotebookPermissions';
   const props = ['user_hash', 'notebook_hash']; // I assume we also need what we are changing the permissions to?
@@ -367,6 +384,7 @@ router.post('/makePDF', async (req, res) => {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
+//Automated test: true
 (() => {
   const path = '/getLink';
   const props = ['user_hash', 'notebook_hash'];
@@ -377,6 +395,7 @@ router.post('/makePDF', async (req, res) => {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
+//Automated test: true
 (() => {
   const path = '/format';
   const props = ['user_hash', 'notebook_hash'];
@@ -388,6 +407,7 @@ router.post('/makePDF', async (req, res) => {
 })();
 
 
+//Automated test: true, needs work
 router.get('/notebook/:notebook_hash', async (req, res) => {
   const {notebook_hash} = req.params;
 
@@ -420,6 +440,7 @@ router.get('/pdfdisp/:pdfname', (req, res) => {
   res.download(file); // Set disposition and send it.
 });
 
+//Automated test: false
 (() => {
   const path = '/getCompanyUsers';
   const props = ['user_hash'];
@@ -430,6 +451,7 @@ router.get('/pdfdisp/:pdfname', (req, res) => {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
+//Automated test: false
 (() => {
   const path = '/getCompanyUsersPermission';
   const props = ['user_hash', 'notebook_hash'];
