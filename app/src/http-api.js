@@ -209,7 +209,7 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
-//Automated test: false
+//Automated test: true
 // might need to filter/parse the data returned from this
 router.post('/searchByText', async (req, res) => {
   const {user_hash, text} = req.body;
