@@ -248,7 +248,7 @@ module.exports = {
         entry_update.tags = entry_update.tags || [];
         updates[`/NotebookList/${notebook_hash}/data_entries/${entry_hash}`] = entry_update;
 
-        for (var i = 0; i < tags.length; i++) {
+        for (let i = 0; i < tags.length; i++) {
           const tag = tags[i];
           updates[`/NotebookList/${notebook_hash}/tags/${tag}/${entry_hash}`] = true;
         }

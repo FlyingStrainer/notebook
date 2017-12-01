@@ -14,12 +14,12 @@ module.exports = {
 
   genPDF(entries, pdfName, location) {
     const doc = new PDFDocument();
-    var dir = './genPDFs';
-    
-    if (!fs.existsSync(dir)){
-        fs.mkdirSync(dir);
+    const dir = './genPDFs';
+
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir);
     }
-  
+
 
     // Pipe its output somewhere, like to a file or HTTP response
     // See below for browser usage
