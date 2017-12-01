@@ -408,7 +408,7 @@ router.post('/makePDF', async (req, res) => {
 // Automated test: true
 (() => {
   const path = '/format';
-  const props = ['user_hash', 'notebook_hash'];
+  const props = ['user_hash', 'notebook_hash', 'settings'];
   const utilFunc = 'format'; // TODO
   const thenHandler = () => {};
   const allowedErrors = ['Failed to format'];
@@ -416,6 +416,16 @@ router.post('/makePDF', async (req, res) => {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
+// Automated test: false
+(() => {
+  const path = '/formatAll';
+  const props = ['user_hash', 'settings'];
+  const utilFunc = 'formatAll'; // TODO
+  const thenHandler = () => {};
+  const allowedErrors = ['Failed to format'];
+
+  addRoute(path, props, utilFunc, thenHandler, allowedErrors);
+})();
 
 // Automated test: true, needs work
 router.get('/notebook/:notebook_hash', async (req, res) => {
