@@ -206,19 +206,35 @@ api/searchByText POST // Search for entry using text
 
 body:
 {
-
-	"user_hash" : "",
-        "notebook_hash" : "", //Optional, limits scope of search to this notebook
-        "entry_hash" : "", // Optional, limits scope of search to this entry
-	"text" : ""
+    "user_hash" : "",
+    "notebook_hash" : "", //Optional, limits scope of search to this notebook
+    "entry_hash" : "", // Optional, limits scope of search to this entry
+    "text" : ""
 }
 
 response:
 {
-	"user_hash" : "",
-	"notebook_hash" : "",
-	"entry_hash" : "",
-	//Text location in entry?
+    "user_hash": "-L-DuZxPXbzHWau5Fh8B",
+    "results": [
+        {
+            "notebook": "-L-DvOL5t4i8u7ErdmES",
+            "entries": [
+                "1512080455886-L-E0AXxGfk9NWpd0Ngg"
+            ]
+        },
+        {
+            "notebook": "-L-DvZ7yNf16IrpXe0r1",
+            "entries": [
+                "1512092436135-L-EisPJrl6bQKCHcIni"
+            ]
+        },
+        {
+            "notebook": "-L-Dv9UDBRJaToBQOiwT",
+            "entries": [
+                "1512080411226-L-E0-d8o4Q0asuv6ZCt"
+            ]
+        }
+    ]
 }
 
 api/feedback
