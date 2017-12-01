@@ -344,7 +344,7 @@ module.exports = {
   },
 
   restoreFromLocal(notebook_hash) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(((resolve, reject) => {
       let backup;
       try {
         backup = fs.readFileSync(`${__dirname}/../backups/${notebook_hash}`);
@@ -355,7 +355,7 @@ module.exports = {
 
       console.log(backup);
       resolve(backup);
-    });
+    }));
   },
 
   makeLocalBackup(notebook_hash) {
