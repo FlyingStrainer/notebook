@@ -242,6 +242,10 @@ router.post('/searchByText', async (req, res) => {
       // firebaseUtil.checkNotebookPermission(user_hash, notebooksArr[i], "read").then((data) => {
       // });
 
+      if (responses.hits[i].data_entries === undefined || responses.hits[i].data_entries === null) {
+        continue;
+      }
+      
       for (let j = 0; j < Object.values(responses.hits[i].data_entries).length; j++) {
         const dataentry = Object.values(responses.hits[i].data_entries)[j];
         // console.log("OUT:" + dataentry);
