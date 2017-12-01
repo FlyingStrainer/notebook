@@ -32,20 +32,20 @@ module.exports = {
 
     //inline: image before text
     for (let i = 0; i < entries.length; i++) {
-      
+
       doc.text(entries[i].date_created, 100, 200);
       doc.text(entries[i].author, 100, 220);
       if (inline) doc.text(entries[i].text, 330, 350);
       if (!inline) doc.text(entries[i].text, 100, 505); //text first
       if (entries[i].imgpath !== undefined) {
         const buf = new Buffer(entries[i].imgpath.replace(/^data:image\/png;base64,/, ''), 'base64');
-        if (inline) 
+        if (inline)
           doc.image(buf, 100, 250, {fit: [200, 200]});
         else
           doc.image(buf, 100, 250, {fit: [200, 200]});
       }
-         
-      
+
+
       doc.addPage();
     }
 
@@ -57,6 +57,7 @@ module.exports = {
       // copy file to firebase
     }
   },
+};
 
   /* saveTestImage(base64Img) {
     const base64Data = base64Img.replace(/^data:image\/png;base64,/, '');
@@ -71,7 +72,7 @@ module.exports = {
         console.log('success');
       },
     );
-  }, 
+  },
 };
 // /date -> text -> image -> caption
 // const pdfnamein = 'testfile';

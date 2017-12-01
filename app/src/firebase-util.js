@@ -367,7 +367,8 @@ module.exports = {
 
         admin.database().ref().update(updates).then(() => {
           resolve(notebook);
-        }).catch(reject);
+        })
+          .catch(reject);
       }).catch(reject);
     });
   },
@@ -468,9 +469,7 @@ module.exports = {
       }
     }
 
-    return admin.database().ref().update(updates).then(() => {
-      return {};
-    });
+    return admin.database().ref().update(updates).then(() => ({}));
   },
 
   getLink(user_hash, notebook_hash) {
@@ -498,9 +497,7 @@ module.exports = {
     const updates = {};
     updates[`/NotebookList/${notebook_hash}/format`] = format;
 
-    return admin.database().ref().update(updates).then(() => {
-      return {};
-    });
+    return admin.database().ref().update(updates).then(() => ({}));
   },
 
   formatAll(user_hash, format) {
