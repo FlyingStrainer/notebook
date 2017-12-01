@@ -320,7 +320,7 @@ module.exports = {
           return snap.val();
         }
 
-        throw new Error('can\'t find notebook');
+        return Promise.reject(new Error('can\'t find notebook'));
       });
   },
 
