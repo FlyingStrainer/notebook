@@ -340,6 +340,21 @@ module.exports = {
     });
   },
 
+  makeLocalBackup(notebook_hash) {
+    return module.exports.getBackup(notebook_hash).then((backup) => {
+      fs.writeFile(`${__dirname}/../backups/${notebook_hash}`, backup, (err) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+
+        console.log(`The backup for ${notebook_hash} was saved!`);
+      });
+
+      return backup;
+    });
+  },
+
   getBackup(notebook_hash) {
     return admin.database().ref(`/NotebookList/${notebook_hash}/`).once('value').then((snap) => {
       const notebook = snap.val();
@@ -348,15 +363,6 @@ module.exports = {
       }
 
       const backup = CJSON.stringify(notebook);
-
-      fs.writeFile(`/backups/${notebook_hash}`, backup, (err) => {
-        if (err) {
-          console.log(err);
-          return;
-        }
-
-        console.log(`The backup for ${notebook_hash} was saved!`);
-      });
 
       return backup;
     });

@@ -365,7 +365,7 @@ router.post('/makePDF', async (req, res) => {
 (() => {
   const path = '/getBackup';
   const props = ['notebook_hash'];
-  const utilFunc = 'getBackup';
+  const utilFunc = 'makeLocalBackup';
   const thenHandler = () => {};
   const allowedErrors = ['Backup for this notebook does not exist'];
 
