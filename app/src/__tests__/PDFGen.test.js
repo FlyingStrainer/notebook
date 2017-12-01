@@ -19,7 +19,7 @@ PDFGen.init(admin);
 
 it('tests', () => {
   //const testImagePath = '../test-util/testImage.jpg';
-  //const fname = 'pdfgenout.test';
+  const fname = 'pdfgenout.test';
   const entries = [{
     date_created: '11-5-2017',
     text: 'text1',
@@ -33,7 +33,7 @@ it('tests', () => {
   }];
   PDFGen.genPDF(entries, fname);
   expect(() => {
-    fs.unlinkSync(`${fname}.pdf`);
+    fs.unlinkSync(`./genPDFs/${fname}.pdf`);
   }).not.toThrow();
 });
 
