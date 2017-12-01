@@ -30,13 +30,14 @@ module.exports = {
     //   .fontSize(25)
     //   .text('Some text with an embedded font!', 100, 100)
     for (let i = 0; i < entries.length; i++) {
-      const buf;
-      if (entries[i].imgpath !== undefined) 
-          buf = new Buffer(entries[i].imgpath.replace(/^data:image\/png;base64,/, ''), 'base64');
+      
       doc.text(entries[i].date_created, 100, 200);
       doc.text(entries[i].author, 100, 220);
-      if (entries[i].imgpath !== undefined)
-         doc.image(buf, 100, 300, {fit: [200, 200]});
+      if (entries[i].imgpath !== undefined) {
+        const buf = new Buffer(entries[i].imgpath.replace(/^data:image\/png;base64,/, ''), 'base64');
+        doc.image(buf, 100, 300, {fit: [200, 200]});
+      }
+         
       doc.text(entries[i].text, 100, 502);
       doc.addPage();
     }
