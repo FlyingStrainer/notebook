@@ -168,7 +168,7 @@ module.exports = {
   saveNotebook(user_hash, notebook_name) {
     return new Promise(((resolve, reject) => {
       const updateAll = (user_data, company_data) => {
-        const {company_name, admin_hash} = company_data;
+        const {company_name, admin_hash, format} = company_data;
 
         const updates = {};
 
@@ -187,6 +187,9 @@ module.exports = {
           managers,
           isPublic,
         });
+
+        // { image : "inline"} { image : "below"}
+        notebook_update.format = format || { inline: 'below' };
         updates[`/NotebookList/${notebook_hash}`] = notebook_update;
 
         // company
