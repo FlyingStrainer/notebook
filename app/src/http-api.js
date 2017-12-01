@@ -295,7 +295,7 @@ router.post('/searchByText', async (req, res) => {
 
 // Automated test: true
 router.post('/searchNotebooksByDate', async (req, res) => {
-  const {user_hash, mindate, maxdate} = req.body;
+  const {user_hash, mindate, maxdate, notebook_hash} = req.body;
 
   if (!(user_hash)) {
     console.log('/searchByDate bad', req.body);
@@ -340,6 +340,14 @@ router.post('/searchNotebooksByDate', async (req, res) => {
     }
 
     res.setHeader('Content-Type', 'application/json');
+    for (let k = 0; k< returnArr.length; k++) {
+      if (notebook_hash!==undefined) {
+        if (notebook_hash!==returnArr[k].notebook) {
+          returnArr.splice(k, 1);
+          k--;
+        }
+      }
+    }
     res.status(200).send(JSON.stringify({user_hash, results: returnArr}));
   });
 });
