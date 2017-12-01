@@ -16,7 +16,7 @@ class Notebook {
    *   managerList
    */
   constructor(settings) {
-    const date_created = new Date();
+    const date_created = new Date().getTime();
 
     Object.assign(this, {
       date_modified: date_created,

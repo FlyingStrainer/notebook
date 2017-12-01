@@ -231,8 +231,8 @@ module.exports = {
         const {email} = user_data;
 
         // notebook
-        const now = new Date();
-        const entry_hash = now.getTime() + admin.database().ref('NotebookList').push().key;
+        const now = new Date().getTime();
+        const entry_hash = admin.database().ref('NotebookList').push().key;
 
         const entry_update = {
           entry_hash,
