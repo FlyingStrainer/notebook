@@ -167,10 +167,13 @@ module.exports = {
         managers[user_hash] = true;
         managers[admin_hash] = true;
 
+	const isPublic = false;
+
         const notebook_update = new Notebook({
           notebook_hash,
           name: notebook_name,
           managers,
+	  isPublic,
         });
         updates[`/NotebookList/${notebook_hash}`] = notebook_update;
 
@@ -356,7 +359,7 @@ module.exports = {
         }
 
         const updates = {};
-        updates[`/NotebookList/${notebook_hash}/public`] = true;
+        updates[`/NotebookList/${notebook_hash}/isPublic`] = true;
 
         const p = admin.database().ref().update(updates).then(() => {
           const url = `http://endor-vm1.cs.purdue.edu/notebook/${notebook_hash}`;
