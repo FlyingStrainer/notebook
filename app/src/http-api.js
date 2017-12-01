@@ -128,7 +128,7 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
   const props = ['user_hash', 'notebook_hash'];
   const utilFunc = 'getNotebook';
   const thenHandler = () => {};
-  const allowedErrors = ['notebook not found'];
+  const allowedErrors = ['Notebook not found'];
 
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
@@ -361,7 +361,7 @@ router.post('/makePDF', async (req, res) => {
 (() => {
   const path = '/getBackup';
   const props = ['user_hash', 'notebook_hash'];
-  const utilFunc = 'getNotebook'; // TODO is this the right util function??
+  const utilFunc = 'getBackup';
   const thenHandler = () => {};
   const allowedErrors = ['Backup for this notebook does not exist'];
 
@@ -417,7 +417,7 @@ router.post('/makePDF', async (req, res) => {
 router.get('/notebook/:notebook_hash', async (req, res) => {
   const {notebook_hash} = req.params;
 
-  const allowedErrors = ['notebook not found', 'Notebook not public'];
+  const allowedErrors = ['Notebook not found', 'Notebook not public'];
 
   firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
     if (!notebook.isPublic) {

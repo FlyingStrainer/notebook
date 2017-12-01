@@ -17,6 +17,7 @@ const serviceAccount = require('../serviceAccountKey.json');
 const Notebook = require('./objects/Notebook');
 const pdfgen = require('./PDFGen.js');
 const querydb = require('./querydb.js');
+const CJSON = require('./objects/CJSON.js');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -318,14 +319,26 @@ module.exports = {
 
   getNotebook(user_hash, notebook_hash) {
     // NOTE does not check for permission
-    return admin.database().ref(`/NotebookList/${notebook_hash}/`).once('value')
-      .then((snap) => {
-        if (snap.val() !== null) {
-          return snap.val();
-        }
+    return admin.database().ref(`/NotebookList/${notebook_hash}/`).once('value').then((snap) => {
+      const notebook = snap.val();
+      if (!notebook) {
+        return Promise.reject(new Error('Notebook not found'));
+      }
 
-        return Promise.reject(new Error('can\'t find notebook'));
-      });
+      return notebook;
+    });
+  },
+
+  getBackup(user_hash, notebook_hash) {
+    // NOTE does not check for permission
+    return admin.database().ref(`/NotebookList/${notebook_hash}/`).once('value').then((snap) => {
+      const notebook = snap.val();
+      if (!notebook) {
+        return Promise.reject(new Error('Notebook not found'));
+      }
+
+      return CJSON.stringify(notebook);
+    });
   },
 
   feedback(message) {
@@ -374,7 +387,7 @@ module.exports = {
       .then((snap) => {
         const notebook = snap.val();
         if (!notebook) {
-          return Promise.reject(new Error('can\'t find notebook'));
+          return Promise.reject(new Error('Notebook not found'));
         }
 
         const updates = {};
