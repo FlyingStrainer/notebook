@@ -435,7 +435,7 @@ router.get('/notebook/:notebook_hash', async (req, res) => {
       console.log(`${req.path} server failed:\t`, err.message);
     }
 
-    res.status(404).send('Access denied');
+    res.status(404).send('404 This link is invalid.');
   });
 });
 
