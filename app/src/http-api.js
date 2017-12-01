@@ -416,7 +416,7 @@ router.post('/makePDF', async (req, res) => {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
-// Automated test: false
+// Automated test: true
 (() => {
   const path = '/formatAll';
   const props = ['user_hash', 'settings'];
@@ -524,7 +524,7 @@ router.get('/pdfdisp/:pdfname', (req, res) => {
   addRoute(path, props, utilFunc, thenHandler, allowedErrors);
 })();
 
-// Automated test: false
+// Automated test: true
 (() => {
   const path = '/restoreFromLocal';
   const props = ['notebook_hash'];
