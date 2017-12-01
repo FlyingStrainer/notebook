@@ -1,42 +1,42 @@
 api/login
 body:
 {
-	"email": "",
-	"password": ""
+    "email": "",
+    "password": ""
 }
 response:
 {
-	"user_hash": ""
+    "user_hash": ""
 }
 
 
 api/register
 body:
 {
-	"email": "",
-	"password": "",
-	"company_name:: ""
+    "email": "",
+    "password": "",
+    "company_name:: ""
 }
 
 
 api/user
 body:
 {
-	"user_hash": ""
+    "user_hash": ""
 }
 response:
 {
-	"user_hash": "",
-	"company_name": "",
-	"notebooks": [
-		"notebook_hash",
-		"notebook_hash",
-		...
-	],
-	"roles": [
-		<role>,
-		<role>
-	]
+    "user_hash": "",
+    "company_name": "",
+    "notebooks": [
+        "notebook_hash",
+        "notebook_hash",
+        ...
+    ],
+    "roles": [
+        <role>,
+        <role>
+    ]
 }
 
 role: "user", "manager"
@@ -45,54 +45,54 @@ role: "user", "manager"
 api/getNotebooks GET //Get notebooks for user
 body:
 {
-	"user_hash": ""
+    "user_hash": ""
 }
 response:
 {
-	"user_hash": "",
-	"notebooks":
-	[
-		"notebook_hash",
-		"notebook_hash",
-		...
-	]
+    "user_hash": "",
+    "notebooks":
+    [
+        "notebook_hash",
+        "notebook_hash",
+        ...
+    ]
 }
 
 
 api/getNotebook
 body:
 {
-	"user_hash": "",
-	"notebook_hash": ""
+    "user_hash": "",
+    "notebook_hash": ""
 }
 response:
 {
-	"notebook_hash": "",
-	"name": "",
-	"managers" [
-		"user_hash",
-		"user_hash",
-		...
-	],
-	"date_modified": Date,
-	"date_created": Date,
-	tags: [
-		"tag",
-		"tag",
-		...
-	]
-	"permissions": {
-		"read": true,
-		"write": true
-	}
+    "notebook_hash": "",
+    "name": "",
+    "managers" [
+        "user_hash",
+        "user_hash",
+        ...
+    ],
+    "date_modified": Date,
+    "date_created": Date,
+    tags: [
+        "tag",
+        "tag",
+        ...
+    ]
+    "permissions": {
+        "read": true,
+        "write": true
+    }
 }
 
 
 api/addNotebook POST //Creates new notebook
 body:
 {
-	"user_hash": "",
-	"name": ""
+    "user_hash": "",
+    "name": ""
 }
 {
     "dateModified": "2017-11-30T19:34:33.257Z",
@@ -113,12 +113,12 @@ body:
     "user_hash": "-L-9i0Xmynq_Xsao14rd",
     "notebook_hash": "-L-9iDACSg1i79u3QJF7",
     "entry": {
-    	"text": "Hello World!",
+        "text": "Hello World!",
 
-	"image": null,
-	"caption": null,
+    "image": null,
+    "caption": null,
 
-	"tags": []
+    "tags": []
     }
 }
 response:
@@ -153,20 +153,20 @@ response:
 api/getEntry
 body:
 {
-	"user_hash": "",
-	"notebook_hash": "",
-	"entry_hash": ""
+    "user_hash": "",
+    "notebook_hash": "",
+    "entry_hash": ""
 }
 reponse:
 {
-	entry_hash
-	author: email
-	cosigned_by
-	date_modified
-	date_created
-	tags: []
-	type
-	text
+    entry_hash
+    author: email
+    cosigned_by
+    date_modified
+    date_created
+    tags: []
+    type
+    text
 }
 
 
@@ -174,9 +174,9 @@ reponse:
 api/cosignEntry POST //Cosign entry
 body:
 {
-	"user_hash": "",	// User_hash of cosigner, also used to authenticate
-	"notebook_hash": "",
-	"entry_hash": ""	// Unique id of entry being cosigned
+    "user_hash": "",    // User_hash of cosigner, also used to authenticate
+    "notebook_hash": "",
+    "entry_hash": ""    // Unique id of entry being cosigned
 }
 no response
 
@@ -187,17 +187,17 @@ api/searchByTimestamp POST // Search for entry using timestamp
 
 body:
 {
-	"user_hash": "",
+    "user_hash": "",
         "notebook_hash" : "", //Optional, limits scope of search to this notebook
         "entry_hash" : "", // Optional, limits scope of search to this entry
-	"date": Date()
+    "date": Date()
 }
 
 response:
 {
-	"user_hash" : "",
-	"notebook_hash" : "",
-	"entry_hash" : "",
+    "user_hash" : "",
+    "notebook_hash" : "",
+    "entry_hash" : "",
 }
 
 
@@ -255,4 +255,20 @@ body:
 response:
 {
     "url": ""
+}
+
+api/getCompanyUsersPermission POST
+body:
+{
+    "user_hash": "-L-DuZxPXbzHWau5Fh8B",
+    "notebook_hash": "-L-Dv9UDBRJaToBQOiwT"
+}
+response:
+{
+    "-L-DuZxPXbzHWau5Fh8B": {
+        "manager": true,
+        "read": true,
+        "write": true
+    },
+    "-L-DumeR9RJDDPpZQcnz": false
 }
