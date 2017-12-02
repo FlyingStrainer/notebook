@@ -1,8 +1,6 @@
 // http API Test.
 // Tests to see if all API Calls work from a http GET/POST level
 
-// TODO: Make sure all API calls are included, verify that they all work
-
 const request = require('supertest');
 const api = require('../http-api');
 
@@ -48,7 +46,6 @@ describe('POST /login', () => {
 
 describe('POST /user', () => {
   it('should return json', async () => {
-    // TODO
     const req = {
       user_hash: '--user-key-1',
     };

@@ -201,13 +201,13 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
 // might need to filter/parse the data returned from this
 router.post('/searchByText', async (req, res) => {
   const {user_hash, text, notebook_hash} = req.body;
-  
+
     if (!(user_hash)) {
       console.log('/searchText bad', req.body);
       res.sendStatus(400);
       return;
     }
-  
+
     if (firebaseUtil.isTest) {
       res.status(204).send();
       return;
@@ -215,25 +215,25 @@ router.post('/searchByText', async (req, res) => {
 
     var returnArr = [];
     var s = "fdsaf";
-  
-    firebaseUtil.getNotebooks(user_hash).then((responses) => { 
+
+    firebaseUtil.getNotebooks(user_hash).then((responses) => {
       //console.log(responses);
-     
+
       var numNotebooks = responses.notebook_list.length;
       console.log(numNotebooks);
-      
+
       for (let i = 0; i < numNotebooks; i++) {
-        
+
         var currNb = responses.notebook_list[i];
         console.log(currNb);
-      
-        
+
+
         firebaseUtil.getNotebook('admin', currNb).then((notebook) => {
           //console.log(Object.keys(notebook.data_entries).length);
           var numEntries = Object.keys(notebook.data_entries).length;
           var currResult = {notebook: "null", entries: []};
           for (let j = 0; j<numEntries; j++ ){
-            
+
             const dataentry = Object.values(notebook.data_entries)[j];
             var searchText = dataentry.text.toLowerCase();
             var searchFor = text.toLowerCase();
@@ -242,7 +242,7 @@ router.post('/searchByText', async (req, res) => {
               if (currResult.notebook === "null") currResult.notebook = notebook.notebook_hash;
               currResult.entries.push(dataentry.entry_hash);
             }
-            
+
             if (j === numEntries - 1) {
               if (currResult.notebook !== "null") returnArr.push(currResult);
               if (i == numNotebooks - 1) {
@@ -251,16 +251,16 @@ router.post('/searchByText', async (req, res) => {
               }
             }
 
-              
-            
+
+
             console.log("------------\n" + JSON.stringify(returnArr) + "\n**" + i + "::" + j + "\n------------\n");
-            
+
           }
         });
       }
-      
 
-      
+
+
     });
 
     console.log(returnArr);
@@ -411,7 +411,7 @@ router.post('/makePDF', async (req, res) => {
 (() => {
   const path = '/managerView';
   const props = ['user_hash'];
-  const utilFunc = 'managerView'; // TODO
+  const utilFunc = 'managerView';
   const thenHandler = () => {};
   const allowedErrors = ['Esclation to manager view failed. Do you have permission?'];
 
