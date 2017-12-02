@@ -161,9 +161,9 @@ module.exports = {
   },
 
   // NOTE not used in frontend
-  // getNotebooks(user_hash) {
-  //   return module.exports.checkUser(user_hash).then(user => ({notebook_list: user.notebook_list}));
-  // },
+   getNotebooks(user_hash) {
+     return module.exports.checkUser(user_hash).then(user => ({notebook_list: user.notebook_list}));
+   },
 
   saveNotebook(user_hash, notebook_name) {
     return new Promise(((resolve, reject) => {

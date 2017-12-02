@@ -56,12 +56,12 @@ it('tests', () => {
   const entries = [{
     date_created: '11-5-2017',
     text: 'text1',
-    imgpath: testImage,
+    image: testImage,
     author: 'Jane Doe',
   }, {
     date_created: '11-3-2017',
     text: 'text2',
-    imgpath: testImage,
+    image: testImage,
     author: 'John Does',
   }];
   PDFGen.genPDF(entries, fname, 'server', true);
