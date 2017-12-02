@@ -201,55 +201,72 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
 // might need to filter/parse the data returned from this
 router.post('/searchByText', async (req, res) => {
   const {user_hash, text, notebook_hash} = req.body;
+  
+    if (!(user_hash)) {
+      console.log('/searchText bad', req.body);
+      res.sendStatus(400);
+      return;
+    }
+  
+    if (firebaseUtil.isTest) {
+      res.status(204).send();
+      return;
+    }
 
-  if (!(user_hash)) {
-    console.log('/searchText bad', req.body);
-    res.sendStatus(400);
-    return;
-  }
+    var returnArr = [];
+    var s = "fdsaf";
+  
+    firebaseUtil.getNotebooks(user_hash).then((responses) => { 
+      //console.log(responses);
+     
+      var numNotebooks = responses.notebook_list.length;
+      console.log(numNotebooks);
+      
+      for (let i = 0; i < numNotebooks; i++) {
+        
+        var currNb = responses.notebook_list[i];
+        console.log(currNb);
+      
+        
+        firebaseUtil.getNotebook('admin', currNb).then((notebook) => {
+          //console.log(Object.keys(notebook.data_entries).length);
+          var numEntries = Object.keys(notebook.data_entries).length;
+          var currResult = {notebook: "null", entries: []};
+          for (let j = 0; j<numEntries; j++ ){
+            
+            const dataentry = Object.values(notebook.data_entries)[j];
+            var searchText = dataentry.text.toLowerCase();
+            var searchFor = text.toLowerCase();
+            console.log(searchFor + ' || ' + searchText + '|| ' + searchText.indexOf(searchFor));
+            if (searchText.indexOf(searchFor) !== -1) {
+              if (currResult.notebook === "null") currResult.notebook = notebook.notebook_hash;
+              currResult.entries.push(dataentry.entry_hash);
+            }
+            
+            if (j === numEntries - 1) {
+              if (currResult.notebook !== "null") returnArr.push(currResult);
+              if (i == numNotebooks - 1) {
+                res.setHeader('Content-Type', 'application/json');
+                res.status(200).send(JSON.stringify({user_hash, results: returnArr}));
+              }
+            }
 
-  if (firebaseUtil.isTest) {
-    res.status(204).send();
-    return;
-  }
-
-  /*
-  firebaseUtil.getNotebooks(user_hash).then((responses) => {
-    var retCount = 0;
-    const returnArr = [];
-    for (var i in responses.notebook_list) {
-    var currNb = responses.notebook_list[i];
-
-
-    console.log(currNb);
-    firebaseUtil.getNotebook('admin', currNb).then((notebook) => {
-      console.log(text);
-      //console.log(`TEST:${notebook.data_entries}`);
-      var currResult = {notebook: "null", entries: []};
-      console.log(notebook.data_entries === undefined);
-      if (notebook.data_entries === undefined) {} else{
-        console.log(Object.keys(notebook.data_entries).length);
-        for (var j = 0; j<Object.keys(notebook.data_entries).length; j++ ){
-          const dataentry = notebook.data_entries[j];
-          console.log("OUT:" + dataentry);
-          if (dataentry.text.indexOf(text) != -1) {
-            if (currResult.notebook === "null")
-              currResult.notebook = notebook.notebook_hash;
-            currResult.entries.push(dataentry.entry_hash);
+              
+            
+            console.log("------------\n" + JSON.stringify(returnArr) + "\n**" + i + "::" + j + "\n------------\n");
+            
           }
-
-          console.log(currResult);
-
-        }
+        });
       }
+      
 
-      if (currResult.notebook !== "null") returnArr.push(currResult);
-
+      
     });
-  }
-  */
 
-  querydb.indexEx.search({
+    console.log(returnArr);
+
+});
+  /*querydb.indexEx.search({
     query: text,
   }).then((responses) => {
     // Response from Algolia:
@@ -290,8 +307,7 @@ router.post('/searchByText', async (req, res) => {
     }
 
     res.status(200).send(JSON.stringify({user_hash, results: returnArr}));
-  });
-});
+  });*/
 
 // Automated test: true
 router.post('/searchNotebooksByDate', async (req, res) => {
