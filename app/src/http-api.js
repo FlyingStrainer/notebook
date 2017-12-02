@@ -220,8 +220,10 @@ router.post('/searchByText', async (req, res) => {
       //console.log(responses);
      
       var numNotebooks = responses.notebook_list.length;
+      console.log(numNotebooks);
       
-      for (var i in responses.notebook_list) {
+      for (let i = 0; i < numNotebooks; i++) {
+        
         var currNb = responses.notebook_list[i];
         console.log(currNb);
       
@@ -230,22 +232,28 @@ router.post('/searchByText', async (req, res) => {
           //console.log(Object.keys(notebook.data_entries).length);
           var numEntries = Object.keys(notebook.data_entries).length;
           var currResult = {notebook: "null", entries: []};
-          for (var j = 0; j<numEntries; j++ ){
+          for (let j = 0; j<numEntries; j++ ){
             
             const dataentry = Object.values(notebook.data_entries)[j];
             var searchText = dataentry.text.toLowerCase();
             var searchFor = text.toLowerCase();
             console.log(searchFor + ' || ' + searchText + '|| ' + searchText.indexOf(searchFor));
             if (searchText.indexOf(searchFor) !== -1) {
-              //console.log("hsh: " + notebook.notebook_hash);
-              //returnArr.push(notebook.notebook_hash + "**" + dataentry.entry_hash);
               if (currResult.notebook === "null") currResult.notebook = notebook.notebook_hash;
               currResult.entries.push(dataentry.entry_hash);
-              //returnArr[notebook.notebook_hash].entries.push(dataentry.entry_hash);
             }
-            //console.log(JSON.stringify(currResult) + "**" + i + "::" + j);
-            if (j == numEntries - 1 && currResult.notebook !== "null") returnArr.push(currResult);
-            //console.log("------------\n" + JSON.stringify(returnArr) + "\n**" + i + "::" + j + "\n------------\n");
+            
+            if (j === numEntries - 1) {
+              if (currResult.notebook !== "null") returnArr.push(currResult);
+              if (i == numNotebooks - 1) {
+                res.setHeader('Content-Type', 'application/json');
+                res.status(200).send(JSON.stringify({user_hash, results: returnArr}));
+              }
+            }
+
+              
+            
+            console.log("------------\n" + JSON.stringify(returnArr) + "\n**" + i + "::" + j + "\n------------\n");
             
           }
         });

@@ -16,7 +16,8 @@ module.exports = {
 
   init(myadmin) {
     firebaseAdmin = myadmin;
-    module.exports.resetAlgolia();
+    console.log('no algolia');
+    //module.exports.resetAlgolia();
   },
 
   resetAlgolia() {
