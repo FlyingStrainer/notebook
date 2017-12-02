@@ -374,7 +374,7 @@ router.post('/searchNotebooksByDate', async (req, res) => {
 });
 
 // Automated test: true
-router.post('/makePDF', async (req, res) => {
+router.post(['/makePDF', '/sharePDF'], async (req, res) => {
   const {notebook_hash} = req.body;
 
   if (!(notebook_hash)) {
@@ -390,6 +390,8 @@ router.post('/makePDF', async (req, res) => {
   // `${req.protocol}://${req.get('host')}${req.path}/${pdfname}.pdf`}
   // res.status(200).send(JSON.stringify({url: req.protocol}));
   // console.log(notebook_hash);
+
+  // TODO link to /notebook/:notebook_hash
 
   firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
     console.log(`TEST:${notebook.data_entries}`);
@@ -507,6 +509,7 @@ router.get('/notebook/:notebook_hash', async (req, res) => {
 
   const allowedErrors = ['Notebook not found', 'Notebook not public'];
 
+  // TODO get pdf instead of json
   firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
     if (!notebook.isPublic) {
       return Promise.reject(new Error('Notebook not public'));
@@ -514,6 +517,62 @@ router.get('/notebook/:notebook_hash', async (req, res) => {
 
     res.setHeader('Content-Type', 'application/json');
     res.status(200).send(JSON.stringify(notebook, null, 4));
+
+    return Promise.resolve();
+  }).catch((err) => {
+    if (allowedErrors.includes(err.message)) {
+      console.log(`${req.path} bad:\t\t\t`, err.message);
+    } else {
+      console.log(`${req.path} server failed:\t`, err.message);
+    }
+
+    res.status(404).send('404 This link is invalid.');
+  });
+});
+
+// Automated test: don't make test
+router.get('/icon/:notebook_hash', async (req, res) => {
+  const {notebook_hash} = req.params;
+
+  if (firebaseUtil.isTest) {
+    res.status(204).send();
+    return;
+  }
+
+  const allowedErrors = ['Notebook not found'];
+
+  // TODO get image of first page of pdf
+  firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
+    // res.setHeader('Content-Type', 'application/json');
+    // res.status(200).send(JSON.stringify(notebook, null, 4));
+
+    return Promise.resolve();
+  }).catch((err) => {
+    if (allowedErrors.includes(err.message)) {
+      console.log(`${req.path} bad:\t\t\t`, err.message);
+    } else {
+      console.log(`${req.path} server failed:\t`, err.message);
+    }
+
+    res.status(404).send('404 This link is invalid.');
+  });
+});
+
+// Automated test: don't make test
+router.get('/icon/:notebook_hash/:entry_hash', async (req, res) => {
+  const {notebook_hash, entry_hash} = req.params;
+
+  if (firebaseUtil.isTest) {
+    res.status(204).send();
+    return;
+  }
+
+  const allowedErrors = ['Notebook not found'];
+
+  // TODO get image of entry
+  firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
+    // res.setHeader('Content-Type', 'application/json');
+    // res.status(200).send(JSON.stringify(notebook, null, 4));
 
     return Promise.resolve();
   }).catch((err) => {
