@@ -214,100 +214,59 @@ router.post('/searchByText', async (req, res) => {
     }
 
     var returnArr = [];
-    var s = "fdsaf";
-  
-    firebaseUtil.getNotebooks(user_hash).then((responses) => { 
-      //console.log(responses);
-     
+    
+
+    firebaseUtil.getNotebooks(user_hash).then((responses) => {
       var numNotebooks = responses.notebook_list.length;
       console.log(numNotebooks);
       
+      if (notebook_hash !== undefined) {
+        if (responses.notebook_list.includes(notebook_hash))
+          numNotebooks = 1;
+        else {
+          res.sendStatus(400);
+          return;
+        }
+      }
       for (let i = 0; i < numNotebooks; i++) {
-        
         var currNb = responses.notebook_list[i];
+        if (notebook_hash !== undefined) currNb = notebook_hash;
         console.log(currNb);
-      
-        
         firebaseUtil.getNotebook('admin', currNb).then((notebook) => {
           //console.log(Object.keys(notebook.data_entries).length);
-          var numEntries = Object.keys(notebook.data_entries).length;
-          var currResult = {notebook: "null", entries: []};
-          for (let j = 0; j<numEntries; j++ ){
-            
-            const dataentry = Object.values(notebook.data_entries)[j];
-            var searchText = dataentry.text.toLowerCase();
-            var searchFor = text.toLowerCase();
-            console.log(searchFor + ' || ' + searchText + '|| ' + searchText.indexOf(searchFor));
-            if (searchText.indexOf(searchFor) !== -1) {
-              if (currResult.notebook === "null") currResult.notebook = notebook.notebook_hash;
-              currResult.entries.push(dataentry.entry_hash);
-            }
-            
-            if (j === numEntries - 1) {
-              if (currResult.notebook !== "null") returnArr.push(currResult);
-              if (i == numNotebooks - 1) {
-                res.setHeader('Content-Type', 'application/json');
-                res.status(200).send(JSON.stringify({user_hash, results: returnArr}));
-              }
-            }
-
+          if (notebook.data_entries !== undefined) {
+            var numEntries = Object.keys(notebook.data_entries).length;
+            var currResult = {notebook: "null", entries: []};
+            for (let j = 0; j<numEntries; j++ ){
               
-            
-            console.log("------------\n" + JSON.stringify(returnArr) + "\n**" + i + "::" + j + "\n------------\n");
-            
-          }
-        });
-      }
+              const dataentry = Object.values(notebook.data_entries)[j];
+              var searchText = dataentry.text.toLowerCase();
+              var searchFor = text.toLowerCase();
+              console.log(searchFor + ' || ' + searchText + '|| ' + searchText.indexOf(searchFor));
+              if (searchText.indexOf(searchFor) !== -1) {
+                if (currResult.notebook === "null") currResult.notebook = notebook.notebook_hash;
+                currResult.entries.push(dataentry.entry_hash);
+              }
+              
+              if (j === numEntries - 1) {
+                if (currResult.notebook !== "null") returnArr.push(currResult);
+                if (i == numNotebooks - 1) {
+                  res.setHeader('Content-Type', 'application/json');
+                  res.status(200).send(JSON.stringify({user_hash, results: returnArr}));
+                }
+              }  
+            }
+        }
+      });
+    }
       
 
       
-    });
+  });
 
-    console.log(returnArr);
+  console.log(returnArr);
 
 });
-  /*querydb.indexEx.search({
-    query: text,
-  }).then((responses) => {
-    // Response from Algolia:
-    // https://www.algolia.com/doc/api-reference/api-methods/search/#response-format
-    // res.send(responses.hits);
-    const returnArr = [];
-    // console.log(responses.hits);
-    // var retCount = 0;
-    for (let i = 0; i < responses.hits.length; i++) {
-      // console.log(Object.values(responses.hits[i].data_entries));
-
-      console.log(notebook_hash);
-
-      returnArr[i] = {notebook: responses.hits[i].notebook_hash, entries: []};
-
-      if ((responses.hits[i].data_entries === undefined || responses.hits[i].data_entries === null)) {
-        continue;
-      }
-
-      for (let j = 0; j < Object.values(responses.hits[i].data_entries).length; j++) {
-        const dataentry = Object.values(responses.hits[i].data_entries)[j];
-        // console.log("OUT:" + JSON.stringify(dataentry));
-        if (dataentry.text.indexOf(text) !== -1 && returnArr[i] !== undefined) {
-          returnArr[i].entries.push(dataentry.entry_hash);
-        }
-      }
-    }
-
-    res.setHeader('Content-Type', 'application/json');
-
-    for (let k = 0; k < returnArr.length; k++) {
-      if (notebook_hash !== undefined) {
-        if (notebook_hash !== returnArr[k].notebook) {
-          returnArr.splice(k, 1);
-          k--;
-        }
-      }
-    }
-
-    res.status(200).send(JSON.stringify({user_hash, results: returnArr}));
-  });*/
 
 // Automated test: true
 router.post('/searchNotebooksByDate', async (req, res) => {

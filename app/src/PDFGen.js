@@ -75,7 +75,7 @@ module.exports = {
   },
 };
 // /date -> text -> image -> caption
-// const pdfnamein = 'testfile';
+// const pdfnamein = 'testfile';*/
 
 var testImage =  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAaQAAAGkCAIA' +
 'AADxLsZiAAAFvklEQVR4nOzXwW2kQBgG0V2LKMiRGBAxkCPnDsEHh+AZGk+9l0B' +
@@ -116,12 +116,12 @@ var testImage =  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAaQAAAGkCAIA' +
 const entries = [{
   date_created: '11-5-2017',
   text: 'text1',
-  imgpath: testImage,
+  image: testImage,
   author: 'Jane Doe',
 }, {
   date_created: '11-3-2017',
   text: 'text2',
-  imgpath: testImage,
+  image: testImage,
   author: 'John Does',
 }];
 module.exports.genPDF(entries, "t", "server", true);
@@ -131,4 +131,4 @@ module.exports.genPDF(entries, "f", "server", false);
 // var storageRef = admin.storage().bucket("t").ref();
 
 // var pdfref = storageRef.child(`${pdfnamein}.pdf`);
-// var pdffolderref = storageRef.child(`pdfs/${pdfnamein}.pdf`);*/
+// var pdffolderref = storageRef.child(`pdfs/${pdfnamein}.pdf`);
