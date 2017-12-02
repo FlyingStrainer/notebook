@@ -54,3 +54,31 @@ describe('GET /notebook/:notebook_hash', () => {
     expect(response.statusCode).toBe(404);
   });
 });
+
+describe('POST /restoreFromLocal', () => {
+  it('Pass user', async () => {
+    let response;
+    try {
+      const path = `/getBackup`;
+      const req = {
+        notebook_hash: mg.notebook.notebook_hash,
+      };
+      response = await request(api).post(path).send(req);
+    } catch (e) {
+      expect(e.message).toEqual('good');
+    }
+
+    try {
+      const path = `/restoreFromLocal`;
+      const req = {
+        notebook_hash: mg.notebook.notebook_hash,
+      };
+      response = await request(api).post(path).send(req);
+    } catch (e) {
+      expect(e.message).toEqual('good');
+    }
+
+    console.log(response.body);
+    expect(response.statusCode).toBe(404);
+  });
+});
