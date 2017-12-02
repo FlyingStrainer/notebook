@@ -37,8 +37,8 @@ module.exports = {
       doc.text(entries[i].author, 100, 220);
       if (inline) doc.text(entries[i].text, 330, 350);
       if (!inline) doc.text(entries[i].text, 100, 505); //text first
-      if (entries[i].imgpath !== undefined) {
-        const buf = new Buffer(entries[i].imgpath.replace(/^data:image\/png;base64,/, ''), 'base64');
+      if (entries[i].image !== undefined) {
+        const buf = new Buffer(entries[i].image.replace(/^data:image\/png;base64,/, ''), 'base64');
         if (inline)
           doc.image(buf, 100, 250, {fit: [200, 200]});
         else
