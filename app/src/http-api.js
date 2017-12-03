@@ -492,6 +492,10 @@ router.get('/notebook/:notebook_hash', async (req, res) => {
 // Automated test: don't make test
 router.get('/icon/:notebook_hash', async (req, res) => {
   const {notebook_hash} = req.params;
+  // use mehul's pdf call to generade a pdf of the notebook
+  // use pdf-image to convert the first page to a png of xxx resolution
+  // use sharp to crop page to square of AxA dimension.
+  // Return the path to the image or the image itself?
 
   if (firebaseUtil.isTest) {
     res.status(204).send();
