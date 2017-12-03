@@ -269,67 +269,75 @@ router.post('/searchByText', async (req, res) => {
 });
 
 // Automated test: true
-router.post('/searchNotebooksByDate', async (req, res) => {
-  const {
-    user_hash,
-    mindate,
-    maxdate,
-    notebook_hash,
-  } = req.body;
+router.post('/searchByDate', async (req, res) => {
+  const {user_hash, text, notebook_hash, mindate, maxdate} = req.body;
 
-  if (!(user_hash)) {
-    console.log('/searchByDate bad', req.body);
-    res.sendStatus(400);
-    return;
-  }
-
-  if (firebaseUtil.isTest) {
-    res.status(204).send();
-    return;
-  }
-
-
-  querydb.indexEx.search({
-    filters: `date_created <=${maxdate} AND date_created >=${mindate}`,
-  }).then((responses) => {
-    // Response from Algolia:
-    // https://www.algolia.com/doc/api-reference/api-methods/search/#response-format
-    // res.send(responses.hits);
-
-    const returnArr = [];
-    console.log(responses.hits);
-
-    for (let i = 0; i < responses.hits.length; i++) {
-      // console.log(Object.values(responses.hits[i].data_entries));
-
-
-      returnArr[i] = {notebook: responses.hits[i].notebook_hash, entries: []};
-
-      // firebaseUtil.checkNotebookPermission(user_hash, notebooksArr[i], "read").then((data) => {
-      // });
-      if (responses.hits[i].data_entries === undefined || responses.hits[i].data_entries === null) {
-        continue;
-      }
-      for (let j = 0; j < Object.values(responses.hits[i].data_entries).length; j++) {
-        const dataentry = Object.values(responses.hits[i].data_entries)[j];
-        // console.log("OUT:" + dataentry);
-        if (dataentry.date_modified <= maxdate && dataentry.date_modified >= mindate) {
-          returnArr[i].entries.push(dataentry.entry_hash);
-        }
-      }
+    if (!(user_hash)) {
+      console.log('/searchText bad', req.body);
+      res.sendStatus(400);
+      return;
     }
 
-    res.setHeader('Content-Type', 'application/json');
-    for (let k = 0; k < returnArr.length; k++) {
+    if (firebaseUtil.isTest) {
+      res.status(204).send();
+      return;
+    }
+
+    var returnArr = [];
+
+
+    firebaseUtil.getNotebooks(user_hash).then((responses) => {
+      var numNotebooks = responses.notebook_list.length;
+      console.log(numNotebooks);
+
       if (notebook_hash !== undefined) {
-        if (notebook_hash !== returnArr[k].notebook) {
-          returnArr.splice(k, 1);
-          k--;
+        if (responses.notebook_list.includes(notebook_hash))
+          numNotebooks = 1;
+        else {
+          res.sendStatus(400);
+          return;
         }
       }
+      for (let i = 0; i < numNotebooks; i++) {
+        var currNb = responses.notebook_list[i];
+        if (notebook_hash !== undefined) currNb = notebook_hash;
+        console.log(currNb);
+        firebaseUtil.getNotebook('admin', currNb).then((notebook) => {
+          //console.log(Object.keys(notebook.data_entries).length);
+          
+            var numEntries = Object.keys(notebook.data_entries).length;
+            var currResult = {notebook: null, entries: []};
+            if (notebook.date_created >= mindate && notebook.date_created <= maxdate) {
+              currResult = {notebook: notebook.notebook_hash, entries: []};
+            }
+           
+            for (let j = 0; j<numEntries; j++ ){
+             
+              const dataentry = Object.values(notebook.data_entries)[j];
+              if (dataentry.date_created >= mindate && dataentry.date_created <= maxdate) {
+                currResult = {notebook: notebook.notebook_hash, entries: []};
+                currResult.entries.push(dataentry.entry_hash);
+              }
+              //console.log("Num entr: " + numEntries + " " + j);
+              if (j === numEntries - 1) {
+                //console.log("here");
+                if (currResult.notebook != null) returnArr.push(currResult);
+                if (i == numNotebooks - 1) {
+                  res.setHeader('Content-Type', 'application/json');
+                  res.status(200).send(JSON.stringify({user_hash, results: returnArr}));
+                }
+              }
+            }
+        
+      });
     }
-    res.status(200).send(JSON.stringify({user_hash, results: returnArr}));
+
+
+
   });
+
+  console.log(returnArr);
+
 });
 
 // Automated test: true
@@ -492,6 +500,10 @@ router.get('/notebook/:notebook_hash', async (req, res) => {
 // Automated test: don't make test
 router.get('/icon/:notebook_hash', async (req, res) => {
   const {notebook_hash} = req.params;
+  // use mehul's pdf call to generade a pdf of the notebook
+  // use pdf-image to convert the first page to a png of xxx resolution
+  // use sharp to crop page to square of AxA dimension.
+  // Return the path to the image or the image itself?
 
   if (firebaseUtil.isTest) {
     res.status(204).send();

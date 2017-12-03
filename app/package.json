@@ -10,7 +10,8 @@
       "!src/websocket.js",
       "!src/firebase-util.js",
       "!src/objects/CJSON.js",
-      "!src/registerServiceWorker.js"
+      "!src/registerServiceWorker.js",
+      "!src/App.js"
     ]
   },
   "version": "0.1.0",
@@ -26,10 +27,12 @@
     "fs": "0.0.1-security",
     "lzwcompress": "^0.2.4",
     "nodemailer": "^4.1.2",
+    "pdf-image": "^1.1.0",
     "pdfkit": "^0.8.3",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-scripts": "1.0.13",
+    "sharp": "^0.18.4",
     "ws": "^3.2.0"
   },
   "scripts": {
@@ -58,7 +61,7 @@
     "superagent": "^3.8.0",
     "supertest": "^3.0.0"
   },
-   "repository": {
+  "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/FlyingStrainer/notebook.git"
   },
