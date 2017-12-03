@@ -315,13 +315,13 @@ router.post('/searchByDate', async (req, res) => {
              
               const dataentry = Object.values(notebook.data_entries)[j];
               if (dataentry.date_created >= mindate && dataentry.date_created <= maxdate) {
-                
+                currResult = {notebook: notebook.notebook_hash, entries: []};
                 currResult.entries.push(dataentry.entry_hash);
               }
-              console.log("Num entr: " + numEntries + " " + j);
+              //console.log("Num entr: " + numEntries + " " + j);
               if (j === numEntries - 1) {
-                console.log("here");
-                if (currResult.notebook !== "null") returnArr.push(currResult);
+                //console.log("here");
+                if (currResult.notebook != null) returnArr.push(currResult);
                 if (i == numNotebooks - 1) {
                   res.setHeader('Content-Type', 'application/json');
                   res.status(200).send(JSON.stringify({user_hash, results: returnArr}));
