@@ -183,13 +183,14 @@ no response
 errors: ['Entry not found', 'Entry already cosigned', 'User not found', 'Permission denied'];
 
 
-api/searchNotebooksByDate POST // Search for entry using timestamp
+api/searchByDate POST // Search for entry using timestamp
 
 body:
 {
     "user_hash": "",
     "mindate": 123,
     "maxdate": 456,
+    "notebook_hash": "fdafsd" //optional limits scope of search to this notebook
 }
 
 response:
@@ -225,7 +226,6 @@ body:
 {
     "user_hash" : "",
     "notebook_hash" : "", //Optional, limits scope of search to this notebook
-    "entry_hash" : "", // Optional, limits scope of search to this entry
     "text" : ""
 }
 
