@@ -264,6 +264,67 @@ router.post('/searchByText', async (req, res) => {
 
   console.log(returnArr);
 });
+router.post('/searchByTag', async (req, res) => {
+  const {user_hash, tag, notebook_hash} = req.body;
+
+  if (!(user_hash)) {
+    console.log('/searchByTag bad', req.body);
+    res.sendStatus(400);
+    return;
+  }
+
+  if (firebaseUtil.isTest) {
+    res.status(204).send();
+    return;
+  }
+
+  const returnArr = [];
+
+
+  firebaseUtil.getNotebooks(user_hash).then((responses) => {
+    let numNotebooks = responses.notebook_list.length;
+    console.log(numNotebooks);
+
+    if (notebook_hash !== undefined) {
+      if (responses.notebook_list.includes(notebook_hash)) { numNotebooks = 1; } else {
+        res.sendStatus(400);
+        return;
+      }
+    }
+    for (let i = 0; i < numNotebooks; i++) {
+      let currNb = responses.notebook_list[i];
+      if (notebook_hash !== undefined) currNb = notebook_hash;
+      console.log(currNb);
+      firebaseUtil.getNotebook('admin', currNb).then((notebook) => {
+        // console.log(Object.keys(notebook.data_entries).length);
+        if (notebook.data_entries !== undefined) {
+          const numEntries = Object.keys(notebook.data_entries).length;
+          const currResult = {notebook: 'null', entries: []};
+          for (let j = 0; j < numEntries; j++) {
+            const dataentry = Object.values(notebook.data_entries)[j];
+            const tags = dataentry.tags;
+            const searchFor = text.toLowerCase();
+            
+            if (tags.tag !== undefined) {
+              if (currResult.notebook === 'null') currResult.notebook = notebook.notebook_hash;
+              currResult.entries.push(dataentry.entry_hash);
+            }
+
+            if (j === numEntries - 1) {
+              if (currResult.notebook !== 'null') returnArr.push(currResult);
+              if (i === numNotebooks - 1) {
+                res.setHeader('Content-Type', 'application/json');
+                res.status(200).send(JSON.stringify({user_hash, results: returnArr}));
+              }
+            }
+          }
+        }
+      });
+    }
+  });
+
+  console.log(returnArr);
+});
 
 // Automated test: true
 router.post('/searchByDate', async (req, res) => {
@@ -311,7 +372,7 @@ router.post('/searchByDate', async (req, res) => {
         for (let j = 0; j < numEntries; j++) {
           const dataentry = Object.values(notebook.data_entries)[j];
           if (dataentry.date_created >= mindate && dataentry.date_created <= maxdate) {
-            currResult = {notebook: notebook.notebook_hash, entries: []};
+            if (currResult.notebook === null) currResult.notebook = notebook.notebook_hash
             currResult.entries.push(dataentry.entry_hash);
           }
           // console.log("Num entr: " + numEntries + " " + j);
