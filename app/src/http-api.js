@@ -294,18 +294,16 @@ router.post('/searchByTag', async (req, res) => {
     for (let i = 0; i < numNotebooks; i++) {
       let currNb = responses.notebook_list[i];
       if (notebook_hash !== undefined) currNb = notebook_hash;
-      console.log(currNb);
       firebaseUtil.getNotebook('admin', currNb).then((notebook) => {
         // console.log(Object.keys(notebook.data_entries).length);
+        //console.log(Object.keys(notebook.tags)[0]);
         if (notebook.data_entries !== undefined) {
           const numEntries = Object.keys(notebook.data_entries).length;
           const currResult = {notebook: 'null', entries: []};
           for (let j = 0; j < numEntries; j++) {
             const dataentry = Object.values(notebook.data_entries)[j];
             const tags = dataentry.tags;
-            const searchFor = text.toLowerCase();
-            
-            if (tags.tag !== undefined) {
+            if (tags.includes(tag)) {
               if (currResult.notebook === 'null') currResult.notebook = notebook.notebook_hash;
               currResult.entries.push(dataentry.entry_hash);
             }
@@ -323,7 +321,7 @@ router.post('/searchByTag', async (req, res) => {
     }
   });
 
-  console.log(returnArr);
+  //console.log(returnArr);
 });
 
 // Automated test: true
