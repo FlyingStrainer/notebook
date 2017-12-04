@@ -328,6 +328,27 @@ router.post('/searchByDate', async (req, res) => {
   console.log(returnArr);
 });
 
+const makepdffunc = (req, res, notebook_hash) => {
+  if (!res) {
+    res = {
+      setHeader() {},
+      send() {},
+    };
+  }
+
+  firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
+    console.log('TEST:', Object.keys(notebook.data_entries));
+    const pdfarray = Object.values(notebook.data_entries);
+    // const pdfname = notebook.name;
+    const pdfname = notebook_hash;
+    let inline = false;
+    if (notebook.format.image === 'inline') inline = true;
+    pdfgen.genPDF(pdfarray, pdfname, 'server', inline);
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify({url: `${req.protocol}://${req.get('host')}/pdfdisp/${notebook_hash}.pdf`}));
+  });
+};
+
 // Automated test: true
 router.post('/sharePDF', async (req, res) => {
   const {notebook_hash} = req.body;
@@ -342,26 +363,8 @@ router.post('/sharePDF', async (req, res) => {
     res.status(204).send();
     return;
   }
-  // `${req.protocol}://${req.get('host')}${req.path}/${pdfname}.pdf`}
-  // res.status(200).send(JSON.stringify({url: req.protocol}));
-  // console.log(notebook_hash);
 
-  // TODO link to /notebook/:notebook_hash
-
-  firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
-    console.log(`TEST:${notebook.data_entries}`);
-    const pdfarray = Object.values(notebook.data_entries);
-    const pdfname = notebook.name;
-    let inline = false;
-    if (notebook.format.image === 'inline') inline = true;
-    pdfgen.genPDF(pdfarray, pdfname, 'server', inline);
-    res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify({url: `${req.protocol}://${req.get('host')}/pdfdisp/${pdfname}.pdf`}));
-  });
-  // var pdfname = "fsda";
-
-
-  // old: await db.ref(`words/${userId}`).once('value');
+  makepdffunc(req, res, notebook_hash);
 });
 
 router.post('/makePDF', async (req, res) => {
@@ -377,26 +380,8 @@ router.post('/makePDF', async (req, res) => {
     res.status(204).send();
     return;
   }
-  // `${req.protocol}://${req.get('host')}${req.path}/${pdfname}.pdf`}
-  // res.status(200).send(JSON.stringify({url: req.protocol}));
-  // console.log(notebook_hash);
 
-  // TODO link to /notebook/:notebook_hash
-
-  firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
-    console.log(`TEST:${notebook.data_entries}`);
-    const pdfarray = Object.values(notebook.data_entries);
-    const pdfname = notebook.name;
-    let inline = false;
-    if (notebook.format.image === 'inline') inline = true;
-    pdfgen.genPDF(pdfarray, pdfname, 'server', inline);
-    res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify({url: `${req.protocol}://${req.get('host')}/pdfdisp/${pdfname}.pdf`}));
-  });
-  // var pdfname = "fsda";
-
-
-  // old: await db.ref(`words/${userId}`).once('value');
+  makepdffunc(req, res, notebook_hash);
 });
 
 // Automated test: true
@@ -579,7 +564,16 @@ router.get('/icon/:notebook_hash/:entry_hash', async (req, res) => {
 });
 
 // Automated test: true, needs work
-router.use('/pdfdisp', express.static(path.join(__dirname, '../genPDFs')));
+router.use('/pdfdisp', (req, res, next) => {
+  try {
+    const notebook_hash = /pdfdisp\/(.+)/.exec(req.originalUrl)[1]
+    makepdffunc(req, false, notebook_hash);
+  } catch (e) {
+
+  } finally {
+    next();
+  }
+}, express.static(path.join(__dirname, '../genPDFs')));
 // router.use('/pdfdisp', express.static(__dirname))
 // router.use('/pdfdisp', express.static(path.resolve(__dirname, '../genPDFs')))
 // (req, res) => {
