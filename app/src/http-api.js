@@ -319,8 +319,10 @@ router.post('/searchByTag', async (req, res) => {
           const numEntries = Object.keys(notebook.data_entries).length;
           const currResult = {notebook: 'null', entries: []};
           for (let j = 0; j < numEntries; j++) {
+            if (dataentry.tags == undefined) continue;
             const dataentry = Object.values(notebook.data_entries)[j];
             const tags = dataentry.tags;
+            console.log("TAGS:" + tags);
             let allCheck = 0;
             for (let k = 0; k <tag.length; k++) {
               if (tags.includes(tag[k])) allCheck++;
@@ -357,16 +359,18 @@ router.post('/searchByDate', async (req, res) => {
     user_hash, notebook_hash, mindate, maxdate,
   } = req.body;
 
-  let newMin = new Date(mindate).setMinutes(0);
+  let newMin = new Date(mindate);
+  newMin.setMinutes(0);
   newMin.setSeconds(0);
   newMin.setHours(0);
 
-  let newMax = new Date(maxdate).setMinutes(59);
+  let newMax = new Date(maxdate);
+  newMax.setMinutes(59);
   newMax.setSeconds(59);
   newMax.setHours(23);
 
-  maxdate = newMax.getTime();
-  mindate = newMin.getTime();
+  const newmaxdate = newMax.getTime();
+  const newmindate = newMin.getTime();
 
 
   if (!(user_hash)) {
@@ -402,13 +406,13 @@ router.post('/searchByDate', async (req, res) => {
 
         const numEntries = Object.keys(notebook.data_entries).length;
         let currResult = {notebook: null, entries: []};
-        if (notebook.date_created >= mindate && notebook.date_created <= maxdate) {
+        if (notebook.date_created >= newmindate && notebook.date_created <= newmaxdate) {
           currResult = {notebook: notebook.notebook_hash, entries: []};
         }
 
         for (let j = 0; j < numEntries; j++) {
           const dataentry = Object.values(notebook.data_entries)[j];
-          if (dataentry.date_created >= mindate && dataentry.date_created <= maxdate) {
+          if (dataentry.date_created >= newmindate && dataentry.date_created <= newmaxdate) {
             if (currResult.notebook === null) currResult.notebook = notebook.notebook_hash
             currResult.entries.push(dataentry.entry_hash);
           }
@@ -425,6 +429,7 @@ router.post('/searchByDate', async (req, res) => {
       });
     }
   });
+  
 
   //console.log(returnArr);
 });
