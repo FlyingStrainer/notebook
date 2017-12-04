@@ -35,15 +35,19 @@ module.exports = {
 
       doc.text(entries[i].date_created, 100, 200);
       doc.text(entries[i].author, 100, 220);
-      if (inline) doc.text(entries[i].text, 330, 350);
-      if (!inline) doc.text(entries[i].text, 100, 505); //text first
+ //text first
       if (entries[i].image !== undefined) {
         const buf = new Buffer(entries[i].image.replace(/^data:image\/png;base64,/, ''), 'base64');
-        if (inline)
+        if (inline){
           doc.image(buf, 100, 250, {fit: [200, 200]});
+          doc.text(entries[i].text, 330, 350);
+        }
         else
           doc.image(buf, 100, 250, {fit: [200, 200]});
+        
       }
+      
+      if (!inline || entries[i].image === undefined) doc.text(entries[i].text, 100, 505);
 
 
       doc.addPage();
