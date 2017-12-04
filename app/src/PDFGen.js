@@ -124,8 +124,8 @@ const entries = [{
   image: testImage,
   author: 'John Does',
 }];
-module.exports.genPDF(entries, "t", "server", true);
-module.exports.genPDF(entries, "f", "server", false);
+// module.exports.genPDF(entries, "t", "server", true);
+// module.exports.genPDF(entries, "f", "server", false);
 
 // Create a root reference
 // var storageRef = admin.storage().bucket("t").ref();

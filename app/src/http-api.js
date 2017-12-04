@@ -7,10 +7,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const firebaseUtil = require('./firebase-util.js');
 const PDFImage = require('pdf-image').PDFImage;
-const sharp = require('sharp')
+const sharp = require('sharp');
 const fs = require('fs');
+const path = require('path');
 
-const {pdfgen, querydb} = firebaseUtil;
+const {pdfgen} = firebaseUtil;
 
 // Setup
 // const db = admin.database();
@@ -205,150 +206,8 @@ function addRoute(path, props, utilFunc, thenHandler, allowedErrors) {
 router.post('/searchByText', async (req, res) => {
   const {user_hash, text, notebook_hash} = req.body;
 
-    if (!(user_hash)) {
-      console.log('/searchText bad', req.body);
-      res.sendStatus(400);
-      return;
-    }
-
-    if (firebaseUtil.isTest) {
-      res.status(204).send();
-      return;
-    }
-
-    var returnArr = [];
-
-
-    firebaseUtil.getNotebooks(user_hash).then((responses) => {
-      var numNotebooks = responses.notebook_list.length;
-      console.log(numNotebooks);
-
-      if (notebook_hash !== undefined) {
-        if (responses.notebook_list.includes(notebook_hash))
-          numNotebooks = 1;
-        else {
-          res.sendStatus(400);
-          return;
-        }
-      }
-      for (let i = 0; i < numNotebooks; i++) {
-        var currNb = responses.notebook_list[i];
-        if (notebook_hash !== undefined) currNb = notebook_hash;
-        console.log(currNb);
-        firebaseUtil.getNotebook('admin', currNb).then((notebook) => {
-          //console.log(Object.keys(notebook.data_entries).length);
-          if (notebook.data_entries !== undefined) {
-            var numEntries = Object.keys(notebook.data_entries).length;
-            var currResult = {notebook: "null", entries: []};
-            for (let j = 0; j<numEntries; j++ ){
-
-              const dataentry = Object.values(notebook.data_entries)[j];
-              var searchText = dataentry.text.toLowerCase();
-              var searchFor = text.toLowerCase();
-              console.log(searchFor + ' || ' + searchText + '|| ' + searchText.indexOf(searchFor));
-              if (searchText.indexOf(searchFor) !== -1) {
-                if (currResult.notebook === "null") currResult.notebook = notebook.notebook_hash;
-                currResult.entries.push(dataentry.entry_hash);
-              }
-
-              if (j === numEntries - 1) {
-                if (currResult.notebook !== "null") returnArr.push(currResult);
-                if (i == numNotebooks - 1) {
-                  res.setHeader('Content-Type', 'application/json');
-                  res.status(200).send(JSON.stringify({user_hash, results: returnArr}));
-                }
-              }
-            }
-        }
-      });
-    }
-
-
-
-  });
-
-  console.log(returnArr);
-
-});
-
-// Automated test: true
-router.post('/searchByDate', async (req, res) => {
-  const {user_hash, text, notebook_hash, mindate, maxdate} = req.body;
-
-    if (!(user_hash)) {
-      console.log('/searchText bad', req.body);
-      res.sendStatus(400);
-      return;
-    }
-
-    if (firebaseUtil.isTest) {
-      res.status(204).send();
-      return;
-    }
-
-    var returnArr = [];
-
-
-    firebaseUtil.getNotebooks(user_hash).then((responses) => {
-      var numNotebooks = responses.notebook_list.length;
-      console.log(numNotebooks);
-
-      if (notebook_hash !== undefined) {
-        if (responses.notebook_list.includes(notebook_hash))
-          numNotebooks = 1;
-        else {
-          res.sendStatus(400);
-          return;
-        }
-      }
-      for (let i = 0; i < numNotebooks; i++) {
-        var currNb = responses.notebook_list[i];
-        if (notebook_hash !== undefined) currNb = notebook_hash;
-        console.log(currNb);
-        firebaseUtil.getNotebook('admin', currNb).then((notebook) => {
-          //console.log(Object.keys(notebook.data_entries).length);
-          
-            var numEntries = Object.keys(notebook.data_entries).length;
-            var currResult = {notebook: null, entries: []};
-            if (notebook.date_created >= mindate && notebook.date_created <= maxdate) {
-              currResult = {notebook: notebook.notebook_hash, entries: []};
-            }
-           
-            for (let j = 0; j<numEntries; j++ ){
-             
-              const dataentry = Object.values(notebook.data_entries)[j];
-              if (dataentry.date_created >= mindate && dataentry.date_created <= maxdate) {
-                currResult = {notebook: notebook.notebook_hash, entries: []};
-                currResult.entries.push(dataentry.entry_hash);
-              }
-              //console.log("Num entr: " + numEntries + " " + j);
-              if (j === numEntries - 1) {
-                //console.log("here");
-                if (currResult.notebook != null) returnArr.push(currResult);
-                if (i == numNotebooks - 1) {
-                  res.setHeader('Content-Type', 'application/json');
-                  res.status(200).send(JSON.stringify({user_hash, results: returnArr}));
-                }
-              }
-            }
-        
-      });
-    }
-
-
-
-  });
-
-  console.log(returnArr);
-
-});
-
-// Automated test: true
-router.post(['/makePDF', '/sharePDF'], async (req, res) => {
-  const {notebook_hash} = req.body;
-
-  if (!(notebook_hash)) {
-    console.log('/getNotebooks bad', req.body);
+  if (!(user_hash)) {
+    console.log('/searchText bad', req.body);
     res.sendStatus(400);
     return;
   }
@@ -357,26 +216,175 @@ router.post(['/makePDF', '/sharePDF'], async (req, res) => {
     res.status(204).send();
     return;
   }
-  // `${req.protocol}://${req.get('host')}${req.path}/${pdfname}.pdf`}
-  // res.status(200).send(JSON.stringify({url: req.protocol}));
-  // console.log(notebook_hash);
 
-  // TODO link to /notebook/:notebook_hash
+  const returnArr = [];
 
-  firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
-    console.log(`TEST:${notebook.data_entries}`);
+
+  firebaseUtil.getNotebooks(user_hash).then((responses) => {
+    let numNotebooks = responses.notebook_list.length;
+    console.log(numNotebooks);
+
+    if (notebook_hash !== undefined) {
+      if (responses.notebook_list.includes(notebook_hash)) { numNotebooks = 1; } else {
+        res.sendStatus(400);
+        return;
+      }
+    }
+    for (let i = 0; i < numNotebooks; i++) {
+      let currNb = responses.notebook_list[i];
+      if (notebook_hash !== undefined) currNb = notebook_hash;
+      console.log(currNb);
+      firebaseUtil.getNotebook('admin', currNb).then((notebook) => {
+        // console.log(Object.keys(notebook.data_entries).length);
+        if (notebook.data_entries !== undefined) {
+          const numEntries = Object.keys(notebook.data_entries).length;
+          const currResult = {notebook: 'null', entries: []};
+          for (let j = 0; j < numEntries; j++) {
+            const dataentry = Object.values(notebook.data_entries)[j];
+            const searchText = dataentry.text.toLowerCase();
+            const searchFor = text.toLowerCase();
+            console.log(`${searchFor} || ${searchText}|| ${searchText.indexOf(searchFor)}`);
+            if (searchText.indexOf(searchFor) !== -1) {
+              if (currResult.notebook === 'null') currResult.notebook = notebook.notebook_hash;
+              currResult.entries.push(dataentry.entry_hash);
+            }
+
+            if (j === numEntries - 1) {
+              if (currResult.notebook !== 'null') returnArr.push(currResult);
+              if (i === numNotebooks - 1) {
+                res.setHeader('Content-Type', 'application/json');
+                res.status(200).send(JSON.stringify({user_hash, results: returnArr}));
+              }
+            }
+          }
+        }
+      });
+    }
+  });
+
+  console.log(returnArr);
+});
+
+// Automated test: true
+router.post('/searchByDate', async (req, res) => {
+  const {
+    user_hash, notebook_hash, mindate, maxdate,
+  } = req.body;
+
+  if (!(user_hash)) {
+    console.log('/searchText bad', req.body);
+    res.sendStatus(400);
+    return;
+  }
+
+  if (firebaseUtil.isTest) {
+    res.status(204).send();
+    return;
+  }
+
+  const returnArr = [];
+
+
+  firebaseUtil.getNotebooks(user_hash).then((responses) => {
+    let numNotebooks = responses.notebook_list.length;
+    console.log(numNotebooks);
+
+    if (notebook_hash !== undefined) {
+      if (responses.notebook_list.includes(notebook_hash)) { numNotebooks = 1; } else {
+        res.sendStatus(400);
+        return;
+      }
+    }
+    for (let i = 0; i < numNotebooks; i++) {
+      let currNb = responses.notebook_list[i];
+      if (notebook_hash !== undefined) currNb = notebook_hash;
+      console.log(currNb);
+      firebaseUtil.getNotebook('admin', currNb).then((notebook) => {
+        // console.log(Object.keys(notebook.data_entries).length);
+
+        const numEntries = Object.keys(notebook.data_entries).length;
+        let currResult = {notebook: null, entries: []};
+        if (notebook.date_created >= mindate && notebook.date_created <= maxdate) {
+          currResult = {notebook: notebook.notebook_hash, entries: []};
+        }
+
+        for (let j = 0; j < numEntries; j++) {
+          const dataentry = Object.values(notebook.data_entries)[j];
+          if (dataentry.date_created >= mindate && dataentry.date_created <= maxdate) {
+            currResult = {notebook: notebook.notebook_hash, entries: []};
+            currResult.entries.push(dataentry.entry_hash);
+          }
+          // console.log("Num entr: " + numEntries + " " + j);
+          if (j === numEntries - 1) {
+            // console.log("here");
+            if (currResult.notebook != null) returnArr.push(currResult);
+            if (i === numNotebooks - 1) {
+              res.setHeader('Content-Type', 'application/json');
+              res.status(200).send(JSON.stringify({user_hash, results: returnArr}));
+            }
+          }
+        }
+      });
+    }
+  });
+
+  console.log(returnArr);
+});
+
+const makepdffunc = (req, res, notebook_hash) => {
+  if (!res) {
+    res = {
+      setHeader() {},
+      send() {},
+    };
+  }
+
+  return firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
+    console.log('TEST:', Object.keys(notebook.data_entries));
     const pdfarray = Object.values(notebook.data_entries);
-    const pdfname = notebook.name;
+    // const pdfname = notebook.name;
+    const pdfname = notebook_hash;
     let inline = false;
     if (notebook.format.image === 'inline') inline = true;
     pdfgen.genPDF(pdfarray, pdfname, 'server', inline);
     res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify({url: `${req.protocol}://${req.get('host')}/pdfdisp/${pdfname}.pdf`}));
+    res.send(JSON.stringify({url: `${req.protocol}://${req.get('host')}/pdfdisp/${notebook_hash}.pdf`}));
   });
-  // var pdfname = "fsda";
+};
 
+// Automated test: true
+router.post('/sharePDF', async (req, res) => {
+  const {notebook_hash} = req.body;
 
-  // old: await db.ref(`words/${userId}`).once('value');
+  if (!(notebook_hash)) {
+    console.log('/sharePDF bad', req.body);
+    res.sendStatus(400);
+    return;
+  }
+
+  if (firebaseUtil.isTest) {
+    res.status(204).send();
+    return;
+  }
+
+  makepdffunc(req, res, notebook_hash);
+});
+
+router.post('/makePDF', async (req, res) => {
+  const {notebook_hash} = req.body;
+
+  if (!(notebook_hash)) {
+    console.log('/sharePDF bad', req.body);
+    res.sendStatus(400);
+    return;
+  }
+
+  if (firebaseUtil.isTest) {
+    res.status(204).send();
+    return;
+  }
+
+  makepdffunc(req, res, notebook_hash);
 });
 
 // Automated test: true
@@ -516,7 +524,7 @@ router.get('/icon/:notebook_hash', async (req, res) => {
   const allowedErrors = ['Notebook not found'];
 
   // TODO get image of first page of pdf
-  firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
+  firebaseUtil.getNotebook('admin', notebook_hash).then(notebook =>
     // res.setHeader('Content-Type', 'application/json');
     // res.status(200).send(JSON.stringify(notebook, null, 4));
     if (!(notebook_hash)) {
@@ -553,8 +561,7 @@ router.get('/icon/:notebook_hash', async (req, res) => {
     fs.unlinkSync(imagePath);
     fs.unlinkSync(imageEditPath);
 
-    return Promise.resolve();
-  }).catch((err) => {
+    Promise.resolve()).catch((err) => {
     if (allowedErrors.includes(err.message)) {
       console.log(`${req.path} bad:\t\t\t`, err.message);
     } else {
@@ -577,12 +584,11 @@ router.get('/icon/:notebook_hash/:entry_hash', async (req, res) => {
   const allowedErrors = ['Notebook not found'];
 
   // TODO get image of entry
-  firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
+  firebaseUtil.getNotebook('admin', notebook_hash).then(notebook =>
     // res.setHeader('Content-Type', 'application/json');
     // res.status(200).send(JSON.stringify(notebook, null, 4));
 
-    return Promise.resolve();
-  }).catch((err) => {
+    Promise.resolve()).catch((err) => {
     if (allowedErrors.includes(err.message)) {
       console.log(`${req.path} bad:\t\t\t`, err.message);
     } else {
@@ -593,19 +599,40 @@ router.get('/icon/:notebook_hash/:entry_hash', async (req, res) => {
   });
 });
 
-// Automated test: true, needs work
-router.get('/pdfdisp/:pdfname', (req, res) => {
-  const {pdfname} = req.params;
-  console.log(req.params);
+router.get('/downloadPDF/:notebook_hash', (req, res) => {
+  const {notebook_hash} = req.params;
 
-  if (firebaseUtil.isTest) {
-    res.status(204).send();
-    return;
-  }
-
-  const file = `./genPDFs/${pdfname}`;
-  res.download(file); // Set disposition and send it.
+  makepdffunc(req, false, notebook_hash).then(() => {
+    const file = `./genPDFs/${notebook_hash}`;
+    res.download(file); // Set disposition and send it.
+  });
 });
+
+// Automated test: true, needs work
+router.use('/pdfdisp', (req, res, next) => {
+  try {
+    const notebook_hash = /pdfdisp\/(.+)/.exec(req.originalUrl)[1]
+    makepdffunc(req, false, notebook_hash);
+  } catch (e) {
+
+  } finally {
+    next();
+  }
+}, express.static(path.join(__dirname, '../genPDFs')));
+// router.use('/pdfdisp', express.static(__dirname))
+// router.use('/pdfdisp', express.static(path.resolve(__dirname, '../genPDFs')))
+// (req, res) => {
+//   const {pdfname} = req.params;
+//   console.log(req.params);
+//
+//   if (firebaseUtil.isTest) {
+//     res.status(204).send();
+//     return;
+//   }
+//
+//   const file = `./genPDFs/${pdfname}`;
+//   res.download(file); // Set disposition and send it.
+// });
 
 // Automated test: true
 (() => {
