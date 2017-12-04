@@ -21,8 +21,14 @@ router.use(require('access-control')({
   credentials: true,
 }));
 
+router.get('/', (req, res) => {
+  res.redirect('/index.html');
+});
+router.use('/index.html', express.static(path.resolve(__dirname, '../public')));
+
 // Middleware
-router.use(bodyParser.json());
+router.use(bodyParser.json({limit: '50mb'}));
+router.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 // API
 
