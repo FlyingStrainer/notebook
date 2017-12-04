@@ -242,9 +242,14 @@ router.post('/searchByText', async (req, res) => {
           for (let j = 0; j < numEntries; j++) {
             const dataentry = Object.values(notebook.data_entries)[j];
             const searchText = dataentry.text.toLowerCase();
-            const searchFor = text.toLowerCase();
-            console.log(`${searchFor} || ${searchText}|| ${searchText.indexOf(searchFor)}`);
-            if (searchText.indexOf(searchFor) !== -1) {
+            
+            //console.log(`${searchFor} || ${searchText}|| ${searchText.indexOf(searchFor)}`);
+            let allMatch = 0;
+            for (let k = 0; k <text.length; k++) {
+              let searchFor = text[k].toLowerCase();
+              if (searchText.indexOf(searchFor) !== -1) allMatch++;
+            }
+            if (allMatch == text.length) {
               if (currResult.notebook === 'null') currResult.notebook = notebook.notebook_hash;
               currResult.entries.push(dataentry.entry_hash);
             }
@@ -280,7 +285,6 @@ router.post('/searchByTag', async (req, res) => {
 
   const returnArr = [];
 
-
   firebaseUtil.getNotebooks(user_hash).then((responses) => {
     let numNotebooks = responses.notebook_list.length;
     //console.log(numNotebooks);
@@ -303,7 +307,11 @@ router.post('/searchByTag', async (req, res) => {
           for (let j = 0; j < numEntries; j++) {
             const dataentry = Object.values(notebook.data_entries)[j];
             const tags = dataentry.tags;
-            if (tags.includes(tag)) {
+            let allCheck = 0;
+            for (let k = 0; k <tag.length; k++) {
+              if (tags.includes(tag[k])) allCheck++;
+            }
+            if (allCheck===tag.length) {
               if (currResult.notebook === 'null') currResult.notebook = notebook.notebook_hash;
               currResult.entries.push(dataentry.entry_hash);
             }
