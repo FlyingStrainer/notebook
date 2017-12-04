@@ -256,12 +256,9 @@ router.post('/searchByText', async (req, res) => {
             const searchText = dataentry.text.toLowerCase();
 
             //console.log(`${searchFor} || ${searchText}|| ${searchText.indexOf(searchFor)}`);
-            let allMatch = 0;
-            for (let k = 0; k <text.length; k++) {
-              let searchFor = text[k].toLowerCase();
-              if (searchText.indexOf(searchFor) !== -1) allMatch++;
-            }
-            if (allMatch === text.length) {
+
+            const searchFor = text.toLowerCase();
+            if (searchText.indexOf(searchFor) !== -1) {
               if (currResult.notebook === 'null') currResult.notebook = notebook.notebook_hash;
               currResult.entries.push(dataentry.entry_hash);
             }
@@ -359,6 +356,18 @@ router.post('/searchByDate', async (req, res) => {
   const {
     user_hash, notebook_hash, mindate, maxdate,
   } = req.body;
+
+  let newMin = new Date(mindate).setMinutes(0);
+  newMin.setSeconds(0);
+  newMin.setHours(0);
+
+  let newMax = new Date(maxdate).setMinutes(59);
+  newMax.setSeconds(59);
+  newMax.setHours(23);
+
+  maxdate = newMax.getTime();
+  mindate = newMin.getTime();
+
 
   if (!(user_hash)) {
     console.log('/searchText bad', req.body);
@@ -636,13 +645,12 @@ router.get('/icon/:notebook_hash', async (req, res) => {
 
       console.log('Image is at ' + filename_image2);
       sharp(filename_image2).resize(300).toFile(filename_image2, function(err) {
-          console.log('Image resized');
-          console.log(filename_image2);
-          res.sendFile(filename_image2);
+        console.log('Image resized');
+        res.sendFile(filename_image2);
 
-          // fs.unlinkSync(filename_pdf);
-          // fs.unlinkSync(filename_image);
-        });
+        fs.unlinkSync(filename_pdf)
+        fs.unlinkSync(filename_image);
+      });
     });
   });
 
