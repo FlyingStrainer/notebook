@@ -532,15 +532,16 @@ router.get('/icon/:notebook_hash', async (req, res) => {
       // 0-th page (first page) of the slide.pdf is available as slide-0.png
       fs.existsSync(filename_image); // => true
 
-      const filename_image2 = path.resolve(filename_image) + 2;
+      const filename_image2 = path.resolve(filename_image);
 
-      console.log('Image is at ' + filename_image);
-      sharp(filename_image).resize(300).toFile(filename_image, function(err) {
+      console.log('Image is at ' + filename_image2);
+      sharp(filename_image2).resize(300).toFile(filename_image2, function(err) {
           console.log('Image resized');
-          res.sendFile(filename_image);
+          console.log(filename_image2);
+          res.sendFile(filename_image2);
 
-          fs.unlinkSync(filename_pdf);
-          fs.unlinkSync(filename_image);
+          // fs.unlinkSync(filename_pdf);
+          // fs.unlinkSync(filename_image);
         });
     });
   });
