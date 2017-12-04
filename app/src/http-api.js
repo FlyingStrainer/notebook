@@ -332,7 +332,7 @@ router.post(['/makePDF', '/sharePDF'], async (req, res) => {
   const {notebook_hash} = req.body;
 
   if (!(notebook_hash)) {
-    console.log('/getNotebooks bad', req.body);
+    console.log('/sharePDF bad', req.body);
     res.sendStatus(400);
     return;
   }
