@@ -543,18 +543,19 @@ router.get('/icon/:notebook_hash/:entry_hash', async (req, res) => {
 });
 
 // Automated test: true, needs work
-router.get('/pdfdisp/:pdfname', (req, res) => {
-  const {pdfname} = req.params;
-  console.log(req.params);
-
-  if (firebaseUtil.isTest) {
-    res.status(204).send();
-    return;
-  }
-
-  const file = `./genPDFs/${pdfname}`;
-  res.download(file); // Set disposition and send it.
-});
+router.get('/pdfdisp', express.static(__dirname + '/../genPDFs'));
+// (req, res) => {
+//   const {pdfname} = req.params;
+//   console.log(req.params);
+//
+//   if (firebaseUtil.isTest) {
+//     res.status(204).send();
+//     return;
+//   }
+//
+//   const file = `./genPDFs/${pdfname}`;
+//   res.download(file); // Set disposition and send it.
+// });
 
 // Automated test: true
 (() => {
