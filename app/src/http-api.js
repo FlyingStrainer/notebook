@@ -598,6 +598,18 @@ router.get('/icon/:notebook_hash', async (req, res) => {
     res.status(204).send();
     return;
   }
+  var notebookSize = -1;
+  // Check size of notebook. If 0, return documents.png
+  firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
+    const pdfarray = Object.values(notebook.data_entries);
+    notebookSize = pdfArray.length;
+    console.log('Notebook size is '+notebookSize);
+  });
+  if(notebookSize == 0){
+    console.log('Sending documents.png because the notebook is empty');
+    res.sendFile('/images/document.png');
+    return;
+  }
 
   const allowedErrors = ['Notebook not found'];
 
