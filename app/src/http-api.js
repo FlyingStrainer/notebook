@@ -245,12 +245,9 @@ router.post('/searchByText', async (req, res) => {
             const searchText = dataentry.text.toLowerCase();
             
             //console.log(`${searchFor} || ${searchText}|| ${searchText.indexOf(searchFor)}`);
-            let allMatch = 0;
-            for (let k = 0; k <text.length; k++) {
-              let searchFor = text[k].toLowerCase();
-              if (searchText.indexOf(searchFor) !== -1) allMatch++;
-            }
-            if (allMatch === text.length) {
+
+            const searchFor = text.toLowerCase();
+            if (searchText.indexOf(searchFor) !== -1) {
               if (currResult.notebook === 'null') currResult.notebook = notebook.notebook_hash;
               currResult.entries.push(dataentry.entry_hash);
             }
@@ -348,6 +345,18 @@ router.post('/searchByDate', async (req, res) => {
   const {
     user_hash, notebook_hash, mindate, maxdate,
   } = req.body;
+
+  let newMin = new Date(mindate).setMinutes(0);
+  newMin.setSeconds(0);
+  newMin.setHours(0);
+
+  let newMax = new Date(maxdate).setMinutes(0);
+  newMax.setSeconds(0);
+  newMax.setHours(0);
+
+  maxdate = newMax.getTime();
+  mindate = newMin.getTime();
+
 
   if (!(user_hash)) {
     console.log('/searchText bad', req.body);
