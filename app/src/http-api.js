@@ -450,10 +450,11 @@ const makepdffunc = (req, res, notebook_hash) => {
     const pdfname = notebook_hash;
     let inline = false;
     if (notebook.format.image === 'inline') inline = true;
-    pdfgen.genPDF(pdfarray, pdfname, 'server', inline);
-    res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify({url: `${req.protocol}://${req.get('host')}/pdfdisp/${notebook_hash}.pdf`}));
-    return notebook;
+    return pdfgen.genPDF(pdfarray, pdfname, 'server', inline).then(() => {
+      res.setHeader('Content-Type', 'application/json');
+      res.send(JSON.stringify({url: `${req.protocol}://${req.get('host')}/pdfdisp/${notebook_hash}.pdf`}));
+      return notebook;
+    });
   });
 };
 
@@ -629,7 +630,6 @@ router.get('/icon/:notebook_hash', async (req, res) => {
   const allowedErrors = ['Notebook not found'];
 
   makepdffunc(req, false, notebook_hash).then((notebook) => {
-    console.log('point');
     const mpdfarray = Object.values(notebook.data_entries || {});
 
     if(mpdfarray.length === 0){
@@ -726,9 +726,10 @@ router.get('/icon/:notebook_hash/:entry_hash', async (req, res) => {
 router.get('/downloadPDF/:notebook_hash', (req, res) => {
   const {notebook_hash} = req.params;
 
-  makepdffunc(req, false, notebook_hash).then(() => {
-    const file = `./genPDFs/${notebook_hash}.pdf`;
-    res.download(file); // Set disposition and send it.
+  makepdffunc(req, false, notebook_hash).then((notebook) => {
+    const filename = path.resolve(`./genPDFs/${notebook_hash}.pdf`);
+    console.log(filename);
+    res.download(filename, `${notebook.name}.pdf`); // Set disposition and send it.
   });
 });
 

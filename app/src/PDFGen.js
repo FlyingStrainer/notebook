@@ -23,7 +23,8 @@ module.exports = {
 
     // Pipe its output somewhere, like to a file or HTTP response
     // See below for browser usage
-    doc.pipe(fs.createWriteStream(`./genPDFs/${pdfName}.pdf`));
+    const writeStream = fs.createWriteStream(`./genPDFs/${pdfName}.pdf`);
+    doc.pipe(writeStream);
     doc.fontSize(12);
     // Embed a font, set the font size, and render some text
     // doc.font('fonts/PalatinoBold.ttf')
@@ -44,9 +45,9 @@ module.exports = {
         }
         else
           doc.image(buf, 100, 250, {fit: [200, 200]});
-        
+
       }
-      
+
       if (!inline || entries[i].image === undefined) doc.text(entries[i].text, 100, 505);
 
 
@@ -56,6 +57,11 @@ module.exports = {
     // Finalize PDF file
     doc.end();
 
+    return new Promise(function(resolve, reject) {
+      writeStream.on('finish', function () {
+        resolve();
+      });
+    });
 
     if (location === 'firebase') {
       // copy file to firebase
