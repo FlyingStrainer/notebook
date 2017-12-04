@@ -297,7 +297,7 @@ router.post('/searchByTag', async (req, res) => {
       firebaseUtil.getNotebook('admin', currNb).then((notebook) => {
         // console.log(Object.keys(notebook.data_entries).length);
         //console.log(Object.keys(notebook.tags)[0]);
-        if (notebook.data_entries !== undefined) {
+        if (notebook.data_entries !== undefined && notebook.tags !== undefined) {
           const numEntries = Object.keys(notebook.data_entries).length;
           const currResult = {notebook: 'null', entries: []};
           for (let j = 0; j < numEntries; j++) {
