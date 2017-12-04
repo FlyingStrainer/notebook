@@ -361,9 +361,9 @@ router.post('/searchByDate', async (req, res) => {
   newMin.setSeconds(0);
   newMin.setHours(0);
 
-  let newMax = new Date(maxdate).setMinutes(0);
-  newMax.setSeconds(0);
-  newMax.setHours(0);
+  let newMax = new Date(maxdate).setMinutes(59);
+  newMax.setSeconds(59);
+  newMax.setHours(23);
 
   maxdate = newMax.getTime();
   mindate = newMin.getTime();
