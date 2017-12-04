@@ -612,7 +612,7 @@ router.get('/downloadPDF/:notebook_hash', (req, res) => {
   const {notebook_hash} = req.params;
 
   makepdffunc(req, false, notebook_hash).then(() => {
-    const file = `./genPDFs/${notebook_hash}`;
+    const file = `./genPDFs/${notebook_hash}.pdf`;
     res.download(file); // Set disposition and send it.
   });
 });
