@@ -25,6 +25,11 @@ router.get('/', (req, res) => {
   res.redirect('/index.html');
 });
 router.use('/index.html', express.static(path.resolve(__dirname, '../public')));
+router.use('/favicon.ico', express.static(path.resolve(__dirname, '../public')));
+router.use('/manifest.json', express.static(path.resolve(__dirname, '../public')));
+router.use('/images', express.static(path.resolve(__dirname, '../public/images')));
+router.use('/javascripts', express.static(path.resolve(__dirname, '../public/javascripts')));
+router.use('/stylesheets', express.static(path.resolve(__dirname, '../public/stylesheets')));
 
 // Middleware
 router.use(bodyParser.json({limit: '50mb'}));
