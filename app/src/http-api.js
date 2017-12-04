@@ -6,6 +6,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const firebaseUtil = require('./firebase-util.js');
+const path = require("path");
 
 const {pdfgen} = firebaseUtil;
 
@@ -578,7 +579,9 @@ router.get('/icon/:notebook_hash/:entry_hash', async (req, res) => {
 });
 
 // Automated test: true, needs work
-router.get('/pdfdisp', express.static(__dirname + '/../genPDFs'));
+router.use('/pdfdisp', express.static(path.join(__dirname, '../genPDFs')));
+// router.use('/pdfdisp', express.static(__dirname))
+// router.use('/pdfdisp', express.static(path.resolve(__dirname, '../genPDFs')))
 // (req, res) => {
 //   const {pdfname} = req.params;
 //   console.log(req.params);
