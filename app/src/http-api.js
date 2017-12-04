@@ -222,7 +222,7 @@ router.post('/searchByText', async (req, res) => {
 
   firebaseUtil.getNotebooks(user_hash).then((responses) => {
     let numNotebooks = responses.notebook_list.length;
-    console.log(numNotebooks);
+    //console.log(numNotebooks);
 
     if (notebook_hash !== undefined) {
       if (responses.notebook_list.includes(notebook_hash)) { numNotebooks = 1; } else {
@@ -262,7 +262,7 @@ router.post('/searchByText', async (req, res) => {
     }
   });
 
-  console.log(returnArr);
+  //console.log(returnArr);
 });
 router.post('/searchByTag', async (req, res) => {
   const {user_hash, tag, notebook_hash} = req.body;
@@ -283,7 +283,7 @@ router.post('/searchByTag', async (req, res) => {
 
   firebaseUtil.getNotebooks(user_hash).then((responses) => {
     let numNotebooks = responses.notebook_list.length;
-    console.log(numNotebooks);
+    //console.log(numNotebooks);
 
     if (notebook_hash !== undefined) {
       if (responses.notebook_list.includes(notebook_hash)) { numNotebooks = 1; } else {
@@ -346,7 +346,7 @@ router.post('/searchByDate', async (req, res) => {
 
   firebaseUtil.getNotebooks(user_hash).then((responses) => {
     let numNotebooks = responses.notebook_list.length;
-    console.log(numNotebooks);
+    //console.log(numNotebooks);
 
     if (notebook_hash !== undefined) {
       if (responses.notebook_list.includes(notebook_hash)) { numNotebooks = 1; } else {
@@ -387,7 +387,7 @@ router.post('/searchByDate', async (req, res) => {
     }
   });
 
-  console.log(returnArr);
+  //console.log(returnArr);
 });
 
 const makepdffunc = (req, res, notebook_hash) => {
