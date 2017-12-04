@@ -254,7 +254,7 @@ router.post('/searchByText', async (req, res) => {
           for (let j = 0; j < numEntries; j++) {
             const dataentry = Object.values(notebook.data_entries)[j];
             const searchText = dataentry.text.toLowerCase();
-            
+
             //console.log(`${searchFor} || ${searchText}|| ${searchText.indexOf(searchFor)}`);
             let allMatch = 0;
             for (let k = 0; k <text.length; k++) {
@@ -429,8 +429,8 @@ const makepdffunc = (req, res, notebook_hash) => {
   }
 
   return firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
-    console.log('TEST:', Object.keys(notebook.data_entries));
-    const pdfarray = Object.values(notebook.data_entries);
+    console.log('TEST:', Object.keys(notebook.data_entries || {}));
+    const pdfarray = Object.values(notebook.data_entries || {});
     // const pdfname = notebook.name;
     const pdfname = notebook_hash;
     let inline = false;
@@ -438,6 +438,7 @@ const makepdffunc = (req, res, notebook_hash) => {
     pdfgen.genPDF(pdfarray, pdfname, 'server', inline);
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify({url: `${req.protocol}://${req.get('host')}/pdfdisp/${notebook_hash}.pdf`}));
+    return notebook;
   });
 };
 
@@ -609,22 +610,20 @@ router.get('/icon/:notebook_hash', async (req, res) => {
     res.status(204).send();
     return;
   }
-  var notebookSize = -1;
-  // Check size of notebook. If 0, return documents.png
-  firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
-    const pdfarray = Object.values(notebook.data_entries);
-    notebookSize = pdfArray.length;
-    console.log('Notebook size is '+notebookSize);
-  });
-  if(notebookSize == 0){
-    console.log('Sending documents.png because the notebook is empty');
-    res.sendFile('/images/document.png');
-    return;
-  }
 
   const allowedErrors = ['Notebook not found'];
 
-  makepdffunc(req, false, notebook_hash).then(() => {
+  makepdffunc(req, false, notebook_hash).then((notebook) => {
+    console.log('point');
+    const mpdfarray = Object.values(notebook.data_entries || {});
+
+    if(mpdfarray.length === 0){
+      console.log('Sending documents.png because the notebook is empty');
+      const filename_miss = path.resolve('public/images/document.png');
+      res.sendFile(filename_miss);
+      return;
+    }
+
     const filename_pdf = `./genPDFs/${notebook_hash}`;
 
     const pdf_img = new PDFImage(filename_pdf + '.pdf');
