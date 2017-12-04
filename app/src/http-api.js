@@ -625,7 +625,7 @@ router.get('/icon/:notebook_hash', async (req, res) => {
     notebookSize = pdfArray.length;
     console.log('Notebook size is '+notebookSize);
   });
-  if(notebookSize === 0 || notebookSize === undefined){
+  if(notebookSize < 0 || notebookSize === undefined){
     console.log('Sending documents.png because the notebook is empty');
     res.sendFile('/images/document.png');
     return;
