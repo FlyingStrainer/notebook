@@ -336,7 +336,7 @@ const makepdffunc = (req, res, notebook_hash) => {
     };
   }
 
-  firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
+  return firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
     console.log('TEST:', Object.keys(notebook.data_entries));
     const pdfarray = Object.values(notebook.data_entries);
     // const pdfname = notebook.name;
@@ -560,6 +560,15 @@ router.get('/icon/:notebook_hash/:entry_hash', async (req, res) => {
     }
 
     res.status(404).send('404 This link is invalid.');
+  });
+});
+
+router.get('/downloadPDF/:notebook_hash', (req, res) => {
+  const {notebook_hash} = req.params;
+
+  makepdffunc(req, false, notebook_hash).then(() => {
+    const file = `./genPDFs/${notebook_hash}`;
+    res.download(file); // Set disposition and send it.
   });
 });
 
