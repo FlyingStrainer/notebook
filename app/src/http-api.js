@@ -331,6 +331,11 @@ router.post('/searchByTag', async (req, res) => {
             }
           }
         }
+
+        else if (i === numNotebooks - 1) {
+          res.setHeader('Content-Type', 'application/json');
+          res.status(200).send(JSON.stringify({user_hash, results: returnArr}));
+        }
       });
     }
   });
