@@ -523,53 +523,61 @@ router.get('/icon/:notebook_hash', async (req, res) => {
 
   const allowedErrors = ['Notebook not found'];
 
-  // TODO get image of first page of pdf
-  firebaseUtil.getNotebook('admin', notebook_hash).then(notebook =>
-    // res.setHeader('Content-Type', 'application/json');
-    // res.status(200).send(JSON.stringify(notebook, null, 4));
-    if (!(notebook_hash)) {
-      console.log('/getNotebooks bad', req.body);
-      res.sendStatus(400);
-      return;
-    }
+  makepdffunc(req, false, notebook_hash).then(() => {
+    const filename_pdf = `./genPDFs/${notebook_hash}`;
 
-    console.log(`TEST:${notebook.data_entries}`);
-    const pdfarray = Object.values(notebook.data_entries);
-    const path = 'tempIconGen' + Date.now();
-    const pdfPath = './genPDF/' + path + '.pgf';
-    const imagePath = pdfpath + '.png';
-    const imageEditPath = pdfpath + '_EDIT.png';
-
-    const inline = true;
-    var image = undefined;
-    pdfgen.genPDF(pdfarray, path, 'genPDF', inline); // Make sure it is actually being saved in .genPDF
-    const pdf_img = new PDFImage(pdfPath);
-    pdf_img.convertPage(0).then(function (image) {
+    const pdf_img = new PDFImage(filename_pdf + '.pdf');
+    console.log(pdf_img);
+    pdf_img.convertPage(0).then(function (filename_image) {
       // 0-th page (first page) of the slide.pdf is available as slide-0.png
-      fs.existsSync(imagePath); // => true
+      fs.existsSync(filename_image); // => true
+
+      const filename_image2 = path.resolve(filename_image) + 2;
+
+      console.log('Image is at ' + filename_image);
+      sharp(filename_image).resize(300).toFile(filename_image, function(err) {
+          console.log('Image resized');
+          res.sendFile(filename_image);
+
+          fs.unlinkSync(filename_pdf);
+          fs.unlinkSync(filename_image);
+        });
     });
-    console.log('Image is at ' + imagePath);
-    sharp(imagePath)
-      .resize(300)
-      .toFile(imageEditPath, function(err) {
-     });
-
-    res.setHeader('Content-Type', 'image/png');
-    res.send(JSON.stringify({url: `${req.protocol}://${req.get('host')}/imageEditPath + '_EDIT'`}));
-
-    fs.unlinkSync(pdfpath);
-    fs.unlinkSync(imagePath);
-    fs.unlinkSync(imageEditPath);
-
-    Promise.resolve()).catch((err) => {
-    if (allowedErrors.includes(err.message)) {
-      console.log(`${req.path} bad:\t\t\t`, err.message);
-    } else {
-      console.log(`${req.path} server failed:\t`, err.message);
-    }
-
-    res.status(404).send('404 This link is invalid.');
   });
+
+  // // TODO get image of first page of pdf
+  // firebaseUtil.getNotebook('admin', notebook_hash).then(notebook =>
+  //   // res.setHeader('Content-Type', 'application/json');
+  //   // res.status(200).send(JSON.stringify(notebook, null, 4));
+  //   if (!(notebook_hash)) {
+  //     console.log('/getNotebooks bad', req.body);
+  //     res.sendStatus(400);
+  //     return;
+  //   }
+  //
+  //   console.log(`TEST:${notebook.data_entries}`);
+  //   const pdfarray = Object.values(notebook.data_entries);
+  //   const path = 'tempIconGen' + Date.now();
+  //   // const pdfPath = './genPDF/' + path;
+  //   // const imagePath = path + '.png';
+  //   // const imageEditPath = path + '_EDIT.png';
+  //
+  //   const inline = true;
+  //   var image = undefined;
+  //   pdfgen.genPDF(pdfarray, path, 'genPDF', inline); // Make sure it is actually being saved in .genPDF
+  //
+  //   // res.setHeader('Content-Type', 'image/png');
+  //   // res.send(JSON.stringify({url: `${req.protocol}://${req.get('host')}/imageEditPath + '_EDIT'`}));
+  //
+  //   Promise.resolve()).catch((err) => {
+  //   if (allowedErrors.includes(err.message)) {
+  //     console.log(`${req.path} bad:\t\t\t`, err.message);
+  //   } else {
+  //     console.log(`${req.path} server failed:\t`, err.message);
+  //   }
+  //
+  //   res.status(404).send('404 This link is invalid.');
+  // });
 });
 
 // Automated test: don't make test
