@@ -625,7 +625,7 @@ router.get('/icon/:notebook_hash', async (req, res) => {
     notebookSize = pdfArray.length;
     console.log('Notebook size is '+notebookSize);
   });
-  if(notebookSize == 0){
+  if(notebookSize === 0 || notebookSize === undefined){
     console.log('Sending documents.png because the notebook is empty');
     res.sendFile('/images/document.png');
     return;
@@ -646,13 +646,16 @@ router.get('/icon/:notebook_hash', async (req, res) => {
 
       console.log('Image is at ' + filename_image2);
       sharp(filename_image2).resize(300).toFile(filename_image2, function(err) {
-          console.log('Image resized');
-          console.log(filename_image2);
+        console.log('Image resized');
+        console.log(filename_image2);
+        if (filename_image2 === undefined){
+          res.sendFile('/images/document.png');
+        }else{
           res.sendFile(filename_image2);
-
-          // fs.unlinkSync(filename_pdf);
-          // fs.unlinkSync(filename_image);
-        });
+        }
+        // fs.unlinkSync(filename_pdf)
+        // fs.unlinkSync(filename_image);
+      });
     });
   });
 
