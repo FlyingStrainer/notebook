@@ -328,7 +328,42 @@ router.post('/searchByDate', async (req, res) => {
 });
 
 // Automated test: true
-router.post(['/makePDF', '/sharePDF'], async (req, res) => {
+router.post('/sharePDF', async (req, res) => {
+  const {notebook_hash} = req.body;
+
+  if (!(notebook_hash)) {
+    console.log('/sharePDF bad', req.body);
+    res.sendStatus(400);
+    return;
+  }
+
+  if (firebaseUtil.isTest) {
+    res.status(204).send();
+    return;
+  }
+  // `${req.protocol}://${req.get('host')}${req.path}/${pdfname}.pdf`}
+  // res.status(200).send(JSON.stringify({url: req.protocol}));
+  // console.log(notebook_hash);
+
+  // TODO link to /notebook/:notebook_hash
+
+  firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
+    console.log(`TEST:${notebook.data_entries}`);
+    const pdfarray = Object.values(notebook.data_entries);
+    const pdfname = notebook.name;
+    let inline = false;
+    if (notebook.format.image === 'inline') inline = true;
+    pdfgen.genPDF(pdfarray, pdfname, 'server', inline);
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify({url: `${req.protocol}://${req.get('host')}/pdfdisp/${pdfname}.pdf`}));
+  });
+  // var pdfname = "fsda";
+
+
+  // old: await db.ref(`words/${userId}`).once('value');
+});
+
+router.post('/makePDF', async (req, res) => {
   const {notebook_hash} = req.body;
 
   if (!(notebook_hash)) {
