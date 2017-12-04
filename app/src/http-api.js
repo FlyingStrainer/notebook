@@ -238,6 +238,7 @@ router.post('/searchByText', async (req, res) => {
         // console.log(Object.keys(notebook.data_entries).length);
         if (notebook.data_entries !== undefined) {
           const numEntries = Object.keys(notebook.data_entries).length;
+          console.log(numEntries);
           const currResult = {notebook: 'null', entries: []};
           for (let j = 0; j < numEntries; j++) {
             const dataentry = Object.values(notebook.data_entries)[j];
@@ -249,7 +250,7 @@ router.post('/searchByText', async (req, res) => {
               let searchFor = text[k].toLowerCase();
               if (searchText.indexOf(searchFor) !== -1) allMatch++;
             }
-            if (allMatch == text.length) {
+            if (allMatch === text.length) {
               if (currResult.notebook === 'null') currResult.notebook = notebook.notebook_hash;
               currResult.entries.push(dataentry.entry_hash);
             }
@@ -262,6 +263,11 @@ router.post('/searchByText', async (req, res) => {
               }
             }
           }
+        }
+
+        else if (i === numNotebooks - 1) {
+          res.setHeader('Content-Type', 'application/json');
+          res.status(200).send(JSON.stringify({user_hash, results: returnArr}));
         }
       });
     }
