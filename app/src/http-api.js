@@ -319,8 +319,9 @@ router.post('/searchByTag', async (req, res) => {
           const numEntries = Object.keys(notebook.data_entries).length;
           const currResult = {notebook: 'null', entries: []};
           for (let j = 0; j < numEntries; j++) {
-            if (dataentry.tags == undefined) continue;
+            
             const dataentry = Object.values(notebook.data_entries)[j];
+            if (dataentry.tags == undefined) continue;
             const tags = dataentry.tags;
             console.log("TAGS:" + tags);
             let allCheck = 0;
@@ -429,7 +430,7 @@ router.post('/searchByDate', async (req, res) => {
       });
     }
   });
-  
+
 
   //console.log(returnArr);
 });
