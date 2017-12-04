@@ -21,8 +21,19 @@ router.use(require('access-control')({
   credentials: true,
 }));
 
+router.get('/', (req, res) => {
+  res.redirect('/index.html');
+});
+router.use('/index.html', express.static(path.resolve(__dirname, '../public')));
+router.use('/favicon.ico', express.static(path.resolve(__dirname, '../public')));
+router.use('/manifest.json', express.static(path.resolve(__dirname, '../public')));
+router.use('/images', express.static(path.resolve(__dirname, '../public/images')));
+router.use('/javascripts', express.static(path.resolve(__dirname, '../public/javascripts')));
+router.use('/stylesheets', express.static(path.resolve(__dirname, '../public/stylesheets')));
+
 // Middleware
-router.use(bodyParser.json());
+router.use(bodyParser.json({limit: '50mb'}));
+router.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 // API
 
@@ -605,6 +616,18 @@ router.get('/icon/:notebook_hash', async (req, res) => {
 
   if (firebaseUtil.isTest) {
     res.status(204).send();
+    return;
+  }
+  var notebookSize = -1;
+  // Check size of notebook. If 0, return documents.png
+  firebaseUtil.getNotebook('admin', notebook_hash).then((notebook) => {
+    const pdfarray = Object.values(notebook.data_entries);
+    notebookSize = pdfArray.length;
+    console.log('Notebook size is '+notebookSize);
+  });
+  if(notebookSize == 0){
+    console.log('Sending documents.png because the notebook is empty');
+    res.sendFile('/images/document.png');
     return;
   }
 

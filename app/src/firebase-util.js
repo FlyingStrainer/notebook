@@ -574,7 +574,7 @@ module.exports = {
 
           admin.database().ref().update(updates)
             .then(() => {
-              resolve();
+              resolve({});
             })
             .catch(reject);
         });
