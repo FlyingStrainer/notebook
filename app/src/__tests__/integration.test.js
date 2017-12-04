@@ -59,7 +59,7 @@ describe('POST /restoreFromLocal', () => {
   it('Pass user', async () => {
     let response;
     try {
-      const path = `/getBackup`;
+      const path = '/getBackup';
       const req = {
         notebook_hash: mg.notebook.notebook_hash,
       };
@@ -69,7 +69,7 @@ describe('POST /restoreFromLocal', () => {
     }
 
     try {
-      const path = `/restoreFromLocal`;
+      const path = '/restoreFromLocal';
       const req = {
         notebook_hash: mg.notebook.notebook_hash,
       };
