@@ -1,8 +1,6 @@
 // http API Test.
 // Tests to see if all API Calls work from a http GET/POST level
 
-// TODO: Make sure all API calls are included, verify that they all work
-
 const request = require('supertest');
 const api = require('../http-api');
 
@@ -48,7 +46,6 @@ describe('POST /login', () => {
 
 describe('POST /user', () => {
   it('should return json', async () => {
-    // TODO
     const req = {
       user_hash: '--user-key-1',
     };
@@ -80,6 +77,19 @@ describe('POST /addEntry', () => {
   });
 });
 
+describe('POST /cosignEntry', () => {
+  it('cosign a notebook', async () => {
+    const req = {
+      user_hash: '--user-key-2',
+      notebook_hash: '--notebook-key-2',
+      entry_hash: '--entry-hash-1',
+    };
+
+    await testApi('/cosignEntry', req);
+  });
+});
+
+
 describe('POST /getEntries', () => {
   it('get the entries for a notebook', async () => {
     const req = {
@@ -88,6 +98,41 @@ describe('POST /getEntries', () => {
     };
 
     await testApi('/getEntries', req);
+  });
+});
+
+describe('POST /getEntry', () => {
+  it('get a specific for a notebook', async () => {
+    const req = {
+      user_hash: '--user-key-1',
+      notebook_hash: '--notebook-key-2',
+      entry_hash: '--entry-hash-1',
+    };
+
+    await testApi('/getEntry', req);
+  });
+});
+
+describe('POST /searchByText', () => {
+  it('search for text in all accessable notebooks', async () => {
+    const req = {
+      user_hash: '--user-key-1',
+      text: 'epsilon',
+    };
+
+    await testApi('/searchByText', req);
+  });
+});
+
+describe('POST /searchNotebooksByDate', () => {
+  it('display all notebooks in a given date range', async () => {
+    const req = {
+      user_hash: '--user-key-1',
+      mindate: '2017-12-01T02:02:26.994Z',
+      maxdate: '2017-12-01T02:02:26.994Z',
+    };
+
+    await testApi('/searchNotebooksByDate', req);
   });
 });
 
@@ -133,6 +178,16 @@ describe('POST /getBackup', () => {
   });
 });
 
+describe('POST /makePDF', () => {
+  it('create pdf of given notebook key', async () => {
+    const req = {
+      notebook_hash: '--notebook-key-2',
+    };
+
+    await testApi('/makePDF', req);
+  });
+});
+
 describe('POST /feedback', () => {
   it('Send feedback to the devs', async () => {
     const req = {
@@ -148,6 +203,7 @@ describe('POST /setNotebookPermissions', () => {
     const req = {
       user_hash: '--user-key-1',
       notebook_hash: '--notebook-key-2',
+      changes: {},
     };
 
     await testApi('/setNotebookPermissions', req);
@@ -159,9 +215,21 @@ describe('POST /format', () => {
     const req = {
       user_hash: '--user-key-1',
       notebook_hash: '--notebook-key-2',
+      settings: {},
     };
 
     await testApi('/format', req);
+  });
+});
+
+describe('POST /formatAll', () => {
+  it('Set the format of everything', async () => {
+    const req = {
+      user_hash: '--user-key-1',
+      settings: {},
+    };
+
+    await testApi('/formatAll', req);
   });
 });
 
@@ -177,11 +245,78 @@ describe('POST /getLink', () => {
 });
 
 describe('GET /notebook/:notebook_hash', () => {
-  it('undetermined', async () => {
+  it('Get a notebook without being a user', async () => {
+    const path = '/notebook/-notebook-key-2';
+
+    let response;
+
+    try {
+      response = await request(api)
+        .get(path);
+    } catch (e) {
+      expect(e.message).toEqual('good');
+    }
+
+    expect(response.statusCode).toBeGreaterThanOrEqual(200);
+    expect(response.statusCode).toBeLessThan(300);
+  });
+});
+
+describe('GET /pdfdisp:pdfname', () => {
+  it('Display given pdf', async () => {
+    const path = '/pdfdisp/--pef-key-1';
+    let response;
+
+    try {
+      response = await request(api)
+        .get(path);
+    } catch (e) {
+      expect(e.message).toEqual('good');
+    }
+
+    expect(response.statusCode).toBeGreaterThanOrEqual(200);
+    expect(response.statusCode).toBeLessThan(300);
+  });
+});
+
+describe('POST /getCompanyUsers', () => {
+  it('Get company that the user belongs to', async () => {
+    const req = {
+      user_hash: '--user-key-1',
+    };
+
+    await testApi('/getCompanyUsers', req);
+  });
+});
+
+describe('POST /getCompanyUsersPermission', () => {
+  it('Get the permissions for a user and notebook hash', async () => {
+    const req = {
+      user_hash: '--user-key-1',
+      notebook_hash: '--notebook-key-2',
+    };
+
+    await testApi('/getCompanyUsersPermission', req);
+  });
+});
+
+describe('POST /restoreFromLocal', () => {
+  it('Get the permissions for a user and notebook hash', async () => {
     const req = {
       notebook_hash: '--notebook-key-2',
     };
 
-    await testApi('/notebook/:notebook_hash', req);
+    await testApi('/restoreFromLocal', req);
+  });
+});
+
+describe('POST /restoreFromRemote', () => {
+  it('Get the permissions for a user and notebook hash', async () => {
+    const req = {
+      notebook_hash: '--notebook-key-2',
+      backup: {},
+    };
+
+    await testApi('/restoreFromRemote', req);
   });
 });

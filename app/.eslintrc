@@ -33,6 +33,7 @@
       {
         "enforceForRenamedProperties": false
       }
-    ]
+    ],
+    "no-continue": "off"
   }
 }

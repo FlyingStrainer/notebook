@@ -1,6 +1,10 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
+/backups
+/genPDFs
+
 .eslintignore
+.eslintignore.bak
 
 # firebase
 src/fire.js

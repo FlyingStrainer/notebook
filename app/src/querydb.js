@@ -1,5 +1,6 @@
-var dotenv = require('dotenv');
-var algoliasearch = require('algoliasearch');
+const dotenv = require('dotenv');
+const algoliasearch = require('algoliasearch');
+
 dotenv.load();
 const algolia = algoliasearch(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_API_KEY);
 const index = algolia.initIndex(process.env.ALGOLIA_INDEX_NAME);
@@ -9,50 +10,57 @@ const index = algolia.initIndex(process.env.ALGOLIA_INDEX_NAME);
 let firebaseAdmin = null;
 
 module.exports = {
+  isWorking: false,
   algolia,
   indexEx: index,
 
   init(myadmin) {
     firebaseAdmin = myadmin;
-    module.exports.resetAlgolia();
+    console.log('no algolia');
+    //module.exports.resetAlgolia();
   },
 
   resetAlgolia() {
-    var database = firebaseAdmin.database();
+    const database = firebaseAdmin.database();
 
 
-    var notebooksRef = database.ref("/NotebookList");
-    //clear before import
-    index.clearIndex(function(err, content) {
-      console.log("Cleared");
+    const notebooksRef = database.ref('/NotebookList');
+    // clear before import
+    index.clearIndex((err, content) => {
+      console.log('Cleared');
     });
 
     notebooksRef.once('value', module.exports.initialImport);
   },
 
   initialImport(dataSnapshot) {
-
     // Array of data to index
-    var objectsToIndex = [];
+    const objectsToIndex = [];
     // Get all objects
-    var values = dataSnapshot.val();
+    const values = dataSnapshot.val();
     // Process each child Firebase object
-    dataSnapshot.forEach((function(childSnapshot) {
+    dataSnapshot.forEach(((childSnapshot) => {
       // get the key and data from the snapshot
-      var childKey = childSnapshot.key;
-      var childData = childSnapshot.val();
+      const childKey = childSnapshot.key;
+      const childData = childSnapshot.val();
       // Specify Algolia's objectID using the Firebase object key
       childData.objectID = childKey;
       // Add object for indexing
       objectsToIndex.push(childData);
-    }))
+    }));
     // Add or update new objects
-    index.saveObjects(objectsToIndex, function(err, content) {
+    index.saveObjects(objectsToIndex, (err, content) => {
       if (err) {
-        throw err;
+        console.log('Firebase<>Algolia import failed');
+        console.log(err.message);
+
+        module.exports.isWorking = false;
+        return;
       }
+
+      module.exports.isWorking = true;
       console.log('Firebase<>Algolia import done');
-      //process.exit(0);
+      // process.exit(0);
     });
   },
 
@@ -60,16 +68,16 @@ module.exports = {
   searchForText(text) {
     // Search query
 
-      // Perform an Algolia search:
-      // https://www.algolia.com/doc/api-reference/api-methods/search/
+    // Perform an Algolia search:
+    // https://www.algolia.com/doc/api-reference/api-methods/search/
     return index.search({
-          query: text
-        }).then(responses => {
-          // Response from Algolia:
-          // https://www.algolia.com/doc/api-reference/api-methods/search/#response-format
-          console.log(responses.hits);
-          return responses.hits;
-        });
+      query: text,
+    }).then((responses) => {
+      // Response from Algolia:
+      // https://www.algolia.com/doc/api-reference/api-methods/search/#response-format
+      // console.log(responses.hits);
+      return responses.hits;
+    });
   },
 
-}
+};

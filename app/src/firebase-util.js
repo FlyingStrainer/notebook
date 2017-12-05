@@ -17,6 +17,12 @@ const serviceAccount = require('../serviceAccountKey.json');
 const Notebook = require('./objects/Notebook');
 const pdfgen = require('./PDFGen.js');
 const querydb = require('./querydb.js');
+const CJSON = require('./objects/CJSON.js');
+const nodemailer = require('nodemailer');
+const fs = require('fs');
+
+const sessionEmailLimit = process.env.EMAIL_LIMIT || 5;
+let sessionEmailCount = 0;
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -27,9 +33,11 @@ pdfgen.init(admin);
 querydb.init(admin);
 
 module.exports = {
+  firebaseAdmin: admin,
   pdfgen,
   querydb,
 
+  // action: read, write, manager
   checkNotebookPermission(user_hash, notebook_hash, action) {
     const path = `UserList/${user_hash}/permissions/notebooks/${notebook_hash}`;
     return admin.database().ref(path).once('value')
@@ -82,16 +90,21 @@ module.exports = {
                   const company_users = {};
                   company_users[user_hash] = true;
 
+                  const company_emails64 = {};
+                  company_emails64[email64] = true;
+
                   const company_data = {
                     company_name,
                     admin_hash: user_hash,
+                    emails64: company_emails64,
                     users: company_users,
                     notebooks: {},
                   };
 
                   update[`companies/${company_name}`] = company_data;
                 } else {
-                  update[`companies/users/${user_hash}`] = true;
+                  update[`companies/${company_name}/users/${user_hash}`] = true;
+                  update[`companies/${company_name}/emails64/${email64}`] = true;
                 }
 
                 admin.database().ref().update(update)
@@ -148,14 +161,14 @@ module.exports = {
   },
 
   // NOTE not used in frontend
-  // getNotebooks(user_hash) {
-  //   return module.exports.checkUser(user_hash).then(user => ({notebook_list: user.notebook_list}));
-  // },
+  getNotebooks(user_hash) {
+    return module.exports.checkUser(user_hash).then(user => ({notebook_list: user.notebook_list}));
+  },
 
   saveNotebook(user_hash, notebook_name) {
     return new Promise(((resolve, reject) => {
       const updateAll = (user_data, company_data) => {
-        const {company_name, admin_hash} = company_data;
+        const {company_name, admin_hash, format} = company_data;
 
         const updates = {};
 
@@ -166,11 +179,17 @@ module.exports = {
         managers[user_hash] = true;
         managers[admin_hash] = true;
 
+        const isPublic = false;
+
         const notebook_update = new Notebook({
           notebook_hash,
           name: notebook_name,
           managers,
+          isPublic,
         });
+
+        // { image : "inline"} { image : "below"}
+        notebook_update.format = format || { inline: 'below' };
         updates[`/NotebookList/${notebook_hash}`] = notebook_update;
 
         // company
@@ -195,7 +214,7 @@ module.exports = {
 
       const checkForPermission = (user_data) => {
         if (!user_data.permissions.create_notebooks) {
-          return Promise.reject(new Error('permission denied'));
+          return Promise.reject(new Error('Permission denied'));
         }
 
         return user_data;
@@ -219,13 +238,10 @@ module.exports = {
 
   addEntry(user_hash, notebook_hash, entry) {
     return new Promise(((resolve, reject) => {
-      const {type} = entry;
-      const data = entry[type];
-
-      if (!(type && data)) {
-        reject(new Error('invalid request'));
-        return;
-      }
+      // if (!(type && data)) {
+      //   reject(new Error('invalid request'));
+      //   return;
+      // }
 
       const updateAll = (user_data) => {
         const updates = {};
@@ -233,8 +249,10 @@ module.exports = {
         const {email} = user_data;
 
         // notebook
-        const now = new Date();
-        const entry_hash = now.getTime() + admin.database().ref('NotebookList').push().key;
+        const now = new Date().getTime();
+        const entry_hash = admin.database().ref('NotebookList').push().key;
+
+        const tags = entry.tags || [];
 
         const entry_update = {
           entry_hash,
@@ -242,11 +260,17 @@ module.exports = {
           author_hash: user_hash,
           date_modified: now,
           date_created: now,
-          tags: [],
-          type: entry.type,
+          text: entry.text || null,
+          image: entry.image || null,
+          caption: entry.caption || null,
+          tags,
         };
-        entry_update[type] = data;
         updates[`/NotebookList/${notebook_hash}/data_entries/${entry_hash}`] = entry_update;
+
+        for (let i = 0; i < tags.length; i++) {
+          const tag = tags[i];
+          updates[`/NotebookList/${notebook_hash}/tags/${tag}/${entry_hash}`] = true;
+        }
 
         updates[`/NotebookList/${notebook_hash}/date_modified`] = now;
 
@@ -264,7 +288,7 @@ module.exports = {
         check = check[notebook_hash] || {};
         check = !check.write;
         if (check) {
-          return Promise.reject(new Error('permission denied'));
+          return Promise.reject(new Error('Permission denied'));
         }
 
         return user_data;
@@ -309,14 +333,81 @@ module.exports = {
 
   getNotebook(user_hash, notebook_hash) {
     // NOTE does not check for permission
-    return admin.database().ref(`/NotebookList/${notebook_hash}/`).once('value')
-      .then((snap) => {
-        if (snap.val() !== null) {
-          return snap.val();
+    return admin.database().ref(`/NotebookList/${notebook_hash}/`).once('value').then((snap) => {
+      const notebook = snap.val();
+      if (!notebook) {
+        return Promise.reject(new Error('Notebook not found'));
+      }
+
+      return notebook;
+    });
+  },
+
+  getLocalBackup(notebook_hash) {
+    return new Promise((resolve, reject) => {
+      let backup;
+      try {
+        backup = fs.readFileSync(`${__dirname}/../backups/${notebook_hash}`);
+      } catch (e) {
+        reject(e);
+        return;
+      }
+
+      const notebook = CJSON.parse(backup);
+
+      resolve(notebook);
+    });
+  },
+
+  restoreFromLocal(notebook_hash) {
+    return new Promise((resolve, reject) => {
+      module.exports.getLocalBackup(notebook_hash).then((notebook) => {
+        const updates = {};
+        updates[`/NotebookList/${notebook.notebook_hash}`] = notebook;
+
+        admin.database().ref().update(updates).then(() => {
+          resolve(notebook);
+        })
+          .catch(reject);
+      }).catch(reject);
+    });
+  },
+
+  restoreFromRemote(notebook_hash, backup) {
+    const notebook = CJSON.parse(backup);
+
+    const updates = {};
+    updates[`/NotebookList/${notebook.notebook_hash}`] = notebook;
+
+    return admin.database().ref().update(updates);
+  },
+
+  makeLocalBackup(notebook_hash) {
+    return module.exports.getBackup(notebook_hash).then((backup) => {
+      fs.writeFile(`${__dirname}/../backups/${notebook_hash}`, backup, (err) => {
+        if (err) {
+          console.log(err);
+          return;
         }
 
-        throw new Error('can\'t find notebook');
+        console.log(`The backup for ${notebook_hash} was saved!`);
       });
+
+      return backup;
+    });
+  },
+
+  getBackup(notebook_hash) {
+    return admin.database().ref(`/NotebookList/${notebook_hash}/`).once('value').then((snap) => {
+      const notebook = snap.val();
+      if (!notebook) {
+        return Promise.reject(new Error('Notebook not found'));
+      }
+
+      const backup = CJSON.stringify(notebook);
+
+      return backup;
+    });
   },
 
   feedback(message) {
@@ -325,31 +416,79 @@ module.exports = {
     const updates = {};
     updates[`/feedback/${new_key}`] = message;
 
-    return admin.database().ref().update(updates);
-  },
+    if (sessionEmailCount < sessionEmailLimit) {
+      const transport = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: 'VENoteApp@gmail.com', // TODO replace personal gmail account
+          pass: 'VENote2017',
+        },
+      });
 
-  setNotebookPermissions(user_hash, notebook_hash, change_list) {
-    // NOTE does not check for permission
-    const updates = {};
+      const mailOptions = {
+        from: 'VENoteApp',
+        to: 'jarett.lee.pi+response@gmail.com',
+        subject: 'VENote feedback',
+        text: message,
+      };
 
-    for (let i = 0; i < change_list.length; i++) {
-      const {change} = change_list[i];
-      const other_hash = change_list[i].user_hash;
+      transport.sendMail(mailOptions, () => {});
 
-      updates[`UserList/${other_hash}/permissions/notebooks/${notebook_hash}`] = change;
+      sessionEmailCount += 1;
     }
 
     return admin.database().ref().update(updates);
   },
 
+  setNotebookPermissions(user_hash, notebook_hash, changes) {
+    // NOTE does not check for permission
+    const updates = {};
+
+    const change_keys = Object.keys(changes);
+
+    for (let i = 0; i < change_keys.length; i++) {
+      const other_hash = change_keys[i];
+      const change = changes[other_hash];
+
+      console.log(other_hash, change);
+
+      const path = `UserList/${other_hash}/permissions/notebooks/${notebook_hash}`;
+      if (change) {
+        updates[`${path}/read`] = change.read || false;
+        updates[`${path}/write`] = change.write || false;
+        updates[`${path}/manager`] = change.manager || false;
+
+        if (change.manager) {
+          updates[`/NotebookList/${notebook_hash}/managers/${other_hash}`] = true;
+        } else {
+          updates[`/NotebookList/${notebook_hash}/managers/${other_hash}`] = null;
+        }
+      } else {
+        updates[`${path}`] = null;
+        updates[`/NotebookList/${notebook_hash}/managers/${other_hash}`] = null;
+      }
+    }
+
+    return admin.database().ref().update(updates).then(() => ({}));
+  },
+
   getLink(user_hash, notebook_hash) {
     return admin.database().ref(`/NotebookList/${notebook_hash}/`).once('value')
       .then((snap) => {
-        if (snap.val() !== null) {
-          return snap.val();
+        const notebook = snap.val();
+        if (!notebook) {
+          return Promise.reject(new Error('Notebook not found'));
         }
 
-        throw new Error('can\'t find notebook');
+        const updates = {};
+        updates[`/NotebookList/${notebook_hash}/isPublic`] = true;
+
+        const p = admin.database().ref().update(updates).then(() => {
+          const url = `http://endor-vm1.cs.purdue.edu/notebook/${notebook_hash}`;
+          return {url};
+        });
+
+        return Promise.resolve(p);
       });
   },
 
@@ -358,7 +497,89 @@ module.exports = {
     const updates = {};
     updates[`/NotebookList/${notebook_hash}/format`] = format;
 
-    return admin.database().ref().update(updates);
+    return admin.database().ref().update(updates).then(() => ({}));
+  },
+
+  formatAll(user_hash, format) {
+    // NOTE does not check for permission
+    return new Promise((resolve, reject) => {
+      admin.database().ref(`UserList/${user_hash}`).once('value').then((snap1) => {
+        const user = snap1.val();
+        if (!user) {
+          reject(new Error('User not found'));
+          return;
+        }
+
+        const {company_name} = user;
+
+        admin.database().ref(`companies/${company_name}`).once('value').then((snap2) => {
+          const company = snap2.val();
+          if (!company) {
+            reject(new Error('Company not found'));
+            return;
+          }
+
+          const updates = {};
+
+          updates[`/companies/${company_name}/format`] = format;
+
+          admin.database().ref().update(updates).then(() => {
+            resolve();
+          })
+            .catch(reject);
+        });
+      });
+    });
+  },
+
+  cosignEntry(user_hash, notebook_hash, entry_hash) {
+    return new Promise(((resolve, reject) => {
+      let path = `/NotebookList/${notebook_hash}/data_entries/${entry_hash}/`;
+      admin.database().ref(path).once('value').then((snap) => {
+        const entry = snap.val();
+        if (!entry) {
+          reject(new Error('Entry not found'));
+          return;
+        }
+
+        if (entry.cosign_hash) {
+          reject(new Error('Entry already cosigned'));
+          return;
+        }
+
+        path = `/UserList/${user_hash}`;
+        admin.database().ref(`UserList/${user_hash}`).once('value').then((snap2) => {
+          const user = snap2.val();
+          if (!user) {
+            reject(new Error('User not found'));
+            return;
+          }
+
+          let next = user;
+          next = next.permissions || {};
+          next = next.notebooks || {};
+          next = next[notebook_hash] || {};
+          next = next.manager || false;
+          const isManager = next;
+          if (!isManager) {
+            reject(new Error('Permission denied'));
+            return;
+          }
+
+          const {email} = user;
+
+          const updates = {};
+          updates[`/NotebookList/${notebook_hash}/data_entries/${entry_hash}/cosign_email`] = email;
+          updates[`/NotebookList/${notebook_hash}/data_entries/${entry_hash}/cosign_hash`] = user_hash;
+
+          admin.database().ref().update(updates)
+            .then(() => {
+              resolve({});
+            })
+            .catch(reject);
+        });
+      });
+    }));
   },
 
   getCompanyUsers(user_hash) {
@@ -437,5 +658,48 @@ module.exports = {
         .then(getUsers)
         .catch(reject);
     });
+  },
+
+  deleteCompany(company_name) {
+    return admin.database().ref(`companies/${company_name}`).once('value').then((snap) => {
+      const company = snap.val();
+      if (!company) {
+        return Promise.resolve();
+      }
+
+      let i;
+
+      const updates = {};
+      updates[`companies/${company_name}`] = null;
+
+      const emails64 = company.emails64 || {};
+      const users = company.users || {};
+      const notebooks = company.notebooks || {};
+
+      const emails64Keys = Object.keys(emails64);
+      const usersKeys = Object.keys(users);
+      const notebooksKeys = Object.keys(notebooks);
+
+      for (i = 0; i < emails64Keys.length; i++) {
+        const key = emails64Keys[i];
+
+        updates[`login_info/${key}`] = null;
+      }
+
+      for (i = 0; i < usersKeys.length; i++) {
+        const key = usersKeys[i];
+
+        updates[`UserList/${key}`] = null;
+      }
+
+      for (i = 0; i < notebooksKeys.length; i++) {
+        const key = notebooksKeys[i];
+
+        updates[`NotebookList/${key}`] = null;
+      }
+
+      return admin.database().ref().update(updates).catch(() => {});
+    })
+      .catch(() => {});
   },
 };

@@ -1,27 +1,44 @@
 {
   "name": "app",
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}",
+      "!src/fire.js",
+      "!src/test-util/*",
+      "!src/index.js",
+      "!src/server.js",
+      "!src/websocket.js",
+      "!src/firebase-util.js",
+      "!src/objects/CJSON.js",
+      "!src/registerServiceWorker.js",
+      "!src/App.js"
+    ]
+  },
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "access-control": "^1.0.0",
-    "algoliasearch": "^3.24.6",
+    "algoliasearch": "^3.24.7",
     "body-parser": "^1.18.2",
     "dotenv": "^4.0.0",
     "express": "^4.16.1",
     "firebase": "^4.4.0",
     "firebase-admin": "^5.4.1",
     "fs": "0.0.1-security",
+    "lzwcompress": "^0.2.4",
     "nodemailer": "^4.1.2",
+    "pdf-image": "^1.1.0",
     "pdfkit": "^0.8.3",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-scripts": "1.0.13",
+    "sharp": "^0.18.4",
     "ws": "^3.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "test": "react-scripts test --env=jsdom --coverage",
     "lint": "eslint src || exit 0",
     "lint-fix": "eslint src --fix || exit 0",
     "eslint": "eslint",

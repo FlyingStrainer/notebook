@@ -6,8 +6,15 @@
 
 const email = require('../email');
 
+console.error = jest.fn();
+
 it('email smoke test', () => {
   email.sendEmail('@purdue.edu');
   expect(() => {
   }).not.toThrow();
+});
+
+it('try to throw an error', () => {
+  email.sendEmail('invalidemail#iiunjn.c');
+  expect(console.error).toHaveBeenCalledTimes(1);
 });

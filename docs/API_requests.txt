@@ -1,42 +1,42 @@
 api/login
 body:
 {
-	"email": "",
-	"password": ""
+    "email": "",
+    "password": ""
 }
 response:
 {
-	"user_hash": ""
+    "user_hash": ""
 }
 
 
 api/register
 body:
 {
-	"email": "",
-	"password": "",
-	"company_name:: ""
+    "email": "",
+    "password": "",
+    "company_name:: ""
 }
 
 
 api/user
 body:
 {
-	"user_hash": ""
+    "user_hash": ""
 }
 response:
 {
-	"user_hash": "",
-	"company_name": "",
-	"notebooks": [
-		"notebook_hash",
-		"notebook_hash",
-		...
-	],
-	"roles": [
-		<role>,
-		<role>
-	]
+    "user_hash": "",
+    "company_name": "",
+    "notebooks": [
+        "notebook_hash",
+        "notebook_hash",
+        ...
+    ],
+    "roles": [
+        <role>,
+        <role>
+    ]
 }
 
 role: "user", "manager"
@@ -45,54 +45,54 @@ role: "user", "manager"
 api/getNotebooks GET //Get notebooks for user
 body:
 {
-	"user_hash": ""
+    "user_hash": ""
 }
 response:
 {
-	"user_hash": "",
-	"notebooks":
-	[
-		"notebook_hash",
-		"notebook_hash",
-		...
-	]
+    "user_hash": "",
+    "notebooks":
+    [
+        "notebook_hash",
+        "notebook_hash",
+        ...
+    ]
 }
 
 
 api/getNotebook
 body:
 {
-	"user_hash": "",
-	"notebook_hash": ""
+    "user_hash": "",
+    "notebook_hash": ""
 }
 response:
 {
-	"notebook_hash": "",
-	"name": "",
-	"managers" [
-		"user_hash",
-		"user_hash",
-		...
-	],
-	"date_modified": Date,
-	"date_created": Date,
-	tags: [
-		"tag",
-		"tag",
-		...
-	]
-	"permissions": {
-		"read": true,
-		"write": true
-	}
+    "notebook_hash": "",
+    "name": "",
+    "managers" [
+        "user_hash",
+        "user_hash",
+        ...
+    ],
+    "date_modified": Date,
+    "date_created": Date,
+    tags: [
+        "tag",
+        "tag",
+        ...
+    ]
+    "permissions": {
+        "read": true,
+        "write": true
+    }
 }
 
 
 api/addNotebook POST //Creates new notebook
 body:
 {
-	"user_hash": "",
-	"name": ""
+    "user_hash": "",
+    "name": ""
 }
 {
     "dateModified": "2017-11-30T19:34:33.257Z",
@@ -111,43 +111,62 @@ api/addEntry POST //Add entry to notebook
 body:
 {
     "user_hash": "-L-9i0Xmynq_Xsao14rd",
-    "notebook_hash": "-L-DVXx7_wXDcqCE1CAb",
+    "notebook_hash": "-L-9iDACSg1i79u3QJF7",
     "entry": {
-    	"type": "text",
-    	"text": "Hello World!"
+        "text": "Hello World!",
+
+    "image": null,
+    "caption": null,
+
+    "tags": []
     }
 }
 response:
 {
-    "entry_hash": "1512072142972-L-DWT0ZxH_exYZFaelm",
+    "entry_hash": "1512074221957-L-DdO_fY4A7kFTEMasj",
     "author": "me2@email.com",
     "author_hash": "-L-9i0Xmynq_Xsao14rd",
-    "date_modified": "2017-11-30T20:02:22.972Z",
-    "date_created": "2017-11-30T20:02:22.972Z",
-    "tags": [],
-    "type": "text",
-    "text": "Hello World!"
+    "date_modified": "2017-11-30T20:37:01.957Z",
+    "date_created": "2017-11-30T20:37:01.957Z",
+    "text": "Hello World!",
+    "image": null,
+    "caption": null,
+    "tags": []
 }
 
 include either text or image depending on type of entry
 
+api/getEntries
+body:
+{
+    "user_hash": "-L-9i0Xmynq_Xsao14rd",
+    "notebook_hash": "-L-9iDACSg1i79u3QJF7"
+}
+response:
+[
+    <page_hash>,
+    "1512075652380-L-Diqu1W7oPUffwA39u",
+    "1512075687125-L-DizNrJBcj34uZnPzb",
+    "1512075689900-L-Dj-3CQiyYfnxkbTVB"
+]
+
 api/getEntry
 body:
 {
-	"user_hash": "",
-	"notebook_hash": "",
-	"entry_hash": ""
+    "user_hash": "",
+    "notebook_hash": "",
+    "entry_hash": ""
 }
 reponse:
 {
-	entry_hash
-	author: email
-	cosigned_by
-	date_modified
-	date_created
-	tags: []
-	type
-	text
+    entry_hash
+    author: email
+    cosigned_by
+    date_modified
+    date_created
+    tags: []
+    type
+    text
 }
 
 
@@ -155,28 +174,48 @@ reponse:
 api/cosignEntry POST //Cosign entry
 body:
 {
-	"user_hash": "",	// User_hash of cosigner, also used to authenticate
-	"notebook_hash": "",
-	"entry_hash": ""	// Unique id of entry being cosigned
+    "user_hash": "",    // User_hash of cosigner, also used to authenticate
+    "notebook_hash": "",
+    "entry_hash": ""    // Unique id of entry being cosigned
 }
+no response
+
+errors: ['Entry not found', 'Entry already cosigned', 'User not found', 'Permission denied'];
 
 
-
-api/searchByTimestamp POST // Search for entry using timestamp
+api/searchByDate POST // Search for entry using timestamp
 
 body:
 {
-	"user_hash": "",
-        "notebook_hash" : "", //Optional, limits scope of search to this notebook
-        "entry_hash" : "", // Optional, limits scope of search to this entry
-	"date": Date()
+    "user_hash": "",
+    "mindate": 123,
+    "maxdate": 456,
+    "notebook_hash": "fdafsd" //optional limits scope of search to this notebook
 }
 
-response: 
+response:
 {
-	"user_hash" : "",
-	"notebook_hash" : "",
-	"entry_hash" : "",
+    "user_hash": "-L-DuZxPXbzHWau5Fh8B",
+    "results": [
+        {
+            "notebook": "-L-DvOL5t4i8u7ErdmES",
+            "entries": [
+                "1512080455886-L-E0AXxGfk9NWpd0Ngg"
+            ]
+        },
+        {
+            "notebook": "-L-DvZ7yNf16IrpXe0r1",
+            "entries": [
+                "1512092436135-L-EisPJrl6bQKCHcIni"
+            ]
+        },
+        {
+            "notebook": "-L-Dv9UDBRJaToBQOiwT",
+            "entries": [
+                "1512080411226-L-E0-d8o4Q0asuv6ZCt"
+            ]
+        }
+    ]
 }
 
 
@@ -185,33 +224,120 @@ api/searchByText POST // Search for entry using text
 
 body:
 {
-
-	"user_hash" : "",
-        "notebook_hash" : "", //Optional, limits scope of search to this notebook
-        "entry_hash" : "", // Optional, limits scope of search to this entry -- dont use
-	"text" : ""
+    "user_hash" : "",
+    "notebook_hash" : "", //Optional, limits scope of search to this notebook
+    "text" : ""
 }
 
-response: 
+response:
 {
-	"user_hash" : "",
-	"results": [{notebook:"xxxxx",entries:[]]
-	//Text location in entry?
+    "user_hash": "-L-DuZxPXbzHWau5Fh8B",
+    "results": [
+        {
+            "notebook": "-L-DvOL5t4i8u7ErdmES",
+            "entries": [
+                "1512080455886-L-E0AXxGfk9NWpd0Ngg"
+            ]
+        },
+        {
+            "notebook": "-L-DvZ7yNf16IrpXe0r1",
+            "entries": [
+                "1512092436135-L-EisPJrl6bQKCHcIni"
+            ]
+        },
+        {
+            "notebook": "-L-Dv9UDBRJaToBQOiwT",
+            "entries": [
+                "1512080411226-L-E0-d8o4Q0asuv6ZCt"
+            ]
+        }
+    ]
 }
 
-api/searchNotebooksByDate POST // Search for entry using text
+api/searchByTag POST // Search for entry using tag
 
 body:
 {
-
-	"user_hash" : "",
-        "mindate": 123,
-	"maxdate": 432
+    "user_hash" : "",
+    "notebook_hash" : "", //Optional, limits scope of search to this notebook
+    "tag" : ""
 }
 
-response: 
+response:
 {
-	"user_hash" : "",
-	"results": [{notebook:"xxxxx",entries:[]]
-	//Text location in entry?
+    "user_hash": "-L-DuZxPXbzHWau5Fh8B",
+    "results": [
+        {
+            "notebook": "-L-DvOL5t4i8u7ErdmES",
+            "entries": [
+                "1512080455886-L-E0AXxGfk9NWpd0Ngg"
+            ]
+        },
+        {
+            "notebook": "-L-DvZ7yNf16IrpXe0r1",
+            "entries": [
+                "1512092436135-L-EisPJrl6bQKCHcIni"
+            ]
+        },
+        {
+            "notebook": "-L-Dv9UDBRJaToBQOiwT",
+            "entries": [
+                "1512080411226-L-E0-d8o4Q0asuv6ZCt"
+            ]
+        }
+    ]
+}
+
+api/feedback POST
+body:
+{
+    "message": "Best thing ever"
+}
+no response
+
+reject empty messages
+
+api/getLink POST
+body:
+{
+    "user_hash": "",
+    "notebook_hash": ""
+}
+response:
+{
+    "url": ""
+}
+
+api/getCompanyUsersPermission POST
+body:
+{
+    "user_hash": "-L-DuZxPXbzHWau5Fh8B",
+    "notebook_hash": "-L-Dv9UDBRJaToBQOiwT"
+}
+response:
+{
+    "-L-DuZxPXbzHWau5Fh8B": {
+        "manager": true,
+        "read": true,
+        "write": true
+    },
+    "-L-DumeR9RJDDPpZQcnz": false
+}
+
+api/setNotebookPermissions POST
+{
+    "user_hash": "-L-DuZxPXbzHWau5Fh8B",
+    "notebook_hash": "-L-Dv9UDBRJaToBQOiwT",
+    "changes": {
+        "-L-DuZxPXbzHWau5Fh8B": {
+            "manager": true,
+            "read": true,
+            "write": true
+        },
+        "-L-DumeR9RJDDPpZQcnz": {
+            "manager": false,
+            "read": true,
+            "write": true
+        }
+    }
 }
