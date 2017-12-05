@@ -34,24 +34,48 @@ module.exports = {
     //inline: image before text
     for (let i = 0; i < entries.length; i++) {
 
-      doc.text(entries[i].date_created, 100, 200);
-      doc.text(entries[i].author, 100, 220);
- //text first
-      if (entries[i].image !== undefined) {
-        const buf = new Buffer(entries[i].image.replace(/^data:image\/png;base64,/, ''), 'base64');
-        if (inline){
-          doc.image(buf, 100, 250, {fit: [200, 200]});
-          doc.text(entries[i].text, 330, 350);
-        }
-        else
-          doc.image(buf, 100, 250, {fit: [200, 200]});
+      doc.text(new Date(entries[i].date_created).toString());
+      doc.text(`Author: ${entries[i].author}`);
+      doc.moveDown();
 
+      let onlyText = true;
+
+      const imageExists = entries[i].image !== undefined;
+      if (imageExists) {
+        const pngMatcher = /^data:image\/png;base64,(.+)/.exec(entries[i].image);
+        const pngString = pngMatcher[1];
+        if (pngString) {
+          onlyText = false;
+
+          const pngBuffer = Buffer.from(pngString, 'base64');
+
+          if (inline) {
+            const start = {
+              x: doc.x,
+              y: doc.y,
+            };
+            doc.image(pngBuffer, start.x, start.y, {fit: [200, 200]});
+            const y1 = doc.y;
+
+            doc.text(entries[i].text, start.x + 250, start.y);
+            const y2 = doc.y;
+
+            const endy = Math.max(y1, y2);
+            doc.text('', start.x, endy);
+          } else {
+            doc.text(entries[i].text);
+            doc.image(pngBuffer, {fit: [200, 200]});
+          }
+
+        }
       }
 
-      if (!inline || entries[i].image === undefined) doc.text(entries[i].text, 100, 505);
+      if (onlyText) {
+        doc.text(entries[i].text);
+      }
 
-
-      doc.addPage();
+      doc.moveDown();
+      doc.moveDown();
     }
 
     // Finalize PDF file

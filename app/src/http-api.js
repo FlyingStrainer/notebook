@@ -734,12 +734,12 @@ router.get('/downloadPDF/:notebook_hash', (req, res) => {
 });
 
 // Automated test: true, needs work
-router.use('/pdfdisp', (req, res, next) => {
+router.use('/pdfdisp', async (req, res, next) => {
   try {
-    const notebook_hash = /pdfdisp\/(.+)/.exec(req.originalUrl)[1]
-    makepdffunc(req, false, notebook_hash);
+    const notebook_hash = /pdfdisp\/(.+)\.pdf/.exec(req.originalUrl)[1]
+    await makepdffunc(req, false, notebook_hash);
   } catch (e) {
-
+    console.log('dpfdisp err');
   } finally {
     next();
   }
